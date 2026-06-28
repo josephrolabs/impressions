@@ -1,0 +1,643 @@
+# CodeGauge: AI Code Evaluation Harness
+
+## Project Summary
+
+CodeGauge is a lightweight evaluation harness for measuring the correctness and reliability of AI-generated code. The first version focuses on deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated execution, pytest-based grading, pass@k-style reliability metrics, and versioned run outputs.
+
+The goal is to build a credible MVP that demonstrates production evaluation thinking without over-scoping into tracing, dashboards, LLM-as-judge scoring, or complex qualitative analysis.
+
+## Project Name Recommendation
+
+Recommended name: **CodeGauge**
+
+Why it works:
+
+- Communicates measurement and evaluation clearly.
+- Sounds credible for a developer tool or portfolio project.
+- Avoids locking the project to a specific model provider.
+- Leaves room for future multi-model and comparative evaluation support.
+
+Other strong options:
+
+- **SignalBench**: Strong if the project leans toward eval science and benchmark reporting.
+- **EvalForge**: Strong if the project grows into a broader eval-building toolkit.
+- **ProofRun**: Strong if the product centers on reproducible execution and test evidence.
+- **BenchFoundry**: Strong but slightly heavier; better for a larger platform.
+
+## MVP Objective
+
+Build an AI code eval harness that can:
+
+1. Load a curated dataset of Python coding tasks from YAML.
+2. Generate prompts from structured task specs.
+3. Submit prompts to one or more model providers.
+4. Execute generated code inside a Docker sandbox.
+5. Grade results with deterministic pytest suites.
+6. Calculate task-level and aggregate reliability metrics.
+7. Persist every run with config, prompts, outputs, logs, and scores.
+8. Report results through a CLI and JSON artifacts.
+
+## Model Strategy
+
+The initial plan referenced Claude Sonnet 4 as the primary model target. That should remain an open implementation decision rather than a hard requirement.
+
+Recommended MVP approach:
+
+- Start with a single model provider to keep the first eval loop simple.
+- Design the model layer behind a provider interface so additional models can be added later.
+- Treat Claude, OpenAI, local models, or other hosted APIs as interchangeable backends.
+- Store model name, provider, temperature, prompt version, and generation config in every run.
+
+MVP default:
+
+- One model provider.
+- One model configuration.
+- Configurable `k`, with `k=3` as the default.
+
+Future extension:
+
+- Multi-model comparison.
+- Prompt variant comparison.
+- Provider-specific latency, cost, and reliability tracking.
+
+## Core Architecture
+
+```text
+Problem Dataset
+    |
+    v
+Prompt Builder
+    |
+    v
+Model Layer
+    |
+    v
+Execution Sandbox
+    |
+    v
+Test Runner
+    |
+    v
+Scoring Engine
+    |
+    v
+Results Store
+    |
+    v
+Analysis and Reporting
+```
+
+## Component Design
+
+### 1. Task Dataset
+
+Tasks are defined as structured YAML files. Each task should include enough information to reproduce the prompt, execute the generated code, and grade the result.
+
+Recommended dataset for MVP:
+
+- 9 total tasks.
+- 3 easy tasks.
+- 4 medium tasks.
+- 2 hard tasks.
+- 3-5 test cases per task.
+
+Recommended categories:
+
+- Bug fix.
+- Function generation.
+- Refactor.
+- Test writing.
+- Error handling.
+- Small multi-file repair.
+
+Example YAML shape:
+
+```yaml
+id: bug_fix_001
+title: Fix duplicate detection
+difficulty: easy
+category: bug_fix
+timeout_seconds: 10
+entrypoint: solution.py
+prompt: |
+  Fix the function so it returns duplicate values in order of first repeated occurrence.
+starter_code: |
+  def find_duplicates(values):
+      return []
+tests: tests/test_solution.py
+```
+
+### 2. Prompt Builder
+
+The prompt builder turns task specs into reproducible model inputs.
+
+Responsibilities:
+
+- Apply a versioned system prompt.
+- Inject task instructions, starter code, and output constraints.
+- Record the exact rendered prompt for every attempt.
+- Support prompt variants for baseline comparisons.
+
+MVP prompt variants:
+
+- `baseline`: minimal coding assistant prompt.
+- `engineered`: stricter output format and test-focused instructions.
+
+### 3. Model Layer
+
+The model layer isolates provider-specific API details from the rest of the harness.
+
+Responsibilities:
+
+- Submit prompts to the configured provider.
+- Retry transient failures.
+- Capture response text, model metadata, token usage, latency, and errors.
+- Support repeated attempts per task for pass@k analysis.
+
+Suggested interface:
+
+```python
+class ModelClient:
+    def generate(self, prompt: str, config: ModelConfig) -> ModelResponse:
+        ...
+```
+
+### 4. Execution Sandbox
+
+Generated code must execute in a Docker sandbox.
+
+Responsibilities:
+
+- Run generated code in an isolated Python container.
+- Disable network access.
+- Enforce per-task timeouts.
+- Mount only temporary task files.
+- Capture stdout, stderr, exit code, and timeout status.
+
+Default timeout policy:
+
+- Easy tasks: 10 seconds.
+- Medium tasks: 30 seconds.
+- Hard tasks: 60 seconds.
+
+### 5. Test Runner
+
+The test runner grades generated code using pytest.
+
+Responsibilities:
+
+- Materialize the generated solution and task tests inside the sandbox.
+- Run pytest.
+- Parse pass/fail results.
+- Capture test-level output.
+- Return a normalized execution result.
+
+### 6. Scoring Engine
+
+The scoring engine prioritizes objective correctness.
+
+Primary metrics:
+
+- Test pass rate: `passing_tests / total_tests`.
+- Task success: all required tests passed.
+- First-attempt success rate.
+- Observed pass@k: whether at least one of `k` attempts succeeded.
+- Mean attempts to success.
+
+Note on pass@k:
+
+For the MVP, report an observed pass@k result based on the configured number of attempts. If the project later samples more than `k` attempts per task, implement the standard HumanEval estimator:
+
+```text
+pass@k = 1 - comb(n - c, k) / comb(n, k)
+```
+
+Where `n` is the number of generated samples and `c` is the number of correct samples.
+
+### 7. Failure Classification
+
+Each failed attempt should be assigned a simple failure type.
+
+Initial taxonomy:
+
+- `syntax_error`: generated code cannot parse or import.
+- `runtime_error`: code crashes during execution.
+- `test_failure`: code runs but fails assertions.
+- `timeout`: execution exceeds the task timeout.
+- `format_error`: response cannot be extracted into runnable code.
+- `other`: fallback category for unknown failures.
+
+### 8. Run Registry
+
+Every eval run should be saved as a versioned experiment.
+
+Each run should capture:
+
+- Run ID.
+- Timestamp.
+- Git commit SHA, if available.
+- Task set version.
+- Prompt version.
+- Model provider and model name.
+- Generation config.
+- Per-task attempts.
+- Generated code.
+- Execution logs.
+- Scores and aggregate metrics.
+
+Suggested output structure:
+
+```text
+results/
+  2026-06-26_001/
+    run.json
+    config.json
+    prompts/
+    outputs/
+    logs/
+```
+
+### 9. CLI Reporter
+
+The CLI is the primary MVP interface.
+
+Required commands:
+
+```bash
+codegauge run --tasks tasks/ --model default --k 3
+codegauge report results/2026-06-26_001
+codegauge compare results/baseline results/engineered
+```
+
+Required output:
+
+- Task-level status.
+- Attempts per task.
+- Test pass counts.
+- Failure types.
+- Pass@1 and observed pass@k.
+- Aggregate summary.
+- Path to JSON results.
+
+## Scoring Philosophy
+
+The core principle is: **correctness first, nuance later**.
+
+The MVP should favor objective, reproducible scoring over subjective quality judgments. If a signal cannot be measured deterministically in v1, defer it.
+
+### Tier 1: Functional Correctness
+
+Question: does the code do what it is supposed to do?
+
+Method:
+
+- Run generated code against predefined pytest suites.
+- Record binary test outcomes.
+- Treat deterministic test success as the primary ground truth.
+
+### Tier 2: Failure Mode Classification
+
+Question: when the code fails, why does it fail?
+
+Method:
+
+- Classify failures using parser errors, exit codes, pytest output, exceptions, and timeout status.
+- Track failure distributions across tasks and runs.
+
+### Tier 3: Behavioral Quality
+
+Question: how reliably and efficiently does the model solve the task?
+
+Method:
+
+- Track first-attempt success.
+- Track attempts to success.
+- Track token usage and latency where provider metadata is available.
+- Optionally compare code variability across attempts.
+
+## Explicitly Deferred from MVP
+
+These are useful features, but they should not block the first working version:
+
+- Web dashboard.
+- Arize Phoenix or tracing integrations.
+- LLM-as-judge scoring.
+- Static analysis with linters or security scanners.
+- Automated failure clustering.
+- Multi-model comparison.
+- Large task suites.
+- Performance benchmarking.
+
+## Implementation Roadmap
+
+### Phase 0: Repo Setup
+
+Target duration: 0.5 day
+
+Deliverables:
+
+- Repository initialized.
+- README skeleton.
+- Python package structure.
+- Basic CLI entrypoint.
+- Example task fixture.
+- Local development instructions.
+
+Suggested structure:
+
+```text
+codegauge/
+  cli.py
+  tasks/
+  prompts/
+  models/
+  sandbox/
+  runner/
+  scoring/
+  reporting/
+tasks/
+tests/
+results/
+README.md
+pyproject.toml
+```
+
+### Phase 1: End-to-End Thin Slice
+
+Target duration: 1 day
+
+Deliverables:
+
+- Load one YAML task.
+- Render one prompt.
+- Call one model provider.
+- Extract generated code.
+- Execute code in Docker.
+- Run pytest.
+- Save one JSON result.
+
+Success criterion:
+
+- One task can move through the full pipeline from task spec to scored result.
+
+### Phase 2: Core Eval Loop
+
+Target duration: 1 day
+
+Deliverables:
+
+- Add `k` attempts per task.
+- Implement retries and timeout handling.
+- Implement failure classification.
+- Implement observed pass@k, pass@1, and aggregate scoring.
+- Add run registry.
+- Add CLI summary output.
+
+Success criterion:
+
+- The harness can run all MVP tasks and produce a complete result folder.
+
+### Phase 3: Dataset and Baseline
+
+Target duration: 0.5-1 day
+
+Deliverables:
+
+- Create 9 curated tasks.
+- Add 3-5 pytest cases per task.
+- Run baseline prompt.
+- Run engineered prompt.
+- Compare results.
+
+Success criterion:
+
+- There is at least one baseline run and one comparison run with clear deltas.
+
+### Phase 4: Polish and Documentation
+
+Target duration: 0.5-1 day
+
+Deliverables:
+
+- Final README.
+- Architecture diagram.
+- Usage examples.
+- Example result JSON.
+- Known limitations.
+- Future roadmap.
+
+Success criterion:
+
+- A reader can clone the repo, configure a model key, run the eval, and understand the results.
+
+## Suggested Timeline
+
+### Day 1: Foundation
+
+- Set up repository and package structure.
+- Define YAML task schema.
+- Build Docker sandbox.
+- Add model client interface.
+- Implement one provider.
+- Run one task through the full pipeline.
+
+End-of-day milestone:
+
+- One complete eval attempt works end to end.
+
+### Day 2: Evaluation Loop
+
+- Add pass@k attempts.
+- Add run registry.
+- Add scoring engine.
+- Add failure classification.
+- Add CLI reporting.
+- Create the first full task set.
+
+End-of-day milestone:
+
+- Full MVP task set runs and produces JSON results.
+
+### Day 3: Baseline, Comparison, and Documentation
+
+- Run baseline prompt.
+- Run engineered prompt.
+- Compare results.
+- Identify interesting failure patterns.
+- Clean up docs and examples.
+- Prepare project summary for portfolio or job applications.
+
+End-of-day milestone:
+
+- Repo is presentable, documented, and backed by real eval results.
+
+## Project Management Plan
+
+Use GitHub Issues, Projects, branches, and pull requests even for a solo build. The point is to show clear engineering process and make the work auditable.
+
+### GitHub Project Board
+
+Recommended columns:
+
+- Backlog.
+- Ready.
+- In Progress.
+- In Review.
+- Done.
+
+Recommended issue labels:
+
+- `area:tasks`
+- `area:model-layer`
+- `area:sandbox`
+- `area:scoring`
+- `area:cli`
+- `area:docs`
+- `type:bug`
+- `type:enhancement`
+- `priority:p0`
+- `priority:p1`
+- `priority:p2`
+
+### Milestones
+
+Milestone 1: Thin Slice
+
+- Repo setup.
+- Task schema.
+- One task.
+- One model call.
+- One sandboxed pytest run.
+
+Milestone 2: MVP Eval Loop
+
+- k attempts.
+- Scoring.
+- Failure classification.
+- Run registry.
+- CLI report.
+
+Milestone 3: Portfolio-Ready Release
+
+- 9 tasks.
+- Baseline comparison.
+- README.
+- Example results.
+- Final cleanup.
+
+### Pull Request Strategy
+
+Keep PRs small and reviewable.
+
+Recommended PR sequence:
+
+1. `pr-001`: Repo scaffold and CLI skeleton.
+2. `pr-002`: YAML task schema and sample task.
+3. `pr-003`: Docker sandbox and pytest runner.
+4. `pr-004`: Model client and prompt builder.
+5. `pr-005`: Eval orchestration loop.
+6. `pr-006`: Scoring and failure classification.
+7. `pr-007`: Run registry and JSON output.
+8. `pr-008`: CLI reporting and compare command.
+9. `pr-009`: MVP task set.
+10. `pr-010`: Documentation and example results.
+
+Each PR should include:
+
+- Clear summary.
+- Test evidence.
+- Screenshots or CLI output where relevant.
+- Notes on limitations.
+- Follow-up issues for deferred work.
+
+### Branch Naming
+
+Use descriptive branch names:
+
+```text
+feat/task-schema
+feat/docker-sandbox
+feat/model-client
+feat/scoring-engine
+feat/run-registry
+docs/readme
+```
+
+### Definition of Done
+
+A task is done when:
+
+- Code is implemented.
+- Basic tests pass.
+- CLI behavior is documented if user-facing.
+- Results are reproducible locally.
+- Any known limitation is captured in an issue or README note.
+
+## MVP Success Criteria
+
+Must-have:
+
+- 9 coding tasks with deterministic tests.
+- Docker sandbox executes generated code safely.
+- One model provider works through a clean abstraction.
+- `k=3` attempts supported.
+- Pass@1 and observed pass@k reported.
+- Failure types classified.
+- JSON results persisted.
+- CLI displays task and aggregate summaries.
+- README explains setup, architecture, usage, and limitations.
+
+Nice-to-have:
+
+- Prompt baseline comparison.
+- Rich terminal formatting.
+- Example result folder committed or attached as an artifact.
+- Short write-up of findings.
+- Blog post or portfolio case study.
+
+## Risk Management
+
+If behind schedule:
+
+- Reduce task count from 9 to 5.
+- Keep one prompt variant only.
+- Use plain CLI output instead of rich formatting.
+- Defer compare command.
+- Defer blog post or extended write-up.
+
+If model integration slows progress:
+
+- Mock model responses to finish the sandbox, runner, scoring, and reporting layers.
+- Add the live provider once the deterministic pipeline works.
+
+If Docker sandboxing is difficult:
+
+- Keep Docker as the required target.
+- Use local subprocess execution only as a temporary development fallback.
+- Clearly mark local execution as unsafe and not part of MVP success.
+
+## Future Roadmap
+
+Version 2 candidates:
+
+- Multi-model comparison.
+- LLM-as-judge for readability and explanation quality.
+- Static analysis with Ruff, Bandit, or Semgrep.
+- Web dashboard.
+- Failure clustering.
+- Cost and latency dashboards.
+- Larger benchmark suites.
+- Task authoring UI.
+- CI integration for scheduled eval runs.
+
+## Positioning
+
+CodeGauge is designed to show careful eval engineering:
+
+- Deterministic scoring before subjective grading.
+- Safety through sandboxed execution.
+- Reliability measurement through repeated attempts.
+- Versioned experiments instead of one-off runs.
+- Clear separation between task design, model generation, execution, scoring, and reporting.
+
+This makes the project useful as both a practical tool and a portfolio-quality demonstration of AI evaluation system design.
