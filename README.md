@@ -1,8 +1,8 @@
-# QualEval: AI Code Evaluation Harness
+# Impressions: AI Code Evaluation Harness
 
 ## Project Summary
 
-QualEval is a lightweight evaluation harness for measuring the correctness and reliability of AI-generated code. The first version focuses on deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated execution, pytest-based grading, pass@k-style reliability metrics, and versioned run outputs.
+Impressions is a lightweight evaluation harness for measuring the correctness and reliability of AI-generated code. The first version focuses on deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated execution, pytest-based grading, pass@k-style reliability metrics, and versioned run outputs.
 
 The goal is to build a credible MVP that demonstrates production evaluation thinking without over-scoping into tracing, dashboards, LLM-as-judge scoring, or complex qualitative analysis.
 
@@ -246,9 +246,9 @@ The CLI is the primary MVP interface.
 Required commands:
 
 ```bash
-qualeval run --tasks tasks/ --model default --k 3
-qualeval report results/2026-06-26_001
-qualeval compare results/baseline results/engineered
+impressions run --tasks tasks/ --model default --k 3
+impressions report results/2026-06-26_001
+impressions compare results/baseline results/engineered
 ```
 
 Required output:
@@ -369,7 +369,7 @@ Version 2 candidates:
 
 ## Positioning
 
-QualEval is designed to show careful eval engineering:
+Impressions is designed to show careful eval engineering:
 
 - Deterministic scoring before subjective grading.
 - Safety through sandboxed execution.
