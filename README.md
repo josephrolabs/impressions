@@ -4,13 +4,15 @@
 
 Impressions is a lightweight evaluation harness for measuring the correctness and reliability of AI-generated code. The first version focuses on deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated execution, pytest-based grading, pass@k-style reliability metrics, and versioned run outputs.
 
-The goal is to build a credible MVP that demonstrates production evaluation thinking without over-scoping into tracing, dashboards, LLM-as-judge scoring, or complex qualitative analysis.
+Future versions may explore tracing, dashboards, LLM-as-judge scoring, or complex qualitative analysis.
 
 ## Background: A Study in Impressions
 
-In the development of AI systems, "evaluation" is often conflated with "benchmarking." We treat models like software that can be validated against deterministic unit tests. While deterministic checks are essential for correctness, they fail to capture the fluid, creative, and sometimes ambiguous nature of frontier-model outputs.
+AI systems produce output that is often fluid, creative and sometimes can be ambiguous.  It may be unsructured prose and not a format easily tested deterministically against unit test.  In short, like improvisation, there can be a different melody produced at each run
 
 AI models don't just "compute"—they express. To truly understand their performance, we need a framework that accommodates both the cold precision of a unit test and the subjective nuance of human judgment.
+
+That's where evaluations come in and that's where impressions come in.
 
 ### Why "Impressions"?
 This project is named **Impressions**—a nod to the jazz standard by John Coltrane. Just as a jazz composition provides a structure for improvisation, this harness provides a structure for evaluation. In jazz, a melody can be interpreted differently by every player, and each "impression" reveals something new about the theme.
