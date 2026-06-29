@@ -6,6 +6,23 @@ Impressions is a lightweight evaluation harness for measuring the correctness an
 
 The goal is to build a credible MVP that demonstrates production evaluation thinking without over-scoping into tracing, dashboards, LLM-as-judge scoring, or complex qualitative analysis.
 
+## Background: A Study in Impressions
+
+In the development of AI systems, "evaluation" is often conflated with "benchmarking." We treat models like software that can be validated against deterministic unit tests. While deterministic checks are essential for correctness, they fail to capture the fluid, creative, and sometimes ambiguous nature of frontier-model outputs.
+
+AI models don't just "compute"—they express. To truly understand their performance, we need a framework that accommodates both the cold precision of a unit test and the subjective nuance of human judgment.
+
+### Why "Impressions"?
+This project is named **Impressions**—a nod to the jazz standard by John Coltrane. Just as a jazz composition provides a structure for improvisation, this harness provides a structure for evaluation. In jazz, a melody can be interpreted differently by every player, and each "impression" reveals something new about the theme.
+
+Similarly, in this framework, an **Impression** is the atomic unit of assessment. It is a polymorphic construct that defines how we "grade" an AI's behavior. An *Impression* could be:
+
+* **Deterministic:** A unit test or regex match for rigid code requirements.
+* **Model-Based:** An "LLM-as-a-judge" that analyzes tone, reasoning, or quality.
+* **Human-Centric:** An interface for expert-in-the-loop qualitative feedback.
+
+By abstracting these diverse grading methods into a unified "Impression" interface, this harness allows developers to build complex, layered evaluation pipelines. You aren't just running a test; you are gathering a collection of impressions to build a holistic understanding of your model’s capabilities.
+
 ## MVP Objective
 
 Build an AI code eval harness that can:
