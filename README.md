@@ -23,42 +23,6 @@ In this framework, an **Impression** is the atomic unit of assessment—a polymo
 
 By abstracting diverse grading methodologies into a unified interface, Impressions allows developers to build layered evaluation pipelines. You are not merely running a test suite; you are gathering a collection of impressions to develop a holistic, multi-faceted understanding of your model’s capabilities.
 
-## MVP Objective
-
-Build an AI code eval harness that can:
-
-1. Load a curated dataset of Python coding tasks from YAML.
-2. Generate prompts from structured task specs.
-3. Submit prompts to one or more model providers.
-4. Execute generated code inside a Docker sandbox.
-5. Grade results with deterministic pytest suites.
-6. Calculate task-level and aggregate reliability metrics.
-7. Persist every run with config, prompts, outputs, logs, and scores.
-8. Report results through a CLI and JSON artifacts.
-
-## Model Strategy
-
-The initial plan referenced Claude Sonnet 4 as the primary model target. That should remain an open implementation decision rather than a hard requirement.
-
-Recommended MVP approach:
-
-- Start with a single model provider to keep the first eval loop simple.
-- Design the model layer behind a provider interface so additional models can be added later.
-- Treat Claude, OpenAI, local models, or other hosted APIs as interchangeable backends.
-- Store model name, provider, temperature, prompt version, and generation config in every run.
-
-MVP default:
-
-- One model provider.
-- One model configuration.
-- Configurable `k`, with `k=3` as the default.
-
-Future extension:
-
-- Multi-model comparison.
-- Prompt variant comparison.
-- Provider-specific latency, cost, and reliability tracking.
-
 ## Core Architecture
 
 ```text
@@ -314,61 +278,6 @@ Method:
 - Track token usage and latency where provider metadata is available.
 - Optionally compare code variability across attempts.
 
-## Explicitly Deferred from MVP
-
-These are useful features, but they should not block the first working version:
-
-- Web dashboard.
-- Arize Phoenix or tracing integrations.
-- LLM-as-judge scoring.
-- Static analysis with linters or security scanners.
-- Automated failure clustering.
-- Multi-model comparison.
-- Large task suites.
-- Performance benchmarking.
-
-## MVP Success Criteria
-
-Must-have:
-
-- 9 coding tasks with deterministic tests.
-- Docker sandbox executes generated code safely.
-- One model provider works through a clean abstraction.
-- `k=3` attempts supported.
-- Pass@1 and observed pass@k reported.
-- Failure types classified.
-- JSON results persisted.
-- CLI displays task and aggregate summaries.
-- README explains setup, architecture, usage, and limitations.
-
-Nice-to-have:
-
-- Prompt baseline comparison.
-- Rich terminal formatting.
-- Example result folder committed or attached as an artifact.
-- Short write-up of findings.
-- Blog post or portfolio case study.
-
-## Risk Management
-
-If behind schedule:
-
-- Reduce task count from 9 to 5.
-- Keep one prompt variant only.
-- Use plain CLI output instead of rich formatting.
-- Defer compare command.
-- Defer blog post or extended write-up.
-
-If model integration slows progress:
-
-- Mock model responses to finish the sandbox, runner, scoring, and reporting layers.
-- Add the live provider once the deterministic pipeline works.
-
-If Docker sandboxing is difficult:
-
-- Keep Docker as the required target.
-- Use local subprocess execution only as a temporary development fallback.
-- Clearly mark local execution as unsafe and not part of MVP success.
 
 ## Future Roadmap
 
@@ -383,15 +292,3 @@ Version 2 candidates:
 - Larger benchmark suites.
 - Task authoring UI.
 - CI integration for scheduled eval runs.
-
-## Positioning
-
-Impressions is designed to show careful eval engineering:
-
-- Deterministic scoring before subjective grading.
-- Safety through sandboxed execution.
-- Reliability measurement through repeated attempts.
-- Versioned experiments instead of one-off runs.
-- Clear separation between task design, model generation, execution, scoring, and reporting.
-
-This makes the project useful as both a practical tool and a portfolio-quality demonstration of AI evaluation system design.
