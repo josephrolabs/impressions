@@ -132,3 +132,42 @@ def test_config_show_reports_missing_configuration(tmp_path, monkeypatch, capsys
     assert exit_code == 1
     assert "Missing configuration file" in captured.out
     assert "impressions.toml" in captured.out
+
+
+def test_tasks_list_displays_discovered_tasks(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    tasks_dir = tmp_path / "tasks"
+    (tasks_dir / "summarize.yaml").write_text("id: summarize\n", encoding="utf-8")
+    (tasks_dir / "classify.yaml").write_text("id: classify\n", encoding="utf-8")
+    (tasks_dir / ".hidden.yaml").write_text("id: hidden\n", encoding="utf-8")
+    (tasks_dir / "notes.txt").write_text("not a task\n", encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["tasks", "list"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.out.splitlines() == [
+        "Discovered 3 task(s)",
+        "",
+        "- classify.yaml",
+        "- example.yaml",
+        "- summarize.yaml",
+    ]
+
+
+def test_tasks_list_reports_discovery_error(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    for task_file in (tmp_path / "tasks").iterdir():
+        task_file.unlink()
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["tasks", "list"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "No task definition files found" in captured.out
