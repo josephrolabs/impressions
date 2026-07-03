@@ -6,17 +6,15 @@ import argparse
 from pathlib import Path
 
 from impressions import __version__
+from impressions.core.config import ConfigError, load_project_config
 
 
 DEFAULT_CONFIG = """\
-[project]
-name = "my-impressions-project"
+version = 1
 
-[tasks]
-directory = "tasks"
-
-[reports]
-directory = "reports"
+[paths]
+tasks = "tasks"
+reports = "reports"
 """
 
 EXAMPLE_TASK = """\
@@ -72,6 +70,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     init_parser.set_defaults(handler=init_project)
 
+    config_parser = subparsers.add_parser(
+        "config",
+        help="Inspect Impressions project configuration.",
+    )
+    config_subparsers = config_parser.add_subparsers(dest="config_command")
+
+    config_show_parser = config_subparsers.add_parser(
+        "show",
+        help="Display the loaded project configuration.",
+    )
+    config_show_parser.set_defaults(handler=show_config)
+
     return parser
 
 
@@ -121,6 +131,32 @@ def init_project(args: argparse.Namespace) -> int:
 
     print(f"Initialized Impressions project in {root.resolve()}")
     return 0
+
+
+def show_config(_args: argparse.Namespace) -> int:
+    """Print the current project configuration."""
+    try:
+        config = load_project_config()
+    except ConfigError as exc:
+        print(exc)
+        return 1
+
+    print("Project Configuration")
+    print()
+    print("Configuration file:")
+    print(f"  {config.file_path}")
+    print()
+    print("Paths")
+    print(f"  tasks: {_format_directory(config.paths.tasks)}")
+    print(f"  reports: {_format_directory(config.paths.reports)}")
+    return 0
+
+
+def _format_directory(path: Path) -> str:
+    value = path.as_posix()
+    if not value.endswith("/"):
+        value = f"{value}/"
+    return value
 
 
 def confirm(prompt: str) -> bool:
