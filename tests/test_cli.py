@@ -41,6 +41,12 @@ def test_init_command_creates_project_scaffold(tmp_path, capsys):
     assert exit_code == 0
     assert "Initialized Impressions project" in captured.out
     assert (tmp_path / "impressions.toml").is_file()
+    assert "version = 1" in (tmp_path / "impressions.toml").read_text(
+        encoding="utf-8"
+    )
+    assert "[paths]" in (tmp_path / "impressions.toml").read_text(
+        encoding="utf-8"
+    )
     assert (tmp_path / "tasks" / "example.yaml").is_file()
     assert (tmp_path / "reports").is_dir()
 
@@ -69,7 +75,7 @@ def test_init_command_overwrites_with_confirmation(tmp_path, monkeypatch):
     exit_code = main(["init", str(tmp_path)])
 
     assert exit_code == 0
-    assert "[project]" in config.read_text(encoding="utf-8")
+    assert "[paths]" in config.read_text(encoding="utf-8")
     assert (tmp_path / "tasks" / "example.yaml").is_file()
     assert (tmp_path / "reports").is_dir()
 
@@ -96,3 +102,33 @@ def test_init_command_rejects_incompatible_paths(tmp_path, capsys):
     assert exit_code == 1
     assert "incompatible types" in captured.out
     assert reports.read_text(encoding="utf-8") == "not a directory\n"
+
+
+def test_config_show_displays_loaded_configuration(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["config", "show"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "Project Configuration" in captured.out
+    assert "Configuration file:" in captured.out
+    assert "impressions.toml" in captured.out
+    assert "Paths" in captured.out
+    assert "tasks: tasks/" in captured.out
+    assert "reports: reports/" in captured.out
+
+
+def test_config_show_reports_missing_configuration(tmp_path, monkeypatch, capsys):
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["config", "show"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "Missing configuration file" in captured.out
+    assert "impressions.toml" in captured.out
