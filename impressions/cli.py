@@ -7,6 +7,7 @@ from pathlib import Path
 
 from impressions import __version__
 from impressions.core.config import ConfigError, load_project_config
+from impressions.core.tasks import TaskDiscoveryError, discover_tasks
 
 
 DEFAULT_CONFIG = """\
@@ -82,6 +83,18 @@ def build_parser() -> argparse.ArgumentParser:
     )
     config_show_parser.set_defaults(handler=show_config)
 
+    tasks_parser = subparsers.add_parser(
+        "tasks",
+        help="Inspect Impressions task definitions.",
+    )
+    tasks_subparsers = tasks_parser.add_subparsers(dest="tasks_command")
+
+    tasks_list_parser = tasks_subparsers.add_parser(
+        "list",
+        help="List discovered task definitions.",
+    )
+    tasks_list_parser.set_defaults(handler=list_tasks)
+
     return parser
 
 
@@ -149,6 +162,21 @@ def show_config(_args: argparse.Namespace) -> int:
     print("Paths")
     print(f"  tasks: {_format_directory(config.paths.tasks)}")
     print(f"  reports: {_format_directory(config.paths.reports)}")
+    return 0
+
+
+def list_tasks(_args: argparse.Namespace) -> int:
+    """Print discovered task definitions."""
+    try:
+        tasks = discover_tasks()
+    except (ConfigError, TaskDiscoveryError) as exc:
+        print(exc)
+        return 1
+
+    print(f"Discovered {len(tasks)} task(s)")
+    print()
+    for task in tasks:
+        print(f"- {task.name}")
     return 0
 
 
