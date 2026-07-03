@@ -227,6 +227,7 @@ The CLI is the primary MVP interface.
 Required commands:
 
 ```bash
+impressions init
 impressions run --tasks tasks/ --model default --k 3
 impressions report results/2026-06-26_001
 impressions compare results/baseline results/engineered
@@ -241,6 +242,32 @@ Required output:
 - Pass@1 and observed pass@k.
 - Aggregate summary.
 - Path to JSON results.
+
+### Project Initialization
+
+Create a new Impressions project scaffold with:
+
+```bash
+impressions init
+```
+
+By default, this initializes the current directory. You can also pass a target directory:
+
+```bash
+impressions init path/to/project
+```
+
+The command creates:
+
+```text
+.
+├── impressions.toml
+├── tasks/
+│   └── example.yaml
+└── reports/
+```
+
+Existing scaffold files are not overwritten unless you confirm the prompt or pass `--force`.
 
 ## Scoring Philosophy
 
