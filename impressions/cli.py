@@ -7,7 +7,13 @@ from pathlib import Path
 
 from impressions import __version__
 from impressions.core.config import ConfigError, load_project_config
-from impressions.core.tasks import TaskDiscoveryError, discover_tasks
+from impressions.core.tasks import (
+    TaskDiscoveryError,
+    TaskValidationError,
+    discover_tasks,
+    load_task,
+    load_tasks,
+)
 
 
 DEFAULT_CONFIG = """\
@@ -19,23 +25,17 @@ reports = "reports"
 """
 
 EXAMPLE_TASK = """\
-id: example_task
-title: Example string reversal
-difficulty: easy
-category: function_generation
-timeout_seconds: 10
-entrypoint: solution.py
-prompt: |
-  Write a function named reverse_text that returns the input string reversed.
-starter_code: |
-  def reverse_text(value: str) -> str:
-      pass
-tests: |
-  from solution import reverse_text
+version: 1
 
+name: example-task
+description: Summarize the supplied article.
 
-  def test_reverse_text():
-      assert reverse_text("impressions") == "snoisserpmi"
+input:
+  prompt: |
+    Write a concise summary of the supplied article.
+
+expected:
+  type: text
 """
 
 
@@ -94,6 +94,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="List discovered task definitions.",
     )
     tasks_list_parser.set_defaults(handler=list_tasks)
+
+    tasks_validate_parser = tasks_subparsers.add_parser(
+        "validate",
+        help="Validate discovered task definitions.",
+    )
+    tasks_validate_parser.set_defaults(handler=validate_tasks)
 
     return parser
 
@@ -166,17 +172,46 @@ def show_config(_args: argparse.Namespace) -> int:
 
 
 def list_tasks(_args: argparse.Namespace) -> int:
-    """Print discovered task definitions."""
+    """Print validated task definitions."""
     try:
-        tasks = discover_tasks()
+        tasks = load_tasks()
+    except (ConfigError, TaskDiscoveryError, TaskValidationError) as exc:
+        print(exc)
+        return 1
+
+    print(f"Discovered {len(tasks)} validated task(s)")
+    print()
+    for task in tasks:
+        print(f"- {task.name}")
+    return 0
+
+
+def validate_tasks(_args: argparse.Namespace) -> int:
+    """Validate discovered task definitions."""
+    try:
+        task_files = discover_tasks()
     except (ConfigError, TaskDiscoveryError) as exc:
         print(exc)
         return 1
 
-    print(f"Discovered {len(tasks)} task(s)")
+    validation_errors: list[TaskValidationError] = []
+    for task_file in task_files:
+        try:
+            load_task(task_file.path)
+        except TaskValidationError as exc:
+            validation_errors.append(exc)
+            print(f"[error] {task_file.name}")
+            for error in exc.errors:
+                print(f"  {error.field}: {error.message}")
+        else:
+            print(f"[ok] {task_file.name}")
+
     print()
-    for task in tasks:
-        print(f"- {task.name}")
+    if validation_errors:
+        print(f"{len(validation_errors)} task(s) failed validation.")
+        return 1
+
+    print(f"{len(task_files)} task(s) validated successfully.")
     return 0
 
 

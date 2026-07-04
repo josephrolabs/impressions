@@ -88,7 +88,7 @@ def test_init_command_force_overwrites_existing_files(tmp_path):
     exit_code = main(["init", "--force", str(tmp_path)])
 
     assert exit_code == 0
-    assert "id: example_task" in example.read_text(encoding="utf-8")
+    assert "name: example-task" in example.read_text(encoding="utf-8")
 
 
 def test_init_command_rejects_incompatible_paths(tmp_path, capsys):
@@ -138,9 +138,18 @@ def test_tasks_list_displays_discovered_tasks(tmp_path, monkeypatch, capsys):
     main(["init", str(tmp_path)])
     capsys.readouterr()
     tasks_dir = tmp_path / "tasks"
-    (tasks_dir / "summarize.yaml").write_text("id: summarize\n", encoding="utf-8")
-    (tasks_dir / "classify.yaml").write_text("id: classify\n", encoding="utf-8")
-    (tasks_dir / ".hidden.yaml").write_text("id: hidden\n", encoding="utf-8")
+    (tasks_dir / "summarize.yaml").write_text(
+        task_yaml("summarize"),
+        encoding="utf-8",
+    )
+    (tasks_dir / "classify.yaml").write_text(
+        task_yaml("classify"),
+        encoding="utf-8",
+    )
+    (tasks_dir / ".hidden.yaml").write_text(
+        task_yaml("hidden"),
+        encoding="utf-8",
+    )
     (tasks_dir / "notes.txt").write_text("not a task\n", encoding="utf-8")
     monkeypatch.chdir(tmp_path)
 
@@ -150,11 +159,11 @@ def test_tasks_list_displays_discovered_tasks(tmp_path, monkeypatch, capsys):
 
     assert exit_code == 0
     assert captured.out.splitlines() == [
-        "Discovered 3 task(s)",
+        "Discovered 3 validated task(s)",
         "",
-        "- classify.yaml",
-        "- example.yaml",
-        "- summarize.yaml",
+        "- classify",
+        "- example-task",
+        "- summarize",
     ]
 
 
@@ -171,3 +180,70 @@ def test_tasks_list_reports_discovery_error(tmp_path, monkeypatch, capsys):
 
     assert exit_code == 1
     assert "No task definition files found" in captured.out
+
+
+def test_tasks_list_reports_validation_error(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    (tmp_path / "tasks" / "example.yaml").write_text(
+        "version: 1\nname: broken\n",
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["tasks", "list"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "Invalid task definition" in captured.out
+    assert "description: Missing required field." in captured.out
+
+
+def test_tasks_validate_reports_all_task_statuses(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    tasks_dir = tmp_path / "tasks"
+    (tasks_dir / "valid.yaml").write_text(task_yaml("valid"), encoding="utf-8")
+    (tasks_dir / "invalid.yaml").write_text(
+        "version: 1\nname: invalid\n",
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["tasks", "validate"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 1
+    assert "[ok] example.yaml" in captured.out
+    assert "[ok] valid.yaml" in captured.out
+    assert "[error] invalid.yaml" in captured.out
+    assert "description: Missing required field." in captured.out
+    assert "1 task(s) failed validation." in captured.out
+
+
+def test_tasks_validate_reports_success(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["tasks", "validate"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert "[ok] example.yaml" in captured.out
+    assert "1 task(s) validated successfully." in captured.out
+
+
+def task_yaml(name: str) -> str:
+    return f"""\
+version: 1
+name: {name}
+description: Test task.
+input:
+  prompt: Say hello.
+expected:
+  type: text
+"""
