@@ -2,6 +2,7 @@
 
 from impressions.core.tasks import (
     ParsedTask,
+    Task,
     TaskDefinition,
     TaskDiscoveryError,
     TaskExpected,
@@ -13,11 +14,13 @@ from impressions.core.tasks import (
     load_task,
     load_tasks,
     load_tasks_from_config,
+    parse_task,
     parse_task_data,
 )
 
 __all__ = [
     "ParsedTask",
+    "Task",
     "TaskDefinition",
     "TaskDiscoveryError",
     "TaskExpected",
@@ -29,5 +32,6 @@ __all__ = [
     "load_task",
     "load_tasks",
     "load_tasks_from_config",
+    "parse_task",
     "parse_task_data",
 ]

@@ -5,6 +5,7 @@ import pytest
 from impressions.core.config import load_project_config
 from impressions.core.tasks import (
     ParsedTask,
+    Task,
     TaskDefinition,
     TaskDiscoveryError,
     TaskExpected,
@@ -14,6 +15,7 @@ from impressions.core.tasks import (
     discover_tasks_from_config,
     load_task,
     load_tasks,
+    parse_task,
     parse_task_data,
 )
 
@@ -110,7 +112,7 @@ def test_load_task_parses_valid_yaml_task_definition(tmp_path):
 
     task = load_task(task_path)
 
-    assert task == ParsedTask(
+    assert task == Task(
         path=task_path,
         version=1,
         name="summarize-article",
@@ -118,6 +120,17 @@ def test_load_task_parses_valid_yaml_task_definition(tmp_path):
         input=TaskInput(prompt="Say hello."),
         expected=TaskExpected(type="text"),
     )
+    assert ParsedTask is Task
+
+
+def test_parse_task_alias_parses_task_file(tmp_path):
+    task_path = tmp_path / "summarize.yaml"
+    task_path.write_text(valid_task_yaml("summarize-article"), encoding="utf-8")
+
+    task = parse_task(task_path)
+
+    assert isinstance(task, Task)
+    assert task.name == "summarize-article"
 
 
 def test_load_tasks_discovers_and_parses_valid_task_definitions(tmp_path):
@@ -153,7 +166,7 @@ def test_parse_task_data_reports_missing_required_fields(tmp_path):
     assert "description: Missing required field." in str(exc_info.value)
 
 
-def test_parse_task_data_reports_field_type_errors(tmp_path):
+def test_parse_task_data_reports_field_type_errors_without_semantic_validation(tmp_path):
     with pytest.raises(TaskValidationError) as exc_info:
         parse_task_data(
             {
@@ -161,7 +174,7 @@ def test_parse_task_data_reports_field_type_errors(tmp_path):
                 "name": 10,
                 "description": "",
                 "input": {"prompt": ["hello"]},
-                "expected": {"type": "image"},
+                "expected": {"type": 10},
             },
             tmp_path / "task.yaml",
         )
@@ -173,11 +186,23 @@ def test_parse_task_data_reports_field_type_errors(tmp_path):
         field_error("name", "Expected a string."),
         field_error("description", "Expected a non-empty string."),
         field_error("input.prompt", "Expected a string."),
-        field_error(
-            "expected.type",
-            "Unsupported expected type 'image'. Supported values: text.",
-        ),
+        field_error("expected.type", "Expected a string."),
     ]
+
+
+def test_parse_task_data_keeps_expected_type_as_data(tmp_path):
+    task = parse_task_data(
+        {
+            "version": 1,
+            "name": "task",
+            "description": "Task.",
+            "input": {"prompt": "Say hello."},
+            "expected": {"type": "image"},
+        },
+        tmp_path / "task.yaml",
+    )
+
+    assert task.expected.type == "image"
 
 
 def test_parse_task_data_reports_nested_mapping_type_errors(tmp_path):
