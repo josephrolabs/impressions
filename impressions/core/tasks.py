@@ -18,7 +18,6 @@ except ModuleNotFoundError as exc:  # pragma: no cover - dependency issue
 
 SUPPORTED_TASK_EXTENSIONS = frozenset({".yaml", ".yml"})
 SUPPORTED_TASK_SCHEMA_VERSION = 1
-SUPPORTED_EXPECTED_TYPES = frozenset({"text"})
 
 
 class TaskDiscoveryError(Exception):
@@ -73,8 +72,8 @@ class TaskExpected:
 
 
 @dataclass(frozen=True)
-class ParsedTask:
-    """A parsed and validated task definition."""
+class Task:
+    """A parsed task definition."""
 
     path: Path
     version: int
@@ -82,6 +81,9 @@ class ParsedTask:
     description: str
     input: TaskInput
     expected: TaskExpected
+
+
+ParsedTask = Task
 
 
 def discover_tasks(root: str | Path = ".") -> list[TaskDefinition]:
@@ -117,8 +119,8 @@ def discover_tasks_from_config(config: ProjectConfig) -> list[TaskDefinition]:
     return tasks
 
 
-def load_task(path: str | Path) -> ParsedTask:
-    """Parse and validate a single task definition file."""
+def load_task(path: str | Path) -> Task:
+    """Parse a single task definition file."""
     task_path = Path(path)
     try:
         with task_path.open("r", encoding="utf-8") as task_file:
@@ -132,19 +134,22 @@ def load_task(path: str | Path) -> ParsedTask:
     return parse_task_data(data, task_path)
 
 
-def load_tasks(root: str | Path = ".") -> list[ParsedTask]:
-    """Discover, parse, and validate task definition files."""
+parse_task = load_task
+
+
+def load_tasks(root: str | Path = ".") -> list[Task]:
+    """Discover and parse task definition files."""
     config = load_project_config(root)
     return load_tasks_from_config(config)
 
 
-def load_tasks_from_config(config: ProjectConfig) -> list[ParsedTask]:
-    """Parse and validate all task files for a loaded project config."""
+def load_tasks_from_config(config: ProjectConfig) -> list[Task]:
+    """Parse all task files for a loaded project config."""
     return [load_task(task.path) for task in discover_tasks_from_config(config)]
 
 
-def parse_task_data(data: Any, path: str | Path) -> ParsedTask:
-    """Validate raw YAML data and return a parsed task object."""
+def parse_task_data(data: Any, path: str | Path) -> Task:
+    """Parse raw YAML data and return a task object."""
     task_path = Path(path)
     errors: list[TaskFieldError] = []
 
@@ -172,15 +177,6 @@ def parse_task_data(data: Any, path: str | Path) -> ParsedTask:
             errors,
             parent="expected",
         )
-        if expected_type is not None and expected_type not in SUPPORTED_EXPECTED_TYPES:
-            supported = ", ".join(sorted(SUPPORTED_EXPECTED_TYPES))
-            errors.append(
-                TaskFieldError(
-                    "expected.type",
-                    f"Unsupported expected type '{expected_type}'. "
-                    f"Supported values: {supported}.",
-                )
-            )
 
     if version is not None and version != SUPPORTED_TASK_SCHEMA_VERSION:
         errors.append(
@@ -194,7 +190,7 @@ def parse_task_data(data: Any, path: str | Path) -> ParsedTask:
     if errors:
         raise TaskValidationError(task_path, errors)
 
-    return ParsedTask(
+    return Task(
         path=task_path,
         version=version,
         name=name,
