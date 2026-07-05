@@ -1,5 +1,11 @@
 """Core Impressions functionality."""
 
+from impressions.core.evaluation import (
+    EvaluationEngine,
+    EvaluationEngineError,
+    EvaluationResult,
+    Evaluator,
+)
 from impressions.core.tasks import (
     ParsedTask,
     Task,
@@ -19,6 +25,10 @@ from impressions.core.tasks import (
 )
 
 __all__ = [
+    "EvaluationEngine",
+    "EvaluationEngineError",
+    "EvaluationResult",
+    "Evaluator",
     "ParsedTask",
     "Task",
     "TaskDefinition",
