@@ -1,6 +1,7 @@
 """Core Impressions functionality."""
 
 from impressions.core.evaluation import (
+    EchoEvaluator,
     EvaluationEngine,
     EvaluationEngineError,
     EvaluationResult,
@@ -25,6 +26,7 @@ from impressions.core.tasks import (
 )
 
 __all__ = [
+    "EchoEvaluator",
     "EvaluationEngine",
     "EvaluationEngineError",
     "EvaluationResult",

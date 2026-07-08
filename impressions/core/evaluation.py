@@ -29,6 +29,22 @@ class EvaluationResult:
 
 
 @dataclass(frozen=True)
+class EchoEvaluator:
+    """Deterministic built-in evaluator for local pipeline verification."""
+
+    def evaluate(self, task: Task) -> EvaluationResult:
+        """Return the task prompt as the evaluator output."""
+        return EvaluationResult(
+            task=task,
+            output=task.input.prompt,
+            metadata={
+                "evaluator": "echo",
+                "expected_type": task.expected.type,
+            },
+        )
+
+
+@dataclass(frozen=True)
 class EvaluationEngine:
     """Coordinate evaluation of validated tasks with a backend evaluator."""
 

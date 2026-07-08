@@ -237,6 +237,38 @@ def test_tasks_validate_reports_success(tmp_path, monkeypatch, capsys):
     assert "1 task(s) validated successfully." in captured.out
 
 
+def test_evaluate_command_displays_successful_evaluation_results(
+    tmp_path, monkeypatch, capsys
+):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    tasks_dir = tmp_path / "tasks"
+    (tasks_dir / "summarize.yaml").write_text(
+        task_yaml("summarize"),
+        encoding="utf-8",
+    )
+    (tasks_dir / "classify.yaml").write_text(
+        task_yaml("classify"),
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    exit_code = main(["evaluate"])
+
+    captured = capsys.readouterr()
+
+    assert exit_code == 0
+    assert captured.out.splitlines() == [
+        "Found 3 task(s)",
+        "",
+        "✓ classify",
+        "✓ example-task",
+        "✓ summarize",
+        "",
+        "3 task(s) evaluated successfully.",
+    ]
+
+
 def task_yaml(name: str) -> str:
     return f"""\
 version: 1
