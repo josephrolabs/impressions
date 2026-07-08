@@ -7,6 +7,11 @@ from pathlib import Path
 
 from impressions import __version__
 from impressions.core.config import ConfigError, load_project_config
+from impressions.core.evaluation import (
+    EchoEvaluator,
+    EvaluationEngine,
+    EvaluationEngineError,
+)
 from impressions.core.tasks import (
     TaskDiscoveryError,
     TaskValidationError,
@@ -100,6 +105,12 @@ def build_parser() -> argparse.ArgumentParser:
         help="Validate discovered task definitions.",
     )
     tasks_validate_parser.set_defaults(handler=validate_tasks)
+
+    evaluate_parser = subparsers.add_parser(
+        "evaluate",
+        help="Evaluate discovered task definitions.",
+    )
+    evaluate_parser.set_defaults(handler=evaluate_tasks)
 
     return parser
 
@@ -212,6 +223,27 @@ def validate_tasks(_args: argparse.Namespace) -> int:
         return 1
 
     print(f"{len(task_files)} task(s) validated successfully.")
+    return 0
+
+
+def evaluate_tasks(_args: argparse.Namespace) -> int:
+    """Evaluate discovered and validated task definitions."""
+    try:
+        tasks = load_tasks()
+        results = EvaluationEngine(EchoEvaluator()).evaluate_all(tasks)
+    except (ConfigError, TaskDiscoveryError, TaskValidationError) as exc:
+        print(exc)
+        return 1
+    except EvaluationEngineError as exc:
+        print(exc)
+        return 1
+
+    print(f"Found {len(tasks)} task(s)")
+    print()
+    for result in results:
+        print(f"✓ {result.task.name}")
+    print()
+    print(f"{len(results)} task(s) evaluated successfully.")
     return 0
 
 

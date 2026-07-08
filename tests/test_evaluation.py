@@ -4,7 +4,9 @@ import pytest
 
 from impressions.core import EvaluationEngine as PublicEvaluationEngine
 from impressions.core import EvaluationResult as PublicEvaluationResult
+from impressions.core import EchoEvaluator as PublicEchoEvaluator
 from impressions.core.evaluation import (
+    EchoEvaluator,
     EvaluationEngine,
     EvaluationEngineError,
     EvaluationResult,
@@ -57,7 +59,24 @@ def test_evaluation_engine_rejects_unstructured_evaluator_result():
         engine.evaluate(task)
 
 
+def test_echo_evaluator_returns_deterministic_task_prompt_result():
+    task = make_task("summarize")
+    evaluator = EchoEvaluator()
+
+    result = evaluator.evaluate(task)
+
+    assert result == EvaluationResult(
+        task=task,
+        output="Say hello.",
+        metadata={
+            "evaluator": "echo",
+            "expected_type": "text",
+        },
+    )
+
+
 def test_evaluation_api_exports_from_core_package():
+    assert PublicEchoEvaluator is EchoEvaluator
     assert PublicEvaluationEngine is EvaluationEngine
     assert PublicEvaluationResult is EvaluationResult
 
