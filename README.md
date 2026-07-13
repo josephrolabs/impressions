@@ -6,24 +6,232 @@ Impressions is an evaluation harness for measuring the correctness and reliabili
 
 Future versions will explore tracing, dashboards, LLM-as-judge scoring and complex qualitative analysis.
 
+## Current Project Status
+
+Impressions is in pre-alpha. The repository now contains the working foundation for a Python package and CLI, with task discovery, validation, and a deterministic evaluation path. The broader AI-code-evaluation system described later in this README remains the long-term architecture.
+
+Implemented:
+
+- Python package with `impressions` CLI entry point.
+- Project initialization via `impressions init`.
+- Project configuration loading from `impressions.toml`.
+- Task discovery from configured YAML task directories.
+- YAML task parsing and schema validation.
+- `EvaluationEngine` orchestration primitive.
+- `Evaluator` protocol and structured `EvaluationResult`.
+- Built-in `EchoEvaluator` for deterministic local pipeline verification.
+- CLI commands for version, config inspection, task listing, task validation, and evaluation.
+- Unit tests covering CLI behavior, configuration, task parsing, task discovery, and evaluation orchestration.
+
+In progress:
+
+- Expanding evaluator backends beyond the deterministic echo evaluator.
+- Connecting the evaluation framework to model generation, execution, and scoring components.
+- Persisting evaluation reports under the configured reports path.
+
+Planned:
+
+- Prompt rendering and prompt-version tracking.
+- Provider-agnostic model clients.
+- Sandboxed execution of generated code.
+- Pytest-based grading of generated solutions.
+- Failure classification and aggregate scoring.
+- Run registry, comparison reports, and pass@k metrics.
+- Dashboard, CI integration, and qualitative evaluation extensions.
+
+## Design Principles
+
+Impressions is being built around a few practical engineering principles:
+
+- Deterministic-first evaluation: objective, reproducible checks are the foundation before subjective scoring is added.
+- Composable architecture: configuration, task loading, evaluation orchestration, evaluator backends, and reporting are separate concerns.
+- Provider-agnostic interfaces: model and evaluator integrations should be swappable behind stable local interfaces.
+- Incremental development: each milestone should leave behind a working CLI and tested package surface.
+- Test-first engineering: new behavior should be covered by focused unit tests before the system grows more complex.
+
+## Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/josephrolabs/impressions.git
+cd impressions
+```
+
+Create and activate a virtual environment:
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+```
+
+Install the package in editable mode with development dependencies:
+
+```bash
+pip install -e . --group dev
+```
+
+Run the test suite:
+
+```bash
+pytest
+```
+
+## Quick Start
+
+Create a new Impressions project scaffold:
+
+```bash
+impressions init
+```
+
+This creates:
+
+```text
+.
+├── impressions.toml
+├── tasks/
+│   └── example.yaml
+└── reports/
+```
+
+By default, `impressions init` initializes the current directory. You can also pass a target directory:
+
+```bash
+impressions init path/to/project
+```
+
+Existing scaffold files are not overwritten unless you confirm the prompt or pass `--force`.
+
+Inspect the loaded project configuration:
+
+```bash
+impressions config show
+```
+
+List discovered and validated tasks:
+
+```bash
+impressions tasks list
+```
+
+Validate all discovered task files:
+
+```bash
+impressions tasks validate
+```
+
+Run the current deterministic evaluation workflow:
+
+```bash
+impressions evaluate
+```
+
+Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
+
+## Current Architecture
+
+The implemented architecture is intentionally small:
+
+```text
+Task YAML
+    |
+    v
+impressions.toml
+    |
+    v
+Task Discovery
+    |
+    v
+Task Validation
+    |
+    v
+EvaluationEngine
+    |
+    v
+Evaluator
+    |
+    v
+CLI Output
+```
+
+This foundation is designed to grow into the target architecture below. The current CLI proves that projects can be initialized, configured, discovered, validated, and evaluated through a stable package interface.
+
+## Repository Structure
+
+```text
+.
+├── impressions/
+│   ├── __init__.py
+│   ├── cli.py
+│   └── core/
+│       ├── __init__.py
+│       ├── config.py
+│       ├── evaluation.py
+│       └── tasks.py
+├── tests/
+│   ├── test_cli.py
+│   ├── test_config.py
+│   ├── test_evaluation.py
+│   └── test_tasks.py
+├── pyproject.toml
+└── README.md
+```
+
+Key modules:
+
+- `impressions.cli`: command-line parser and command handlers.
+- `impressions.core.config`: `impressions.toml` loading and validation.
+- `impressions.core.tasks`: YAML task discovery, parsing, and validation.
+- `impressions.core.evaluation`: evaluator protocol, result object, `EvaluationEngine`, and `EchoEvaluator`.
+- `tests`: unit tests for current package behavior.
+
+## Task Format
+
+Current task files use schema version 1 and are stored as `.yaml` or `.yml` files in the configured tasks directory.
+
+```yaml
+version: 1
+name: example-task
+description: Summarize the supplied article.
+
+input:
+  prompt: |
+    Write a concise summary of the supplied article.
+
+expected:
+  type: text
+```
+
+Required fields:
+
+- `version`: task schema version. Currently `1`.
+- `name`: non-empty task name displayed by the CLI.
+- `description`: non-empty human-readable task description.
+- `input.prompt`: non-empty prompt text.
+- `expected.type`: non-empty expected output type.
+
 ## Background: A Study in Impressions
 
 AI systems are inherently non-deterministic. Their outputs often manifest as fluid, unstructured prose that resists traditional unit testing. Much like a jazz performance, an AI model may explore a unique melody every time it is invoked, making it difficult to capture performance with rigid, binary assessments.
 
-AI models do not merely "compute"—they express. To truly measure their performance, we need a framework that reconciles the cold precision of deterministic testing with the subjective nuance of human judgment
+AI models do not merely "compute" - they express. To truly measure their performance, we need a framework that reconciles the cold precision of deterministic testing with the subjective nuance of human judgment.
 
 ### Why "Impressions"?
-This project is named **Impressions**—a nod to the jazz standard by John Coltrane. Just as a jazz composition provides a structural framework for improvisation, this harness provides a structure for evaluation. In jazz, a theme is interpreted differently by every musician, and each "impression" reveals a unique dimension of the melody.
 
-In this framework, an **Impression** is the atomic unit of assessment—a polymorphic construct that defines how we measure AI behavior. An Impression serves as a unified interface for disparate grading methods::
+This project is named **Impressions** - a nod to the jazz standard by John Coltrane. Just as a jazz composition provides a structural framework for improvisation, this harness provides a structure for evaluation. In jazz, a theme is interpreted differently by every musician, and each "impression" reveals a unique dimension of the melody.
 
-* **Deterministic:** A unit test or regex match for rigid code requirements.
-* **Model-Based:** An "LLM-as-a-judge" that analyzes tone, reasoning, or quality.
-* **Human-Centric:** An interface for expert-in-the-loop qualitative feedback.
+In this framework, an **Impression** is the atomic unit of assessment - a polymorphic construct that defines how we measure AI behavior. An Impression serves as a unified interface for disparate grading methods:
 
-By abstracting diverse grading methodologies into a unified interface, Impressions allows developers to build layered evaluation pipelines. You are not merely running a test suite; you are gathering a collection of impressions to develop a holistic, multi-faceted understanding of your model’s capabilities.
+- **Deterministic:** A unit test or regex match for rigid code requirements.
+- **Model-Based:** An "LLM-as-a-judge" that analyzes tone, reasoning, or quality.
+- **Human-Centric:** An interface for expert-in-the-loop qualitative feedback.
 
-## Core Architecture
+By abstracting diverse grading methodologies into a unified interface, Impressions allows developers to build layered evaluation pipelines. You are not merely running a test suite; you are gathering a collection of impressions to develop a holistic, multi-faceted understanding of your model's capabilities.
+
+## Target Architecture
+
+The following diagram represents the long-term architecture, not the complete current implementation:
 
 ```text
 Problem Dataset
@@ -50,7 +258,9 @@ Results Store
 Analysis and Reporting
 ```
 
-## Component Design
+## Target Component Design
+
+The components below describe the intended system as Impressions grows beyond the current package and CLI foundation.
 
 ### 1. Task Dataset
 
@@ -62,7 +272,7 @@ Recommended dataset for MVP:
 - 3 easy tasks.
 - 4 medium tasks.
 - 2 hard tasks.
-- 3–5 test cases per task.
+- 3-5 test cases per task.
 
 Recommended categories:
 
@@ -73,7 +283,7 @@ Recommended categories:
 - Error handling.
 - Small multi-file repair.
 
-Example YAML shape:
+Future coding-task YAML shape:
 
 ```yaml
 id: bug_fix_001
@@ -127,11 +337,11 @@ class ModelClient:
 
 ### 4. Execution Sandbox
 
-Generated code must execute in a Docker sandbox.
+Generated code must execute in a sandbox.
 
 Responsibilities:
 
-- Run generated code in an isolated Python container.
+- Run generated code in an isolated Python environment.
 - Disable network access.
 - Enforce per-task timeouts.
 - Mount only temporary task files.
@@ -222,9 +432,9 @@ results/
 
 ### 9. CLI Reporter
 
-The CLI is the primary MVP interface.
+The current CLI already supports initialization, config inspection, task listing, task validation, and deterministic evaluation. The target CLI will expand that surface into full model-backed runs and report comparison.
 
-Required commands:
+Target commands:
 
 ```bash
 impressions init
@@ -233,7 +443,7 @@ impressions report results/2026-06-26_001
 impressions compare results/baseline results/engineered
 ```
 
-Required output:
+Target output:
 
 - Task-level status.
 - Attempts per task.
@@ -242,32 +452,6 @@ Required output:
 - Pass@1 and observed pass@k.
 - Aggregate summary.
 - Path to JSON results.
-
-### Project Initialization
-
-Create a new Impressions project scaffold with:
-
-```bash
-impressions init
-```
-
-By default, this initializes the current directory. You can also pass a target directory:
-
-```bash
-impressions init path/to/project
-```
-
-The command creates:
-
-```text
-.
-├── impressions.toml
-├── tasks/
-│   └── example.yaml
-└── reports/
-```
-
-Existing scaffold files are not overwritten unless you confirm the prompt or pass `--force`.
 
 ## Scoring Philosophy
 
@@ -304,7 +488,6 @@ Method:
 - Track attempts to success.
 - Track token usage and latency where provider metadata is available.
 - Optionally compare code variability across attempts.
-
 
 ## Future Roadmap
 
