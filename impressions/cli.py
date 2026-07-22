@@ -12,12 +12,19 @@ from impressions.core.evaluation import (
     EvaluationEngine,
     EvaluationEngineError,
 )
+from impressions.core.reporting import (
+    RunMetadata,
+    RunRegistry,
+    RunRegistryError,
+    RunSummary,
+)
 from impressions.core.tasks import (
     TaskDiscoveryError,
     TaskValidationError,
     discover_tasks,
     load_task,
     load_tasks,
+    load_tasks_from_config,
 )
 
 
@@ -229,7 +236,8 @@ def validate_tasks(_args: argparse.Namespace) -> int:
 def evaluate_tasks(_args: argparse.Namespace) -> int:
     """Evaluate discovered and validated task definitions."""
     try:
-        tasks = load_tasks()
+        config = load_project_config()
+        tasks = load_tasks_from_config(config)
         results = EvaluationEngine(EchoEvaluator()).evaluate_all(tasks)
     except (ConfigError, TaskDiscoveryError, TaskValidationError) as exc:
         print(exc)
@@ -237,13 +245,39 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
     except EvaluationEngineError as exc:
         print(exc)
         return 1
+    try:
+        run_path = RunRegistry(config.paths.reports).write(
+            metadata=RunMetadata(
+                command="evaluate",
+                evaluator="echo",
+                task_count=len(tasks),
+            ),
+            results=results,
+            summary=RunSummary(
+                tasks_evaluated=len(results),
+                succeeded=len(results),
+            ),
+            config={
+                "file_path": config.file_path,
+                "version": config.version,
+                "paths": {
+                    "tasks": config.paths.tasks,
+                    "reports": config.paths.reports,
+                },
+            },
+        )
+    except RunRegistryError as exc:
+        print(exc)
+        return 1
 
-    print(f"Found {len(tasks)} task(s)")
+    print("Evaluation complete.")
     print()
-    for result in results:
-        print(f"✓ {result.task.name}")
+    print(f"{len(results)} task(s) evaluated")
+    print(f"{len(results)} succeeded")
     print()
-    print(f"{len(results)} task(s) evaluated successfully.")
+    print("Results written to:")
+    print()
+    print(_format_directory(run_path))
     return 0
 
 

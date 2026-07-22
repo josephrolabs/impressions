@@ -21,13 +21,13 @@ Implemented:
 - `Evaluator` protocol and structured `EvaluationResult`.
 - Built-in `EchoEvaluator` for deterministic local pipeline verification.
 - CLI commands for version, config inspection, task listing, task validation, and evaluation.
+- Run registry that persists evaluation artifacts under the configured reports path.
 - Unit tests covering CLI behavior, configuration, task parsing, task discovery, and evaluation orchestration.
 
 In progress:
 
 - Expanding evaluator backends beyond the deterministic echo evaluator.
 - Connecting the evaluation framework to model generation, execution, and scoring components.
-- Persisting evaluation reports under the configured reports path.
 
 Planned:
 
@@ -36,7 +36,7 @@ Planned:
 - Sandboxed execution of generated code.
 - Pytest-based grading of generated solutions.
 - Failure classification and aggregate scoring.
-- Run registry, comparison reports, and pass@k metrics.
+- Comparison reports and pass@k metrics.
 - Dashboard, CI integration, and qualitative evaluation extensions.
 
 ## Design Principles
@@ -128,6 +128,7 @@ impressions evaluate
 ```
 
 Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
+Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
 
 ## Current Architecture
 
@@ -184,6 +185,7 @@ Key modules:
 - `impressions.core.config`: `impressions.toml` loading and validation.
 - `impressions.core.tasks`: YAML task discovery, parsing, and validation.
 - `impressions.core.evaluation`: evaluator protocol, result object, `EvaluationEngine`, and `EchoEvaluator`.
+- `impressions.core.reporting`: run registry and structured report artifact writing.
 - `tests`: unit tests for current package behavior.
 
 ## Task Format

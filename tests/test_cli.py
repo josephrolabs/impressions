@@ -1,3 +1,5 @@
+import json
+
 import pytest
 
 from impressions import __version__
@@ -258,15 +260,44 @@ def test_evaluate_command_displays_successful_evaluation_results(
     captured = capsys.readouterr()
 
     assert exit_code == 0
-    assert captured.out.splitlines() == [
-        "Found 3 task(s)",
+    lines = captured.out.splitlines()
+    assert len(lines) == 8
+    assert lines[:7] == [
+        "Evaluation complete.",
         "",
-        "✓ classify",
-        "✓ example-task",
-        "✓ summarize",
+        "3 task(s) evaluated",
+        "3 succeeded",
         "",
-        "3 task(s) evaluated successfully.",
+        "Results written to:",
+        "",
     ]
+    assert lines[7].startswith("reports/")
+    assert lines[7].endswith("/")
+
+    run_path = tmp_path / lines[7].removeprefix("reports/").rstrip("/")
+    run_path = tmp_path / "reports" / run_path.name
+    assert (run_path / "run.json").is_file()
+    assert (run_path / "config.json").is_file()
+    assert (run_path / "summary.json").is_file()
+
+    run = json.loads((run_path / "run.json").read_text(encoding="utf-8"))
+    assert run["metadata"] == {
+        "command": "evaluate",
+        "evaluator": "echo",
+        "task_count": 3,
+    }
+    assert [result["task"]["name"] for result in run["results"]] == [
+        "classify",
+        "example-task",
+        "summarize",
+    ]
+
+    summary = json.loads((run_path / "summary.json").read_text(encoding="utf-8"))
+    assert summary == {
+        "failed": 0,
+        "succeeded": 3,
+        "tasks_evaluated": 3,
+    }
 
 
 def task_yaml(name: str) -> str:
