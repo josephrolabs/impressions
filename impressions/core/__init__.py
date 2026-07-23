@@ -7,6 +7,12 @@ from impressions.core.evaluation import (
     EvaluationResult,
     Evaluator,
 )
+from impressions.core.reporting import (
+    RunMetadata,
+    RunRegistry,
+    RunRegistryError,
+    RunSummary,
+)
 from impressions.core.tasks import (
     ParsedTask,
     Task,
@@ -32,6 +38,10 @@ __all__ = [
     "EvaluationResult",
     "Evaluator",
     "ParsedTask",
+    "RunMetadata",
+    "RunRegistry",
+    "RunRegistryError",
+    "RunSummary",
     "Task",
     "TaskDefinition",
     "TaskDiscoveryError",
