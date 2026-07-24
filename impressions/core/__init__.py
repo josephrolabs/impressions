@@ -13,6 +13,11 @@ from impressions.core.model_client import (
     ModelRequest,
     ModelResponse,
 )
+from impressions.core.prompt_builder import (
+    PromptBuilder,
+    PromptBuilderError,
+    PromptRenderResult,
+)
 from impressions.core.reporting import (
     RunMetadata,
     RunRegistry,
@@ -48,6 +53,9 @@ __all__ = [
     "ModelRequest",
     "ModelResponse",
     "ParsedTask",
+    "PromptBuilder",
+    "PromptBuilderError",
+    "PromptRenderResult",
     "RunMetadata",
     "RunRegistry",
     "RunRegistryError",
