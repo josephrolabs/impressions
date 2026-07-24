@@ -7,6 +7,12 @@ from impressions.core.evaluation import (
     EvaluationResult,
     Evaluator,
 )
+from impressions.core.model_client import (
+    ModelClient,
+    ModelGenerationError,
+    ModelRequest,
+    ModelResponse,
+)
 from impressions.core.reporting import (
     RunMetadata,
     RunRegistry,
@@ -37,6 +43,10 @@ __all__ = [
     "EvaluationEngineError",
     "EvaluationResult",
     "Evaluator",
+    "ModelClient",
+    "ModelGenerationError",
+    "ModelRequest",
+    "ModelResponse",
     "ParsedTask",
     "RunMetadata",
     "RunRegistry",
