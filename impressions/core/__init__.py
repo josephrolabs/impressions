@@ -13,6 +13,7 @@ from impressions.core.model_client import (
     ModelRequest,
     ModelResponse,
 )
+from impressions.core.openai_client import OpenAIModelClient
 from impressions.core.prompt_builder import (
     PromptBuilder,
     PromptBuilderError,
@@ -52,6 +53,7 @@ __all__ = [
     "ModelGenerationError",
     "ModelRequest",
     "ModelResponse",
+    "OpenAIModelClient",
     "ParsedTask",
     "PromptBuilder",
     "PromptBuilderError",
