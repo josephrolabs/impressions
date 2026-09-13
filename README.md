@@ -24,6 +24,7 @@ Implemented:
 - `LLMEvaluator` that composes rendered prompts with provider-agnostic model clients.
 - Docker-backed Python execution with network isolation and resource limits.
 - Pytest-based grading for code tasks with task-relative test suites.
+- Deterministic failure classification for execution and pytest outcomes.
 - CLI commands for version, config inspection, task listing, task validation, and evaluation.
 - Run registry that persists evaluation artifacts under the configured reports path.
 - Unit tests covering CLI behavior, configuration, task parsing, task discovery, and evaluation orchestration.

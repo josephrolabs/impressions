@@ -8,6 +8,7 @@ from pathlib import Path
 
 from impressions.core.evaluation import EvaluationResult
 from impressions.core.execution import CodeExecutor, ExecutionError
+from impressions.core.failure_classification import classify_failure
 from impressions.core.tasks import Task
 
 
@@ -45,24 +46,28 @@ class PytestCodeGrader:
             execution.stdout + "\n" + execution.stderr
         )
         counts = (passed, failed, errors, skipped, xfailed)
+        metadata = {
+            "grader": "pytest",
+            "passed": execution.exit_code == 0 and not execution.timed_out,
+            "passed_tests": passed,
+            "failed_tests": failed,
+            "error_tests": errors,
+            "skipped_tests": skipped,
+            "xfailed_tests": xfailed,
+            "total_tests": sum(counts) if all(count is not None for count in counts) else None,
+            "stdout": execution.stdout,
+            "stderr": execution.stderr,
+            "exit_code": execution.exit_code,
+            "timed_out": execution.timed_out,
+            "output_limit_exceeded": execution.output_limit_exceeded,
+        }
+        classification = classify_failure(metadata)
+        if classification is not None:
+            metadata["failure_classification"] = classification
         return EvaluationResult(
             task=task,
             output=code,
-            metadata={
-                "grader": "pytest",
-                "passed": execution.exit_code == 0 and not execution.timed_out,
-                "passed_tests": passed,
-                "failed_tests": failed,
-                "error_tests": errors,
-                "skipped_tests": skipped,
-                "xfailed_tests": xfailed,
-                "total_tests": sum(counts) if all(count is not None for count in counts) else None,
-                "stdout": execution.stdout,
-                "stderr": execution.stderr,
-                "exit_code": execution.exit_code,
-                "timed_out": execution.timed_out,
-                "output_limit_exceeded": execution.output_limit_exceeded,
-            },
+            metadata=metadata,
         )
 
 

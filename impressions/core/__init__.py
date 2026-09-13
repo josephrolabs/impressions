@@ -9,6 +9,7 @@ from impressions.core.evaluation import (
 )
 from impressions.core.docker_executor import DockerPythonExecutor
 from impressions.core.execution import CodeExecutor, ExecutionError, ExecutionResult
+from impressions.core.failure_classification import FailureCategory, FailureClassification, classify_failure
 from impressions.core.config import (
     ConfigError,
     CredentialsConfig,
@@ -69,6 +70,8 @@ __all__ = [
     "Evaluator",
     "ExecutionError",
     "ExecutionResult",
+    "FailureCategory",
+    "FailureClassification",
     "GradingError",
     "LLMEvaluator",
     "ModelClient",
@@ -105,4 +108,5 @@ __all__ = [
     "parse_task",
     "parse_task_data",
     "create_model_client",
+    "classify_failure",
 ]
