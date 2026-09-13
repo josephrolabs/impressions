@@ -15,6 +15,7 @@ from impressions.core.execution import ExecutionError, ExecutionResult
 
 
 DEFAULT_MAX_OUTPUT_BYTES = 1_000_000
+PYTEST_IMAGE = "impressions-python-pytest:3.12"
 
 
 @dataclass(frozen=True)

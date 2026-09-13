@@ -7,11 +7,19 @@ from pathlib import Path
 
 from impressions import __version__
 from impressions.core.config import ConfigError, load_project_config
+from impressions.core.code_evaluator import CodeTaskEvaluator
+from impressions.core.docker_executor import DockerPythonExecutor, PYTEST_IMAGE
 from impressions.core.evaluation import (
     EchoEvaluator,
     EvaluationEngine,
     EvaluationEngineError,
+    EvaluationResult,
 )
+from impressions.core.llm_evaluator import LLMEvaluator
+from impressions.core.model_factory import create_model_client
+from impressions.core.prompt_builder import PromptBuilder
+from impressions.core.pytest_grader import PytestCodeGrader
+from impressions.core.scoring import MultiAttemptEvaluator, calculate_reliability_metrics
 from impressions.core.reporting import (
     RunMetadata,
     RunRegistry,
@@ -42,6 +50,10 @@ timeout = 30
 
 [credentials]
 api_key_env = "OPENAI_API_KEY"
+
+[evaluation]
+attempts = 1
+pass_at_k = 1
 """
 
 EXAMPLE_TASK = """\
@@ -200,6 +212,10 @@ def show_config(_args: argparse.Namespace) -> int:
     print(f"  model: {config.model.model}")
     print(f"  timeout: {config.model.timeout}")
     print(f"  api_key_env: {config.credentials.api_key_env}")
+    print()
+    print("Evaluation")
+    print(f"  attempts: {config.evaluation.attempts}")
+    print(f"  pass_at_k: {config.evaluation.pass_at_k}")
     return 0
 
 
@@ -252,7 +268,21 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
     try:
         config = load_project_config()
         tasks = load_tasks_from_config(config)
-        results = EvaluationEngine(EchoEvaluator()).evaluate_all(tasks)
+        if any(task.execution is not None for task in tasks):
+            evaluator = CodeTaskEvaluator(
+                llm_evaluator=LLMEvaluator(PromptBuilder(), create_model_client(config)),
+                grader=PytestCodeGrader(DockerPythonExecutor(image=PYTEST_IMAGE)),
+            )
+            evaluator_name = "llm-pytest"
+        else:
+            evaluator = EchoEvaluator()
+            evaluator_name = "echo"
+        attempt_results = MultiAttemptEvaluator(
+            evaluator, attempts=config.evaluation.attempts
+        ).evaluate_all(tasks)
+        metrics = calculate_reliability_metrics(
+            attempt_results, pass_at_k=config.evaluation.pass_at_k
+        )
     except (ConfigError, TaskDiscoveryError, TaskValidationError) as exc:
         print(exc)
         return 1
@@ -260,16 +290,30 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
         print(exc)
         return 1
     try:
+        results = [
+            EvaluationResult(
+                task=attempt.result.task,
+                output=attempt.result.output,
+                metadata={**attempt.result.metadata, "attempt": attempt.attempt, "passed": attempt.succeeded},
+            )
+            for task_result in attempt_results
+            for attempt in task_result.attempts
+        ]
+        succeeded = sum(attempt.succeeded for task_result in attempt_results for attempt in task_result.attempts)
         run_path = RunRegistry(config.paths.reports).write(
-            metadata=RunMetadata(
-                command="evaluate",
-                evaluator="echo",
-                task_count=len(tasks),
-            ),
+            metadata={
+                "command": "evaluate",
+                "evaluator": evaluator_name,
+                "task_count": len(tasks),
+                "attempts_per_task": config.evaluation.attempts,
+                "pass_at_k": config.evaluation.pass_at_k,
+                "metrics": metrics,
+            },
             results=results,
             summary=RunSummary(
                 tasks_evaluated=len(results),
-                succeeded=len(results),
+                succeeded=succeeded,
+                failed=len(results) - succeeded,
             ),
             config={
                 "file_path": config.file_path,
@@ -277,6 +321,10 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
                 "paths": {
                     "tasks": config.paths.tasks,
                     "reports": config.paths.reports,
+                },
+                "evaluation": {
+                    "attempts": config.evaluation.attempts,
+                    "pass_at_k": config.evaluation.pass_at_k,
                 },
             },
         )
@@ -286,8 +334,8 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
 
     print("Evaluation complete.")
     print()
-    print(f"{len(results)} task(s) evaluated")
-    print(f"{len(results)} succeeded")
+    print(f"{len(results)} attempt(s) evaluated")
+    print(f"{succeeded} succeeded")
     print()
     print("Results written to:")
     print()

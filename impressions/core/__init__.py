@@ -8,15 +8,24 @@ from impressions.core.evaluation import (
     Evaluator,
 )
 from impressions.core.docker_executor import DockerPythonExecutor
+from impressions.core.code_evaluator import CodeTaskEvaluator
 from impressions.core.execution import CodeExecutor, ExecutionError, ExecutionResult
 from impressions.core.failure_classification import FailureCategory, FailureClassification, classify_failure
 from impressions.core.config import (
     ConfigError,
     CredentialsConfig,
+    EvaluationConfig,
     ModelConfig,
     ProjectConfig,
     ProjectPaths,
     load_project_config,
+)
+from impressions.core.scoring import (
+    AttemptResult,
+    MultiAttemptEvaluator,
+    MultiAttemptResult,
+    ReliabilityMetrics,
+    calculate_reliability_metrics,
 )
 from impressions.core.model_factory import create_model_client
 from impressions.core.llm_evaluator import LLMEvaluator
@@ -62,7 +71,9 @@ __all__ = [
     "EchoEvaluator",
     "ConfigError",
     "CodeExecutor",
+    "CodeTaskEvaluator",
     "CredentialsConfig",
+    "EvaluationConfig",
     "DockerPythonExecutor",
     "EvaluationEngine",
     "EvaluationEngineError",
@@ -74,6 +85,10 @@ __all__ = [
     "FailureClassification",
     "GradingError",
     "LLMEvaluator",
+    "AttemptResult",
+    "MultiAttemptEvaluator",
+    "MultiAttemptResult",
+    "ReliabilityMetrics",
     "ModelClient",
     "ModelConfig",
     "ModelGenerationError",
@@ -109,4 +124,5 @@ __all__ = [
     "parse_task_data",
     "create_model_client",
     "classify_failure",
+    "calculate_reliability_metrics",
 ]
