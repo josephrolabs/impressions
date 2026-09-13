@@ -3,13 +3,22 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections.abc import Mapping, Sequence
 from typing import Protocol
 
 
 class CodeExecutor(Protocol):
     """Execute generated code and return its normalized process result."""
 
-    def execute(self, code: str, *, timeout_seconds: int) -> "ExecutionResult":
+    def execute(
+        self,
+        code: str,
+        *,
+        timeout_seconds: int,
+        files: Mapping[str, str] | None = None,
+        source_filename: str = "main.py",
+        command: Sequence[str] | None = None,
+    ) -> "ExecutionResult":
         """Execute code within the executor's isolation boundary."""
 
 

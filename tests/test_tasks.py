@@ -212,6 +212,28 @@ def test_parse_task_data_keeps_expected_type_as_data(tmp_path):
     assert task.expected.type == "image"
 
 
+def test_parse_task_data_supports_optional_code_execution_configuration(tmp_path):
+    task = parse_task_data(
+        {
+            "version": 1,
+            "name": "code-task",
+            "description": "Task.",
+            "input": {"prompt": "Write code."},
+            "expected": {"type": "code"},
+            "execution": {
+                "entrypoint": "solution.py",
+                "tests": "tests/test_solution.py",
+                "timeout_seconds": 30,
+            },
+        },
+        tmp_path / "task.yaml",
+    )
+
+    assert task.execution.entrypoint == "solution.py"
+    assert task.execution.tests == "tests/test_solution.py"
+    assert task.execution.timeout_seconds == 30
+
+
 def test_parse_task_data_reports_nested_mapping_type_errors(tmp_path):
     with pytest.raises(TaskValidationError) as exc_info:
         parse_task_data(
