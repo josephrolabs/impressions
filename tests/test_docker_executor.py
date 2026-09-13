@@ -99,6 +99,12 @@ def test_execute_rejects_non_string_code():
         DockerPythonExecutor().execute(None, timeout_seconds=1)
 
 
+@pytest.mark.parametrize("limit", [0, -1, True, 1.5])
+def test_execute_rejects_invalid_output_limit(limit):
+    with pytest.raises(ExecutionError, match="Maximum captured output"):
+        DockerPythonExecutor(max_output_bytes=limit).execute("print('ok')", timeout_seconds=1)
+
+
 def test_execute_reports_missing_docker_binary(monkeypatch):
     monkeypatch.setattr(
         "impressions.core.docker_executor.subprocess.Popen",

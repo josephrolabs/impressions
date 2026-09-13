@@ -31,6 +31,7 @@ from impressions.core.prompt_builder import (
     PromptBuilderError,
     PromptRenderResult,
 )
+from impressions.core.pytest_grader import GradingError, PytestCodeGrader
 from impressions.core.reporting import (
     RunMetadata,
     RunRegistry,
@@ -43,6 +44,7 @@ from impressions.core.tasks import (
     TaskDefinition,
     TaskDiscoveryError,
     TaskExpected,
+    TaskExecution,
     TaskFieldError,
     TaskInput,
     TaskValidationError,
@@ -67,6 +69,7 @@ __all__ = [
     "Evaluator",
     "ExecutionError",
     "ExecutionResult",
+    "GradingError",
     "LLMEvaluator",
     "ModelClient",
     "ModelConfig",
@@ -80,6 +83,7 @@ __all__ = [
     "PromptBuilder",
     "PromptBuilderError",
     "PromptRenderResult",
+    "PytestCodeGrader",
     "RunMetadata",
     "RunRegistry",
     "RunRegistryError",
@@ -88,6 +92,7 @@ __all__ = [
     "TaskDefinition",
     "TaskDiscoveryError",
     "TaskExpected",
+    "TaskExecution",
     "TaskFieldError",
     "TaskInput",
     "TaskValidationError",

@@ -72,6 +72,15 @@ class TaskExpected:
 
 
 @dataclass(frozen=True)
+class TaskExecution:
+    """Optional execution settings for code-evaluation tasks."""
+
+    entrypoint: str
+    tests: str
+    timeout_seconds: int
+
+
+@dataclass(frozen=True)
 class Task:
     """A parsed task definition."""
 
@@ -81,6 +90,7 @@ class Task:
     description: str
     input: TaskInput
     expected: TaskExpected
+    execution: TaskExecution | None = None
 
 
 ParsedTask = Task
@@ -164,6 +174,10 @@ def parse_task_data(data: Any, path: str | Path) -> Task:
     description = _required_non_empty_str(data, "description", errors)
     input_data = _required_mapping(data, "input", errors)
     expected_data = _required_mapping(data, "expected", errors)
+    execution_data = data.get("execution")
+    if execution_data is not None and not isinstance(execution_data, dict):
+        errors.append(TaskFieldError("execution", "Expected a mapping."))
+        execution_data = None
 
     prompt = None
     if input_data is not None:
@@ -177,6 +191,13 @@ def parse_task_data(data: Any, path: str | Path) -> Task:
             errors,
             parent="expected",
         )
+    entrypoint = tests = timeout_seconds = None
+    if execution_data is not None:
+        entrypoint = _required_non_empty_str(execution_data, "entrypoint", errors, parent="execution")
+        tests = _required_non_empty_str(execution_data, "tests", errors, parent="execution")
+        timeout_seconds = _required_int(execution_data, "timeout_seconds", errors, parent="execution")
+        if timeout_seconds is not None and timeout_seconds <= 0:
+            errors.append(TaskFieldError("execution.timeout_seconds", "Expected a positive integer."))
 
     if version is not None and version != SUPPORTED_TASK_SCHEMA_VERSION:
         errors.append(
@@ -197,6 +218,11 @@ def parse_task_data(data: Any, path: str | Path) -> Task:
         description=description,
         input=TaskInput(prompt=prompt),
         expected=TaskExpected(type=expected_type),
+        execution=(
+            TaskExecution(entrypoint=entrypoint, tests=tests, timeout_seconds=timeout_seconds)
+            if execution_data is not None
+            else None
+        ),
     )
 
 

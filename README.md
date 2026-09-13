@@ -23,6 +23,7 @@ Implemented:
 - Built-in `EchoEvaluator` for deterministic local pipeline verification.
 - `LLMEvaluator` that composes rendered prompts with provider-agnostic model clients.
 - Docker-backed Python execution with network isolation and resource limits.
+- Pytest-based grading for code tasks with task-relative test suites.
 - CLI commands for version, config inspection, task listing, task validation, and evaluation.
 - Run registry that persists evaluation artifacts under the configured reports path.
 - Unit tests covering CLI behavior, configuration, task parsing, task discovery, and evaluation orchestration.
@@ -227,6 +228,20 @@ Required fields:
 - `description`: non-empty human-readable task description.
 - `input.prompt`: non-empty prompt text.
 - `expected.type`: non-empty expected output type.
+
+Code tasks can additionally declare an external, task-relative pytest file:
+
+```yaml
+execution:
+  entrypoint: solution.py
+  tests: tests/test_solution.py
+  timeout_seconds: 30
+```
+
+The test suite is mounted read-only in the sandbox. Configure the executor used for
+pytest grading with the curated `impressions-python-pytest:3.12` image defined in
+`docker/pytest/Dockerfile`; build and publish a pinned image before using it in an
+evaluation environment.
 
 ## Background: A Study in Impressions
 
