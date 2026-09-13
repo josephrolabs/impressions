@@ -3,6 +3,7 @@ from pathlib import Path
 import pytest
 
 from impressions.core.execution import ExecutionResult
+from impressions.core.failure_classification import FailureCategory
 from impressions.core.pytest_grader import GradingError, PytestCodeGrader
 from impressions.core.tasks import Task, TaskExecution, TaskExpected, TaskInput
 
@@ -41,6 +42,7 @@ def test_pytest_grader_normalizes_failed_tests(tmp_path):
     assert result.metadata["passed_tests"] == 2
     assert result.metadata["failed_tests"] == 1
     assert result.metadata["total_tests"] == 3
+    assert result.metadata["failure_classification"].category is FailureCategory.TEST_FAILURE
 
 
 def test_pytest_grader_normalizes_pytest_errors(tmp_path):
