@@ -34,6 +34,14 @@ version = 1
 [paths]
 tasks = "tasks"
 reports = "reports"
+
+[model]
+provider = "openai"
+model = "gpt-5"
+timeout = 30
+
+[credentials]
+api_key_env = "OPENAI_API_KEY"
 """
 
 EXAMPLE_TASK = """\
@@ -186,6 +194,12 @@ def show_config(_args: argparse.Namespace) -> int:
     print("Paths")
     print(f"  tasks: {_format_directory(config.paths.tasks)}")
     print(f"  reports: {_format_directory(config.paths.reports)}")
+    print()
+    print("Model")
+    print(f"  provider: {config.model.provider}")
+    print(f"  model: {config.model.model}")
+    print(f"  timeout: {config.model.timeout}")
+    print(f"  api_key_env: {config.credentials.api_key_env}")
     return 0
 
 
