@@ -7,6 +7,15 @@ from impressions.core.evaluation import (
     EvaluationResult,
     Evaluator,
 )
+from impressions.core.config import (
+    ConfigError,
+    CredentialsConfig,
+    ModelConfig,
+    ProjectConfig,
+    ProjectPaths,
+    load_project_config,
+)
+from impressions.core.model_factory import create_model_client
 from impressions.core.model_client import (
     ModelClient,
     ModelGenerationError,
@@ -45,15 +54,20 @@ from impressions.core.tasks import (
 
 __all__ = [
     "EchoEvaluator",
+    "ConfigError",
+    "CredentialsConfig",
     "EvaluationEngine",
     "EvaluationEngineError",
     "EvaluationResult",
     "Evaluator",
     "ModelClient",
+    "ModelConfig",
     "ModelGenerationError",
     "ModelRequest",
     "ModelResponse",
     "OpenAIModelClient",
+    "ProjectConfig",
+    "ProjectPaths",
     "ParsedTask",
     "PromptBuilder",
     "PromptBuilderError",
@@ -72,8 +86,10 @@ __all__ = [
     "discover_tasks",
     "discover_tasks_from_config",
     "load_task",
+    "load_project_config",
     "load_tasks",
     "load_tasks_from_config",
     "parse_task",
     "parse_task_data",
+    "create_model_client",
 ]

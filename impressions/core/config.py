@@ -29,6 +29,22 @@ class ProjectPaths:
 
 
 @dataclass(frozen=True)
+class ModelConfig:
+    """Validated configuration for a language model provider."""
+
+    provider: str
+    model: str
+    timeout: float | None
+
+
+@dataclass(frozen=True)
+class CredentialsConfig:
+    """References to credentials required by configured providers."""
+
+    api_key_env: str
+
+
+@dataclass(frozen=True)
 class ProjectConfig:
     """Validated Impressions project configuration."""
 
@@ -36,6 +52,8 @@ class ProjectConfig:
     file_path: Path
     version: int
     paths: ProjectPaths
+    model: ModelConfig
+    credentials: CredentialsConfig
 
 
 def load_project_config(root: str | Path = ".") -> ProjectConfig:
@@ -67,12 +85,28 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
     paths = _required_table(data, "paths", CONFIG_FILE_NAME)
     tasks = _required_path(paths, "tasks", "[paths]", project_root)
     reports = _required_path(paths, "reports", "[paths]", project_root)
+    model = _required_table(data, "model", CONFIG_FILE_NAME)
+    provider = _required_non_empty_string(model, "provider", "[model]")
+    if provider != "openai":
+        raise ConfigError(
+            f"Unsupported model provider in {config_path}: {provider!r}. "
+            "Supported providers: openai."
+        )
+    model_name = _required_non_empty_string(model, "model", "[model]")
+    timeout = _optional_positive_number(model, "timeout", "[model]")
+
+    credentials = _required_table(data, "credentials", CONFIG_FILE_NAME)
+    api_key_env = _required_non_empty_string(
+        credentials, "api_key_env", "[credentials]"
+    )
 
     return ProjectConfig(
         root=project_root,
         file_path=config_path,
         version=version,
         paths=ProjectPaths(tasks=tasks, reports=reports),
+        model=ModelConfig(provider=provider, model=model_name, timeout=timeout),
+        credentials=CredentialsConfig(api_key_env=api_key_env),
     )
 
 
@@ -119,3 +153,31 @@ def _required_path(
         return path
 
     return project_root / path
+
+
+def _required_non_empty_string(
+    data: dict[str, Any], key: str, location: str
+) -> str:
+    if key not in data:
+        raise ConfigError(f"Missing required value '{key}' in {location}.")
+
+    value = data[key]
+    if not isinstance(value, str):
+        raise ConfigError(f"Expected '{key}' in {location} to be a string.")
+    if not value.strip():
+        raise ConfigError(f"Expected '{key}' in {location} to be a non-empty string.")
+    return value
+
+
+def _optional_positive_number(
+    data: dict[str, Any], key: str, location: str
+) -> float | None:
+    if key not in data:
+        return None
+
+    value = data[key]
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ConfigError(f"Expected '{key}' in {location} to be a number.")
+    if value <= 0:
+        raise ConfigError(f"Expected '{key}' in {location} to be greater than zero.")
+    return float(value)

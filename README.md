@@ -15,6 +15,7 @@ Implemented:
 - Python package with `impressions` CLI entry point.
 - Project initialization via `impressions init`.
 - Project configuration loading from `impressions.toml`.
+- Provider configuration and environment-based model credentials.
 - Task discovery from configured YAML task directories.
 - YAML task parsing and schema validation.
 - `EvaluationEngine` orchestration primitive.
@@ -129,6 +130,18 @@ impressions evaluate
 
 Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
 Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
+
+The generated `impressions.toml` also declares the model to use when an LLM-backed evaluator is enabled. Keep credentials out of that file: `api_key_env` names the environment variable that supplies the key.
+
+```toml
+[model]
+provider = "openai"
+model = "gpt-5"
+timeout = 30
+
+[credentials]
+api_key_env = "OPENAI_API_KEY"
+```
 
 ## Current Architecture
 

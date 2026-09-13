@@ -28,6 +28,13 @@ version = 1
 [paths]
 tasks = "{tasks_path}"
 reports = "reports"
+
+[model]
+provider = "openai"
+model = "gpt-5"
+
+[credentials]
+api_key_env = "OPENAI_API_KEY"
 """,
         encoding="utf-8",
     )

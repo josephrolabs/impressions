@@ -11,6 +11,14 @@ version = 1
 [paths]
 tasks = "tasks"
 reports = "reports"
+
+[model]
+provider = "openai"
+model = "gpt-5"
+timeout = 30
+
+[credentials]
+api_key_env = "OPENAI_API_KEY"
 """
 
 
@@ -30,6 +38,10 @@ def test_load_project_config_success(tmp_path):
     assert config.version == 1
     assert config.paths.tasks == tmp_path / "tasks"
     assert config.paths.reports == tmp_path / "reports"
+    assert config.model.provider == "openai"
+    assert config.model.model == "gpt-5"
+    assert config.model.timeout == 30.0
+    assert config.credentials.api_key_env == "OPENAI_API_KEY"
 
 
 def test_load_project_config_allows_absolute_paths(tmp_path):
@@ -43,6 +55,13 @@ version = 1
 [paths]
 tasks = "{tasks.as_posix()}"
 reports = "{reports.as_posix()}"
+
+[model]
+provider = "openai"
+model = "gpt-5"
+
+[credentials]
+api_key_env = "OPENAI_API_KEY"
 """,
     )
 
@@ -176,4 +195,48 @@ reports = "reports"
     )
 
     with pytest.raises(ConfigError, match="non-empty path"):
+        load_project_config(tmp_path)
+
+
+def test_load_project_config_rejects_missing_model_section(tmp_path):
+    write_config(
+        tmp_path,
+        """\
+version = 1
+
+[paths]
+tasks = "tasks"
+reports = "reports"
+
+[credentials]
+api_key_env = "OPENAI_API_KEY"
+""",
+    )
+
+    with pytest.raises(ConfigError, match=r"Missing required section \[model\]"):
+        load_project_config(tmp_path)
+
+
+@pytest.mark.parametrize("provider", ["anthropic", ""])
+def test_load_project_config_rejects_unsupported_or_empty_provider(tmp_path, provider):
+    write_config(tmp_path, VALID_CONFIG.replace('provider = "openai"', f'provider = "{provider}"'))
+
+    with pytest.raises(ConfigError, match="provider"):
+        load_project_config(tmp_path)
+
+
+@pytest.mark.parametrize("timeout", ['timeout = 0', 'timeout = "30"'])
+def test_load_project_config_rejects_invalid_timeout(tmp_path, timeout):
+    write_config(tmp_path, VALID_CONFIG.replace("timeout = 30", timeout))
+
+    with pytest.raises(ConfigError, match="timeout"):
+        load_project_config(tmp_path)
+
+
+def test_load_project_config_rejects_missing_credentials_section(tmp_path):
+    write_config(tmp_path, VALID_CONFIG.split("[credentials]")[0])
+
+    with pytest.raises(
+        ConfigError, match=r"Missing required section \[credentials\]"
+    ):
         load_project_config(tmp_path)
