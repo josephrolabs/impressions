@@ -16,6 +16,7 @@ from impressions.core.config import (
     load_project_config,
 )
 from impressions.core.model_factory import create_model_client
+from impressions.core.llm_evaluator import LLMEvaluator
 from impressions.core.model_client import (
     ModelClient,
     ModelGenerationError,
@@ -60,6 +61,7 @@ __all__ = [
     "EvaluationEngineError",
     "EvaluationResult",
     "Evaluator",
+    "LLMEvaluator",
     "ModelClient",
     "ModelConfig",
     "ModelGenerationError",
