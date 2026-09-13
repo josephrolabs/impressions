@@ -22,6 +22,7 @@ Implemented:
 - `Evaluator` protocol and structured `EvaluationResult`.
 - Built-in `EchoEvaluator` for deterministic local pipeline verification.
 - `LLMEvaluator` that composes rendered prompts with provider-agnostic model clients.
+- Docker-backed Python execution with network isolation and resource limits.
 - CLI commands for version, config inspection, task listing, task validation, and evaluation.
 - Run registry that persists evaluation artifacts under the configured reports path.
 - Unit tests covering CLI behavior, configuration, task parsing, task discovery, and evaluation orchestration.

@@ -7,6 +7,8 @@ from impressions.core.evaluation import (
     EvaluationResult,
     Evaluator,
 )
+from impressions.core.docker_executor import DockerPythonExecutor
+from impressions.core.execution import CodeExecutor, ExecutionError, ExecutionResult
 from impressions.core.config import (
     ConfigError,
     CredentialsConfig,
@@ -56,11 +58,15 @@ from impressions.core.tasks import (
 __all__ = [
     "EchoEvaluator",
     "ConfigError",
+    "CodeExecutor",
     "CredentialsConfig",
+    "DockerPythonExecutor",
     "EvaluationEngine",
     "EvaluationEngineError",
     "EvaluationResult",
     "Evaluator",
+    "ExecutionError",
+    "ExecutionResult",
     "LLMEvaluator",
     "ModelClient",
     "ModelConfig",
