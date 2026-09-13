@@ -244,6 +244,17 @@ pytest grading with the curated `impressions-python-pytest:3.12` image defined i
 `docker/pytest/Dockerfile`; build and publish a pinned image before using it in an
 evaluation environment.
 
+Repeated evaluation is configured in `impressions.toml`:
+
+```toml
+[evaluation]
+attempts = 3
+pass_at_k = 3
+```
+
+Impressions records each attempt in order and calculates first-attempt success,
+observed pass@k, and mean attempts to success through its scoring API.
+
 ## Background: A Study in Impressions
 
 AI systems are inherently non-deterministic. Their outputs often manifest as fluid, unstructured prose that resists traditional unit testing. Much like a jazz performance, an AI model may explore a unique melody every time it is invoked, making it difficult to capture performance with rigid, binary assessments.

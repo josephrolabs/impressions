@@ -265,8 +265,8 @@ def test_evaluate_command_displays_successful_evaluation_results(
     assert lines[:7] == [
         "Evaluation complete.",
         "",
-        "3 task(s) evaluated",
-        "3 succeeded",
+        "3 attempt(s) evaluated",
+        "0 succeeded",
         "",
         "Results written to:",
         "",
@@ -285,6 +285,16 @@ def test_evaluate_command_displays_successful_evaluation_results(
         "command": "evaluate",
         "evaluator": "echo",
         "task_count": 3,
+        "attempts_per_task": 1,
+        "pass_at_k": 1,
+        "metrics": {
+            "task_count": 3,
+            "first_attempt_success_rate": 0.0,
+            "observed_pass_at_k": 0.0,
+            "mean_attempts_to_success": None,
+            "attempts_per_task": 1,
+            "pass_at_k": 1,
+        },
     }
     assert [result["task"]["name"] for result in run["results"]] == [
         "classify",
@@ -294,8 +304,8 @@ def test_evaluate_command_displays_successful_evaluation_results(
 
     summary = json.loads((run_path / "summary.json").read_text(encoding="utf-8"))
     assert summary == {
-        "failed": 0,
-        "succeeded": 3,
+        "failed": 3,
+        "succeeded": 0,
         "tasks_evaluated": 3,
     }
 

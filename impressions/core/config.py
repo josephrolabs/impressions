@@ -45,6 +45,14 @@ class CredentialsConfig:
 
 
 @dataclass(frozen=True)
+class EvaluationConfig:
+    """Optional reproducible settings for repeated evaluation attempts."""
+
+    attempts: int = 1
+    pass_at_k: int = 1
+
+
+@dataclass(frozen=True)
 class ProjectConfig:
     """Validated Impressions project configuration."""
 
@@ -54,6 +62,7 @@ class ProjectConfig:
     paths: ProjectPaths
     model: ModelConfig
     credentials: CredentialsConfig
+    evaluation: EvaluationConfig
 
 
 def load_project_config(root: str | Path = ".") -> ProjectConfig:
@@ -99,6 +108,13 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
     api_key_env = _required_non_empty_string(
         credentials, "api_key_env", "[credentials]"
     )
+    evaluation_data = data.get("evaluation", {})
+    if not isinstance(evaluation_data, dict):
+        raise ConfigError(f"Expected [evaluation] in {CONFIG_FILE_NAME} to be a TOML table.")
+    attempts = _optional_positive_int(evaluation_data, "attempts", "[evaluation]", 1)
+    pass_at_k = _optional_positive_int(evaluation_data, "pass_at_k", "[evaluation]", 1)
+    if pass_at_k > attempts:
+        raise ConfigError("Expected 'pass_at_k' in [evaluation] not to exceed 'attempts'.")
 
     return ProjectConfig(
         root=project_root,
@@ -107,6 +123,7 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
         paths=ProjectPaths(tasks=tasks, reports=reports),
         model=ModelConfig(provider=provider, model=model_name, timeout=timeout),
         credentials=CredentialsConfig(api_key_env=api_key_env),
+        evaluation=EvaluationConfig(attempts=attempts, pass_at_k=pass_at_k),
     )
 
 
@@ -181,3 +198,14 @@ def _optional_positive_number(
     if value <= 0:
         raise ConfigError(f"Expected '{key}' in {location} to be greater than zero.")
     return float(value)
+
+
+def _optional_positive_int(
+    data: dict[str, Any], key: str, location: str, default: int
+) -> int:
+    if key not in data:
+        return default
+    value = data[key]
+    if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+        raise ConfigError(f"Expected '{key}' in {location} to be a positive integer.")
+    return value
