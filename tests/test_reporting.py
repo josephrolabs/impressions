@@ -15,7 +15,9 @@ from impressions.core.reporting import (
     RunRegistry,
     RunRegistryError,
     RunSummary,
+    compare_persisted_runs,
     load_persisted_run,
+    render_terminal_comparison,
     render_terminal_report,
 )
 from impressions.core.tasks import Task, TaskExpected, TaskInput
@@ -166,6 +168,48 @@ def test_load_persisted_run_rejects_malformed_artifacts(tmp_path):
         load_persisted_run(run_path)
 
 
+def test_compare_persisted_runs_reports_deltas_and_partial_overlap(tmp_path):
+    registry = RunRegistry(tmp_path, clock=fixed_clock)
+    baseline = registry.write(
+        metadata={"metrics": {"first_attempt_success_rate": 0.5, "observed_pass_at_k": 0.5}},
+        results=[
+            result_data("add", passed=False, failure="test_failure", tests=(0, 1)),
+            result_data("keep", passed=True, tests=(1, 1)),
+            result_data("removed", passed=False),
+        ],
+        summary={"tasks_evaluated": 3, "succeeded": 1},
+    )
+    candidate = registry.write(
+        metadata={"metrics": {"first_attempt_success_rate": 1.0, "observed_pass_at_k": 1.0}},
+        results=[
+            result_data("add", passed=True, tests=(1, 1)),
+            result_data("keep", passed=True, tests=(1, 1)),
+            result_data("added", passed=False, failure="runtime_error"),
+        ],
+        summary={"tasks_evaluated": 3, "succeeded": 2},
+    )
+
+    comparison = compare_persisted_runs(load_persisted_run(baseline), load_persisted_run(candidate))
+
+    assert comparison.metric_deltas["pass_at_1"] == 0.5
+    assert comparison.metric_deltas["observed_pass_at_k"] == 0.5
+    assert comparison.metric_deltas["test_pass_rate"] == 0.5
+    assert comparison.improved == ("add",)
+    assert comparison.regressed == ()
+    assert comparison.unchanged == ("keep",)
+    assert comparison.baseline_only == ("removed",)
+    assert comparison.candidate_only == ("added",)
+    assert comparison.failure_deltas == {"runtime_error": 1, "test_failure": -1}
+    rendered = render_terminal_comparison(comparison)
+    assert "Baseline:\n  Run: 2026-07-18_001" in rendered
+    assert "Candidate:\n  Run: 2026-07-18_002" in rendered
+    assert "Timestamp: 2026-07-18T12:30:00+00:00" in rendered
+    assert "Model: unknown / unknown" in rendered
+    assert "Improved: add" in rendered
+    assert "Baseline-only tasks: removed" in rendered
+    assert "runtime_error: +1" in rendered
+
+
 @dataclass(frozen=True)
 class Nested:
     path: Path
@@ -188,3 +232,12 @@ def make_task(name: str) -> Task:
         input=TaskInput(prompt="Say hello."),
         expected=TaskExpected(type="text"),
     )
+
+
+def result_data(name: str, *, passed: bool, failure: str | None = None, tests: tuple[int, int] | None = None):
+    metadata = {"passed": passed}
+    if failure is not None:
+        metadata["failure_classification"] = {"category": failure}
+    if tests is not None:
+        metadata["passed_tests"], metadata["total_tests"] = tests
+    return {"task": {"name": name}, "metadata": metadata}

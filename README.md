@@ -148,6 +148,14 @@ impressions report reports/2026-09-13_001
 
 The terminal report shows the run identity, model, per-attempt status and pytest counts where available, failure classifications, and aggregate pass@k metrics.
 
+Compare two saved runs without re-running either evaluation:
+
+```bash
+impressions compare reports/2026-09-13_001 reports/2026-09-13_002
+```
+
+The comparison reports candidate-minus-baseline metric deltas, task improvements/regressions, partial task-set overlap, and failure-type distribution differences.
+
 Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
 Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
 
