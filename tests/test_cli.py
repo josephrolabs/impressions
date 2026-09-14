@@ -2,6 +2,9 @@ import json
 
 import pytest
 
+from impressions.core.execution import ExecutionResult
+from impressions.core.model_client import ModelResponse
+
 from impressions import __version__
 from impressions.cli import main
 
@@ -308,6 +311,84 @@ def test_evaluate_command_displays_successful_evaluation_results(
         "succeeded": 0,
         "tasks_evaluated": 3,
     }
+
+
+def test_run_command_prints_task_status_and_persists_run(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    monkeypatch.chdir(tmp_path)
+
+    assert main(["run"]) == 0
+
+    output = capsys.readouterr().out
+    assert "[failed] example-task" in output
+    assert "1 attempt(s) evaluated" in output
+    assert "Results written to:" in output
+
+
+def test_run_command_rejects_k_greater_than_configured_attempts(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    monkeypatch.chdir(tmp_path)
+
+    assert main(["run", "--k", "2"]) == 1
+
+    assert "must be a positive integer" in capsys.readouterr().out
+
+
+def test_run_command_exercises_model_grader_pipeline(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    (tmp_path / "tasks" / "example.yaml").write_text(
+        "\n".join([
+            "version: 1", "name: add", "description: Add.", "input:",
+            "  prompt: Write add.", "expected:", "  type: code", "execution:",
+            "  entrypoint: solution.py", "  tests: tests/test_solution.py",
+            "  timeout_seconds: 30", "",
+        ]), encoding="utf-8"
+    )
+    tests_dir = tmp_path / "tasks" / "tests"
+    tests_dir.mkdir()
+    (tests_dir / "test_solution.py").write_text("def test_add(): assert True\n", encoding="utf-8")
+    config_path = tmp_path / "impressions.toml"
+    config_path.write_text(
+        config_path.read_text(encoding="utf-8")
+        .replace("attempts = 1\npass_at_k = 1", "attempts = 2\npass_at_k = 2"),
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("impressions.cli.create_model_client", lambda config: FakeClient())
+    monkeypatch.setattr("impressions.cli.DockerPythonExecutor", lambda **kwargs: SequenceExecutor())
+
+    assert main(["run"]) == 0
+    output = capsys.readouterr().out
+    assert "[passed] add" in output
+    run_path = next((tmp_path / "reports").iterdir())
+    run = json.loads((run_path / "run.json").read_text(encoding="utf-8"))
+    assert run["metadata"]["evaluator"] == "llm-pytest"
+    assert len(run["results"]) == 2
+    assert run["results"][0]["metadata"]["attempt"] == 1
+    assert run["results"][0]["metadata"]["failure_classification"]["category"] == "test_failure"
+    assert run["results"][1]["metadata"]["passed"] is True
+    assert run["metadata"]["metrics"]["observed_pass_at_k"] == 1.0
+    config = json.loads((run_path / "config.json").read_text(encoding="utf-8"))
+    assert config["model"]["provider"] == "openai"
+
+
+class FakeClient:
+    def generate(self, request):
+        return ModelResponse(text="def add(a, b): return a + b", model="fake")
+
+
+class SequenceExecutor:
+    def __init__(self):
+        self.results = iter([
+            ExecutionResult("1 failed", "", 1, False),
+            ExecutionResult("1 passed", "", 0, False),
+        ])
+
+    def execute(self, code, **kwargs):
+        return next(self.results)
 
 
 def task_yaml(name: str) -> str:

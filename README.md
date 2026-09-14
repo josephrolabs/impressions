@@ -132,6 +132,14 @@ Run the current deterministic evaluation workflow:
 impressions evaluate
 ```
 
+Run the full configured model-to-pytest workflow for coding tasks:
+
+```bash
+impressions run --k 3
+```
+
+`run` persists prompt, model, attempt, grading, failure-classification, and aggregate scoring data under the configured reports directory.
+
 Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
 Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
 

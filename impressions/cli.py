@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from dataclasses import replace
 from pathlib import Path
 
 from impressions import __version__
@@ -19,6 +20,7 @@ from impressions.core.llm_evaluator import LLMEvaluator
 from impressions.core.model_factory import create_model_client
 from impressions.core.prompt_builder import PromptBuilder
 from impressions.core.pytest_grader import PytestCodeGrader
+from impressions.core.pytest_grader import GradingError
 from impressions.core.scoring import MultiAttemptEvaluator, calculate_reliability_metrics
 from impressions.core.reporting import (
     RunMetadata,
@@ -138,6 +140,13 @@ def build_parser() -> argparse.ArgumentParser:
         help="Evaluate discovered task definitions.",
     )
     evaluate_parser.set_defaults(handler=evaluate_tasks)
+
+    run_parser = subparsers.add_parser(
+        "run", help="Run the complete model-to-grading evaluation workflow."
+    )
+    run_parser.add_argument("--tasks", type=Path, help="Override the configured tasks directory.")
+    run_parser.add_argument("--k", type=int, help="Override the configured observed pass@k value.")
+    run_parser.set_defaults(handler=run_tasks)
 
     return parser
 
@@ -264,9 +273,26 @@ def validate_tasks(_args: argparse.Namespace) -> int:
 
 
 def evaluate_tasks(_args: argparse.Namespace) -> int:
+    """Run the legacy evaluation command."""
+    return _run_workflow(_args, command="evaluate", show_task_status=False)
+
+
+def run_tasks(args: argparse.Namespace) -> int:
+    """Run the primary end-to-end model evaluation workflow."""
+    return _run_workflow(args, command="run", show_task_status=True)
+
+
+def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: bool) -> int:
     """Evaluate discovered and validated task definitions."""
     try:
         config = load_project_config()
+        if getattr(args, "tasks", None) is not None:
+            tasks_path = args.tasks if args.tasks.is_absolute() else config.root / args.tasks
+            config = replace(config, paths=replace(config.paths, tasks=tasks_path))
+        if getattr(args, "k", None) is not None:
+            if args.k <= 0 or args.k > config.evaluation.attempts:
+                raise ConfigError("--k must be a positive integer not exceeding configured attempts.")
+            config = replace(config, evaluation=replace(config.evaluation, pass_at_k=args.k))
         tasks = load_tasks_from_config(config)
         if any(task.execution is not None for task in tasks):
             evaluator = CodeTaskEvaluator(
@@ -286,7 +312,7 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
     except (ConfigError, TaskDiscoveryError, TaskValidationError) as exc:
         print(exc)
         return 1
-    except EvaluationEngineError as exc:
+    except (EvaluationEngineError, GradingError) as exc:
         print(exc)
         return 1
     try:
@@ -302,7 +328,7 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
         succeeded = sum(attempt.succeeded for task_result in attempt_results for attempt in task_result.attempts)
         run_path = RunRegistry(config.paths.reports).write(
             metadata={
-                "command": "evaluate",
+                "command": command,
                 "evaluator": evaluator_name,
                 "task_count": len(tasks),
                 "attempts_per_task": config.evaluation.attempts,
@@ -326,6 +352,11 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
                     "attempts": config.evaluation.attempts,
                     "pass_at_k": config.evaluation.pass_at_k,
                 },
+                "model": {
+                    "provider": config.model.provider,
+                    "model": config.model.model,
+                    "timeout": config.model.timeout,
+                },
             },
         )
     except RunRegistryError as exc:
@@ -334,6 +365,11 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
 
     print("Evaluation complete.")
     print()
+    if show_task_status:
+        for task_result in attempt_results:
+            passed = any(attempt.succeeded for attempt in task_result.attempts)
+            print(f"[{ 'passed' if passed else 'failed' }] {task_result.task.name}")
+        print()
     print(f"{len(results)} attempt(s) evaluated")
     print(f"{succeeded} succeeded")
     print()
