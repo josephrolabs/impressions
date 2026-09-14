@@ -14,7 +14,7 @@ REPORT_SCHEMA_VERSION = 1
 
 
 class RunRegistryError(Exception):
-    """Raised when a run artifact cannot be written."""
+    """Raised when a run artifact cannot be written or read."""
 
 
 @dataclass(frozen=True)
@@ -33,6 +33,16 @@ class RunSummary:
     tasks_evaluated: int
     succeeded: int
     failed: int = 0
+
+
+@dataclass(frozen=True)
+class PersistedRun:
+    """Validated, immutable view of the artifacts produced for one evaluation run."""
+
+    path: Path
+    run: Mapping[str, Any]
+    config: Mapping[str, Any]
+    summary: Mapping[str, Any]
 
 
 @dataclass(frozen=True)
@@ -105,6 +115,102 @@ class RunRegistry:
         raise RunRegistryError(
             f"Unable to allocate a run ID for {prefix}; tried 999 run directories."
         )
+
+
+def load_persisted_run(path: Path | str) -> PersistedRun:
+    """Load and validate the three immutable artifacts for a persisted run."""
+    run_path = Path(path)
+    if not run_path.is_dir():
+        raise RunRegistryError(f"Run path is not a directory: {run_path}")
+
+    run = _read_json_object(run_path / "run.json")
+    config = _read_json_object(run_path / "config.json")
+    summary = _read_json_object(run_path / "summary.json")
+    if run.get("schema_version") != REPORT_SCHEMA_VERSION:
+        raise RunRegistryError(
+            f"Unsupported run schema version in {run_path / 'run.json'}: "
+            f"{run.get('schema_version')!r}."
+        )
+    for field in ("run_id", "created_at"):
+        if not isinstance(run.get(field), str):
+            raise RunRegistryError(f"Run artifact is missing a string {field!r} field.")
+    if not isinstance(run.get("metadata"), Mapping):
+        raise RunRegistryError("Run artifact is missing a metadata object.")
+    if not isinstance(run.get("results"), list):
+        raise RunRegistryError("Run artifact is missing a results list.")
+    return PersistedRun(path=run_path, run=run, config=config, summary=summary)
+
+
+def render_terminal_report(persisted_run: PersistedRun) -> str:
+    """Render a deterministic, read-only terminal report for one persisted run."""
+    run = persisted_run.run
+    metadata = run["metadata"]
+    model = persisted_run.config.get("model", {})
+    metrics = metadata.get("metrics", {})
+    if not isinstance(model, Mapping):
+        model = {}
+    if not isinstance(metrics, Mapping):
+        metrics = {}
+
+    lines = [
+        f"Run: {run['run_id']}",
+        f"Timestamp: {run['created_at']}",
+        f"Model: {model.get('provider', 'unknown')} / {model.get('model', 'unknown')}",
+        f"Tasks: {metadata.get('task_count', persisted_run.summary.get('tasks_evaluated', 0))}",
+        f"Attempts per task: {metadata.get('attempts_per_task', 'unknown')}",
+        "",
+        "Tasks:",
+    ]
+    for result in run["results"]:
+        if not isinstance(result, Mapping):
+            raise RunRegistryError("Run artifact contains a non-object result.")
+        task = result.get("task", {})
+        result_metadata = result.get("metadata", {})
+        if not isinstance(task, Mapping) or not isinstance(result_metadata, Mapping):
+            raise RunRegistryError("Run artifact contains a result with invalid task or metadata.")
+        status = "passed" if result_metadata.get("passed") is True else "failed"
+        name = task.get("name", "unknown")
+        attempt = result_metadata.get("attempt", 1)
+        detail = _result_detail(result_metadata)
+        lines.append(f"  [{status}] {name} (attempt {attempt}){detail}")
+
+    lines.extend([
+        "",
+        "Summary:",
+        f"  Passed attempts: {persisted_run.summary.get('succeeded', 0)} / {persisted_run.summary.get('tasks_evaluated', 0)}",
+        f"  Pass@1: {_format_metric(metrics.get('first_attempt_success_rate'))}",
+        f"  Observed pass@k: {_format_metric(metrics.get('observed_pass_at_k'))}",
+        f"  Mean attempts to success: {_format_metric(metrics.get('mean_attempts_to_success'))}",
+    ])
+    return "\n".join(lines)
+
+
+def _read_json_object(path: Path) -> Mapping[str, Any]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except FileNotFoundError as exc:
+        raise RunRegistryError(f"Run artifact is missing: {path}") from exc
+    except (OSError, json.JSONDecodeError) as exc:
+        raise RunRegistryError(f"Unable to read run artifact {path}: {exc}") from exc
+    if not isinstance(payload, Mapping):
+        raise RunRegistryError(f"Run artifact must contain a JSON object: {path}")
+    return payload
+
+
+def _result_detail(metadata: Mapping[str, Any]) -> str:
+    passed = metadata.get("passed_tests")
+    total = metadata.get("total_tests")
+    details: list[str] = []
+    if isinstance(passed, int) and isinstance(total, int):
+        details.append(f"tests {passed}/{total}")
+    classification = metadata.get("failure_classification")
+    if isinstance(classification, Mapping) and isinstance(classification.get("category"), str):
+        details.append(f"failure {classification['category']}")
+    return f" — {', '.join(details)}" if details else ""
+
+
+def _format_metric(value: Any) -> str:
+    return "n/a" if value is None else str(value)
 
 
 def _write_json(path: Path, payload: Any) -> None:

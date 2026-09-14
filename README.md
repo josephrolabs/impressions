@@ -140,6 +140,14 @@ impressions run --k 3
 
 `run` persists prompt, model, attempt, grading, failure-classification, and aggregate scoring data under the configured reports directory.
 
+Render a saved run without calling a model provider or executing any task:
+
+```bash
+impressions report reports/2026-09-13_001
+```
+
+The terminal report shows the run identity, model, per-attempt status and pytest counts where available, failure classifications, and aggregate pass@k metrics.
+
 Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
 Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
 
@@ -210,7 +218,7 @@ Key modules:
 - `impressions.core.config`: `impressions.toml` loading and validation.
 - `impressions.core.tasks`: YAML task discovery, parsing, and validation.
 - `impressions.core.evaluation`: evaluator protocol, result object, `EvaluationEngine`, and `EchoEvaluator`.
-- `impressions.core.reporting`: run registry and structured report artifact writing.
+- `impressions.core.reporting`: run registry, persisted-artifact validation, and deterministic terminal report rendering.
 - `tests`: unit tests for current package behavior.
 
 ## Task Format

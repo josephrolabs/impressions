@@ -43,10 +43,13 @@ from impressions.core.prompt_builder import (
 )
 from impressions.core.pytest_grader import GradingError, PytestCodeGrader
 from impressions.core.reporting import (
+    PersistedRun,
     RunMetadata,
     RunRegistry,
     RunRegistryError,
     RunSummary,
+    load_persisted_run,
+    render_terminal_report,
 )
 from impressions.core.tasks import (
     ParsedTask,
@@ -101,6 +104,7 @@ __all__ = [
     "PromptBuilder",
     "PromptBuilderError",
     "PromptRenderResult",
+    "PersistedRun",
     "PytestCodeGrader",
     "RunMetadata",
     "RunRegistry",
@@ -118,10 +122,12 @@ __all__ = [
     "discover_tasks_from_config",
     "load_task",
     "load_project_config",
+    "load_persisted_run",
     "load_tasks",
     "load_tasks_from_config",
     "parse_task",
     "parse_task_data",
+    "render_terminal_report",
     "create_model_client",
     "classify_failure",
     "calculate_reliability_metrics",

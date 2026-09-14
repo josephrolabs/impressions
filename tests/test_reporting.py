@@ -15,6 +15,8 @@ from impressions.core.reporting import (
     RunRegistry,
     RunRegistryError,
     RunSummary,
+    load_persisted_run,
+    render_terminal_report,
 )
 from impressions.core.tasks import Task, TaskExpected, TaskInput
 
@@ -101,6 +103,67 @@ def test_reporting_api_exports_from_core_package():
     assert PublicRunRegistryError is RunRegistryError
     assert PublicRunMetadata is RunMetadata
     assert PublicRunSummary is RunSummary
+
+
+def test_load_and_render_persisted_run(tmp_path):
+    registry = RunRegistry(tmp_path, clock=fixed_clock)
+    run_path = registry.write(
+        metadata={
+            "task_count": 1,
+            "attempts_per_task": 2,
+            "metrics": {
+                "first_attempt_success_rate": 0.0,
+                "observed_pass_at_k": 1.0,
+                "mean_attempts_to_success": 2.0,
+            },
+        },
+        results=[
+            {
+                "task": {"name": "add"},
+                "metadata": {
+                    "attempt": 1,
+                    "passed": False,
+                    "passed_tests": 0,
+                    "total_tests": 1,
+                    "failure_classification": {"category": "test_failure"},
+                },
+            },
+            {"task": {"name": "add"}, "metadata": {"attempt": 2, "passed": True}},
+        ],
+        summary={"tasks_evaluated": 2, "succeeded": 1},
+        config={"model": {"provider": "openai", "model": "test-model"}},
+    )
+
+    report = render_terminal_report(load_persisted_run(run_path))
+
+    assert report == "\n".join([
+        "Run: 2026-07-18_001",
+        "Timestamp: 2026-07-18T12:30:00+00:00",
+        "Model: openai / test-model",
+        "Tasks: 1",
+        "Attempts per task: 2",
+        "",
+        "Tasks:",
+        "  [failed] add (attempt 1) — tests 0/1, failure test_failure",
+        "  [passed] add (attempt 2)",
+        "",
+        "Summary:",
+        "  Passed attempts: 1 / 2",
+        "  Pass@1: 0.0",
+        "  Observed pass@k: 1.0",
+        "  Mean attempts to success: 2.0",
+    ])
+
+
+def test_load_persisted_run_rejects_malformed_artifacts(tmp_path):
+    run_path = tmp_path / "broken"
+    run_path.mkdir()
+    (run_path / "run.json").write_text("not-json", encoding="utf-8")
+    (run_path / "config.json").write_text("{}", encoding="utf-8")
+    (run_path / "summary.json").write_text("{}", encoding="utf-8")
+
+    with pytest.raises(RunRegistryError, match="Unable to read run artifact"):
+        load_persisted_run(run_path)
 
 
 @dataclass(frozen=True)
