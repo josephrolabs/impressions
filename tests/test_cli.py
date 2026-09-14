@@ -402,6 +402,29 @@ def test_report_command_reports_missing_artifact(tmp_path, capsys):
     assert "Run path is not a directory" in capsys.readouterr().out
 
 
+def test_compare_command_reads_persisted_runs_without_evaluating(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    monkeypatch.chdir(tmp_path)
+    assert main(["evaluate"]) == 0
+    capsys.readouterr()
+    first_run = next((tmp_path / "reports").iterdir())
+    assert main(["evaluate"]) == 0
+    capsys.readouterr()
+    second_run = max((tmp_path / "reports").iterdir())
+    monkeypatch.setattr(
+        "impressions.cli.create_model_client",
+        lambda _config: pytest.fail("compare must not create a model client"),
+    )
+
+    assert main(["compare", str(first_run), str(second_run)]) == 0
+
+    output = capsys.readouterr().out
+    assert f"Baseline:\n  Run: {first_run.name}" in output
+    assert f"Candidate:\n  Run: {second_run.name}" in output
+    assert "Metric deltas" in output
+
+
 class FakeClient:
     def generate(self, request):
         return ModelResponse(text="def add(a, b): return a + b", model="fake")

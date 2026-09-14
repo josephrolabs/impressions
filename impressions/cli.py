@@ -27,7 +27,9 @@ from impressions.core.reporting import (
     RunRegistry,
     RunRegistryError,
     RunSummary,
+    compare_persisted_runs,
     load_persisted_run,
+    render_terminal_comparison,
     render_terminal_report,
 )
 from impressions.core.tasks import (
@@ -155,6 +157,13 @@ def build_parser() -> argparse.ArgumentParser:
     )
     report_parser.add_argument("run_path", type=Path, help="Directory containing run.json, config.json, and summary.json.")
     report_parser.set_defaults(handler=report_run)
+
+    compare_parser = subparsers.add_parser(
+        "compare", help="Compare two persisted evaluation runs without re-running them."
+    )
+    compare_parser.add_argument("baseline", type=Path, help="Baseline run directory.")
+    compare_parser.add_argument("candidate", type=Path, help="Candidate run directory.")
+    compare_parser.set_defaults(handler=compare_runs)
 
     return parser
 
@@ -294,6 +303,18 @@ def report_run(args: argparse.Namespace) -> int:
     """Render saved artifacts only; never evaluate tasks or initialize a model."""
     try:
         print(render_terminal_report(load_persisted_run(args.run_path)))
+    except RunRegistryError as exc:
+        print(exc)
+        return 1
+    return 0
+
+
+def compare_runs(args: argparse.Namespace) -> int:
+    """Compare saved artifacts only; never evaluate tasks or initialize a model."""
+    try:
+        baseline = load_persisted_run(args.baseline)
+        candidate = load_persisted_run(args.candidate)
+        print(render_terminal_comparison(compare_persisted_runs(baseline, candidate)))
     except RunRegistryError as exc:
         print(exc)
         return 1
