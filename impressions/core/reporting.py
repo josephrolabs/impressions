@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 from dataclasses import asdict, dataclass, is_dataclass
 from datetime import datetime, timezone
+from enum import Enum
 from pathlib import Path
 from typing import Any, Callable, Iterable, Mapping
 
@@ -119,6 +120,9 @@ def _to_json_data(value: Any) -> Any:
 
     if isinstance(value, Path):
         return value.as_posix()
+
+    if isinstance(value, Enum):
+        return value.value
 
     if isinstance(value, Mapping):
         return {str(key): _to_json_data(item) for key, item in value.items()}
