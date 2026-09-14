@@ -27,6 +27,8 @@ from impressions.core.reporting import (
     RunRegistry,
     RunRegistryError,
     RunSummary,
+    load_persisted_run,
+    render_terminal_report,
 )
 from impressions.core.tasks import (
     TaskDiscoveryError,
@@ -147,6 +149,12 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--tasks", type=Path, help="Override the configured tasks directory.")
     run_parser.add_argument("--k", type=int, help="Override the configured observed pass@k value.")
     run_parser.set_defaults(handler=run_tasks)
+
+    report_parser = subparsers.add_parser(
+        "report", help="Render a persisted evaluation run without re-running it."
+    )
+    report_parser.add_argument("run_path", type=Path, help="Directory containing run.json, config.json, and summary.json.")
+    report_parser.set_defaults(handler=report_run)
 
     return parser
 
@@ -280,6 +288,16 @@ def evaluate_tasks(_args: argparse.Namespace) -> int:
 def run_tasks(args: argparse.Namespace) -> int:
     """Run the primary end-to-end model evaluation workflow."""
     return _run_workflow(args, command="run", show_task_status=True)
+
+
+def report_run(args: argparse.Namespace) -> int:
+    """Render saved artifacts only; never evaluate tasks or initialize a model."""
+    try:
+        print(render_terminal_report(load_persisted_run(args.run_path)))
+    except RunRegistryError as exc:
+        print(exc)
+        return 1
+    return 0
 
 
 def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: bool) -> int:

@@ -375,6 +375,33 @@ def test_run_command_exercises_model_grader_pipeline(tmp_path, monkeypatch, caps
     assert config["model"]["provider"] == "openai"
 
 
+def test_report_command_reads_persisted_run_without_evaluating(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    monkeypatch.chdir(tmp_path)
+    assert main(["evaluate"]) == 0
+    capsys.readouterr()
+    run_path = next((tmp_path / "reports").iterdir())
+    monkeypatch.setattr(
+        "impressions.cli.create_model_client",
+        lambda _config: pytest.fail("report must not create a model client"),
+    )
+
+    assert main(["report", str(run_path)]) == 0
+
+    output = capsys.readouterr().out
+    assert f"Run: {run_path.name}" in output
+    assert "Tasks:" in output
+    assert "Summary:" in output
+    assert "Pass@1: 0.0" in output
+
+
+def test_report_command_reports_missing_artifact(tmp_path, capsys):
+    assert main(["report", str(tmp_path / "missing")]) == 1
+
+    assert "Run path is not a directory" in capsys.readouterr().out
+
+
 class FakeClient:
     def generate(self, request):
         return ModelResponse(text="def add(a, b): return a + b", model="fake")
