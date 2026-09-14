@@ -10,6 +10,7 @@ from impressions.core.tasks import (
     TaskDiscoveryError,
     TaskExpected,
     TaskInput,
+    TaskMetadata,
     TaskValidationError,
     discover_tasks,
     discover_tasks_from_config,
@@ -138,6 +139,18 @@ def test_parse_task_alias_parses_task_file(tmp_path):
 
     assert isinstance(task, Task)
     assert task.name == "summarize-article"
+
+
+def test_load_task_parses_optional_benchmark_metadata(tmp_path):
+    task_path = tmp_path / "benchmark.yaml"
+    task_path.write_text(
+        valid_task_yaml("benchmark") + "\nmetadata:\n  difficulty: medium\n  category: bug_fix\n",
+        encoding="utf-8",
+    )
+
+    task = load_task(task_path)
+
+    assert task.metadata == TaskMetadata(difficulty="medium", category="bug_fix")
 
 
 def test_load_tasks_discovers_and_parses_valid_task_definitions(tmp_path):

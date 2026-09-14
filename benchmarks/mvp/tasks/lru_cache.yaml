@@ -1,0 +1,16 @@
+version: 1
+name: lru-cache
+description: Refactor a supplied legacy cache implementation into a capacity-bounded LRUCache.
+input:
+  prompt: Refactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_lru_cache.py
+  files:
+    - fixtures/legacy_cache.py
+  timeout_seconds: 10
+metadata:
+  difficulty: medium
+  category: refactor

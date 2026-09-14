@@ -156,6 +156,18 @@ impressions compare reports/2026-09-13_001 reports/2026-09-13_002
 
 The comparison reports candidate-minus-baseline metric deltas, task improvements/regressions, partial task-set overlap, and failure-type distribution differences.
 
+### MVP coding benchmark
+
+The curated benchmark lives in `benchmarks/mvp/tasks`. It contains nine deterministic Python tasks: three easy, four medium, and two hard. Categories cover function generation, bug/algorithm repair, refactoring, test-oriented validation, error handling, and a small inventory repair task. Each task has task-local pytest coverage and a canonical solution used by the repository integrity tests; canonical solutions are not supplied to the evaluator.
+
+To evaluate it, point a project configuration's `paths.tasks` at `benchmarks/mvp/tasks` and run:
+
+```bash
+impressions run
+```
+
+The suite is intentionally compact and Python-only. It is a reproducible MVP smoke/regression benchmark, not a representative public leaderboard.
+
 Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
 Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
 

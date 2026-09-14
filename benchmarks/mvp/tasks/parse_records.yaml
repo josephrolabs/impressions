@@ -1,0 +1,14 @@
+version: 1
+name: parse-records
+description: Implement solve(lines) that returns normalized name/email dictionaries and skips blank lines.
+input:
+  prompt: Each nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_parse_records.py
+  timeout_seconds: 10
+metadata:
+  difficulty: medium
+  category: error_handling
