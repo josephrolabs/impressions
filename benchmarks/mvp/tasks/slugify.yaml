@@ -1,0 +1,14 @@
+version: 1
+name: slugify-title
+description: Implement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.
+input:
+  prompt: Implement solve(title) in solution.py without external dependencies.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_slugify.py
+  timeout_seconds: 10
+metadata:
+  difficulty: easy
+  category: function_generation

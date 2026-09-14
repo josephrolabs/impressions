@@ -1,0 +1,14 @@
+version: 1
+name: merge-intervals
+description: Implement solve(intervals) that sorts and merges overlapping or touching integer intervals.
+input:
+  prompt: Implement solve(intervals) in solution.py; do not mutate the input list.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_merge_intervals.py
+  timeout_seconds: 10
+metadata:
+  difficulty: medium
+  category: bug_fix

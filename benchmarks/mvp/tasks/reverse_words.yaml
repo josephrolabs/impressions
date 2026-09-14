@@ -1,0 +1,14 @@
+version: 1
+name: reverse-words
+description: Implement solve(text) that reverses whitespace-separated words and joins them with one space.
+input:
+  prompt: Implement solve(text) in solution.py. Normalize whitespace, then reverse the words.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_reverse_words.py
+  timeout_seconds: 10
+metadata:
+  difficulty: easy
+  category: function_generation

@@ -1,0 +1,16 @@
+version: 1
+name: inventory-repair
+description: Implement solve(records) that applies inventory deltas atomically and rejects invalid updates.
+input:
+  prompt: Repair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_inventory_repair.py
+  files:
+    - fixtures/inventory.py
+  timeout_seconds: 10
+metadata:
+  difficulty: hard
+  category: multi_file_repair

@@ -32,11 +32,15 @@ class PytestCodeGrader:
             raise GradingError(f"Unable to read task test file {test_path}: {exc}") from exc
 
         try:
+            files = {task.execution.tests: test_source}
+            for relative_path in task.execution.files:
+                fixture_path = _task_relative_file_path(task, relative_path)
+                files[relative_path] = fixture_path.read_text(encoding="utf-8")
             execution = self.executor.execute(
                 code,
                 timeout_seconds=task.execution.timeout_seconds,
                 source_filename=task.execution.entrypoint,
-                files={task.execution.tests: test_source},
+                files=files,
                 command=("python", "-m", "pytest", f"/source/{task.execution.tests}"),
             )
         except ExecutionError as exc:
@@ -72,7 +76,11 @@ class PytestCodeGrader:
 
 
 def _task_relative_test_path(task: Task) -> Path:
-    relative_path = Path(task.execution.tests)
+    return _task_relative_file_path(task, task.execution.tests)
+
+
+def _task_relative_file_path(task: Task, relative_name: str) -> Path:
+    relative_path = Path(relative_name)
     if relative_path.is_absolute() or ".." in relative_path.parts:
         raise GradingError("Task test path must be relative to its task file.")
     task_root = task.path.parent.resolve()

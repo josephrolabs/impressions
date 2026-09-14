@@ -78,6 +78,15 @@ class TaskExecution:
     entrypoint: str
     tests: str
     timeout_seconds: int
+    files: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class TaskMetadata:
+    """Optional curation metadata for benchmark tasks."""
+
+    difficulty: str
+    category: str
 
 
 @dataclass(frozen=True)
@@ -91,6 +100,7 @@ class Task:
     input: TaskInput
     expected: TaskExpected
     execution: TaskExecution | None = None
+    metadata: TaskMetadata | None = None
 
 
 ParsedTask = Task
@@ -178,6 +188,10 @@ def parse_task_data(data: Any, path: str | Path) -> Task:
     if execution_data is not None and not isinstance(execution_data, dict):
         errors.append(TaskFieldError("execution", "Expected a mapping."))
         execution_data = None
+    metadata_data = data.get("metadata")
+    if metadata_data is not None and not isinstance(metadata_data, dict):
+        errors.append(TaskFieldError("metadata", "Expected a mapping."))
+        metadata_data = None
 
     prompt = None
     if input_data is not None:
@@ -192,12 +206,24 @@ def parse_task_data(data: Any, path: str | Path) -> Task:
             parent="expected",
         )
     entrypoint = tests = timeout_seconds = None
+    files: tuple[str, ...] = ()
     if execution_data is not None:
         entrypoint = _required_non_empty_str(execution_data, "entrypoint", errors, parent="execution")
         tests = _required_non_empty_str(execution_data, "tests", errors, parent="execution")
         timeout_seconds = _required_int(execution_data, "timeout_seconds", errors, parent="execution")
         if timeout_seconds is not None and timeout_seconds <= 0:
             errors.append(TaskFieldError("execution.timeout_seconds", "Expected a positive integer."))
+        raw_files = execution_data.get("files", [])
+        if not isinstance(raw_files, list) or any(not isinstance(item, str) or not item.strip() for item in raw_files):
+            errors.append(TaskFieldError("execution.files", "Expected a list of non-empty relative paths."))
+        else:
+            files = tuple(raw_files)
+    difficulty = category = None
+    if metadata_data is not None:
+        difficulty = _required_non_empty_str(metadata_data, "difficulty", errors, parent="metadata")
+        category = _required_non_empty_str(metadata_data, "category", errors, parent="metadata")
+        if difficulty is not None and difficulty not in {"easy", "medium", "hard"}:
+            errors.append(TaskFieldError("metadata.difficulty", "Expected one of: easy, medium, hard."))
 
     if version is not None and version != SUPPORTED_TASK_SCHEMA_VERSION:
         errors.append(
@@ -219,10 +245,11 @@ def parse_task_data(data: Any, path: str | Path) -> Task:
         input=TaskInput(prompt=prompt),
         expected=TaskExpected(type=expected_type),
         execution=(
-            TaskExecution(entrypoint=entrypoint, tests=tests, timeout_seconds=timeout_seconds)
+            TaskExecution(entrypoint=entrypoint, tests=tests, timeout_seconds=timeout_seconds, files=files)
             if execution_data is not None
             else None
         ),
+        metadata=(TaskMetadata(difficulty=difficulty, category=category) if metadata_data is not None else None),
     )
 
 

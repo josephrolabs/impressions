@@ -1,0 +1,14 @@
+version: 1
+name: clamp-value
+description: Implement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.
+input:
+  prompt: Implement solve(value, lower, upper) in solution.py.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_clamp.py
+  timeout_seconds: 10
+metadata:
+  difficulty: easy
+  category: error_handling

@@ -1,0 +1,14 @@
+version: 1
+name: topological-sort
+description: Implement solve(nodes, edges) with a deterministic topological ordering and cycle detection.
+input:
+  prompt: Return alphabetically tie-broken topological order; raise ValueError for a cycle.
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_topological_sort.py
+  timeout_seconds: 10
+metadata:
+  difficulty: hard
+  category: algorithm_repair
