@@ -18,7 +18,7 @@ from impressions.core.evaluation import (
 )
 from impressions.core.llm_evaluator import LLMEvaluator
 from impressions.core.model_factory import create_model_client
-from impressions.core.prompt_builder import PromptBuilder
+from impressions.core.prompt_builder import PromptBuilder, PromptBuilderError
 from impressions.core.pytest_grader import PytestCodeGrader
 from impressions.core.pytest_grader import GradingError
 from impressions.core.scoring import MultiAttemptEvaluator, calculate_reliability_metrics
@@ -60,6 +60,9 @@ api_key_env = "OPENAI_API_KEY"
 [evaluation]
 attempts = 1
 pass_at_k = 1
+
+[prompt]
+variant = "baseline"
 """
 
 EXAMPLE_TASK = """\
@@ -333,9 +336,10 @@ def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: b
                 raise ConfigError("--k must be a positive integer not exceeding configured attempts.")
             config = replace(config, evaluation=replace(config.evaluation, pass_at_k=args.k))
         tasks = load_tasks_from_config(config)
+        prompt_builder = PromptBuilder(variant=config.prompt.variant)
         if any(task.execution is not None for task in tasks):
             evaluator = CodeTaskEvaluator(
-                llm_evaluator=LLMEvaluator(PromptBuilder(), create_model_client(config)),
+                llm_evaluator=LLMEvaluator(prompt_builder, create_model_client(config)),
                 grader=PytestCodeGrader(DockerPythonExecutor(image=PYTEST_IMAGE)),
             )
             evaluator_name = "llm-pytest"
@@ -348,7 +352,7 @@ def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: b
         metrics = calculate_reliability_metrics(
             attempt_results, pass_at_k=config.evaluation.pass_at_k
         )
-    except (ConfigError, TaskDiscoveryError, TaskValidationError) as exc:
+    except (ConfigError, PromptBuilderError, TaskDiscoveryError, TaskValidationError) as exc:
         print(exc)
         return 1
     except (EvaluationEngineError, GradingError) as exc:
@@ -372,6 +376,10 @@ def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: b
                 "task_count": len(tasks),
                 "attempts_per_task": config.evaluation.attempts,
                 "pass_at_k": config.evaluation.pass_at_k,
+                "prompt": {
+                    "variant": config.prompt.variant,
+                    "version": prompt_builder.build(tasks[0]).prompt_version,
+                },
                 "metrics": metrics,
             },
             results=results,
@@ -390,6 +398,10 @@ def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: b
                 "evaluation": {
                     "attempts": config.evaluation.attempts,
                     "pass_at_k": config.evaluation.pass_at_k,
+                },
+                "prompt": {
+                    "variant": config.prompt.variant,
+                    "version": prompt_builder.build(tasks[0]).prompt_version,
                 },
                 "model": {
                     "provider": config.model.provider,

@@ -32,6 +32,7 @@ class LLMEvaluator:
                     metadata={
                         "task_name": task.name,
                         "prompt_version": rendered_prompt.prompt_version,
+                        "prompt_variant": rendered_prompt.prompt_variant,
                     },
                 )
             )
@@ -50,6 +51,7 @@ class LLMEvaluator:
                 "input_tokens": response.input_tokens,
                 "output_tokens": response.output_tokens,
                 "prompt_version": rendered_prompt.prompt_version,
+                "prompt_variant": rendered_prompt.prompt_variant,
                 "system_prompt": rendered_prompt.system_prompt,
                 "user_prompt": rendered_prompt.user_prompt,
                 "model_response_metadata": dict(response.metadata),

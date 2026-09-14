@@ -53,6 +53,11 @@ class EvaluationConfig:
 
 
 @dataclass(frozen=True)
+class PromptConfig:
+    variant: str = "baseline"
+
+
+@dataclass(frozen=True)
 class ProjectConfig:
     """Validated Impressions project configuration."""
 
@@ -63,6 +68,7 @@ class ProjectConfig:
     model: ModelConfig
     credentials: CredentialsConfig
     evaluation: EvaluationConfig
+    prompt: PromptConfig
 
 
 def load_project_config(root: str | Path = ".") -> ProjectConfig:
@@ -115,6 +121,10 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
     pass_at_k = _optional_positive_int(evaluation_data, "pass_at_k", "[evaluation]", 1)
     if pass_at_k > attempts:
         raise ConfigError("Expected 'pass_at_k' in [evaluation] not to exceed 'attempts'.")
+    prompt_data = data.get("prompt", {})
+    if not isinstance(prompt_data, dict):
+        raise ConfigError(f"Expected [prompt] in {CONFIG_FILE_NAME} to be a TOML table.")
+    variant = _optional_non_empty_string(prompt_data, "variant", "[prompt]", "baseline")
 
     return ProjectConfig(
         root=project_root,
@@ -124,6 +134,7 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
         model=ModelConfig(provider=provider, model=model_name, timeout=timeout),
         credentials=CredentialsConfig(api_key_env=api_key_env),
         evaluation=EvaluationConfig(attempts=attempts, pass_at_k=pass_at_k),
+        prompt=PromptConfig(variant=variant),
     )
 
 
@@ -182,6 +193,15 @@ def _required_non_empty_string(
     if not isinstance(value, str):
         raise ConfigError(f"Expected '{key}' in {location} to be a string.")
     if not value.strip():
+        raise ConfigError(f"Expected '{key}' in {location} to be a non-empty string.")
+    return value
+
+
+def _optional_non_empty_string(data: dict[str, Any], key: str, location: str, default: str) -> str:
+    if key not in data:
+        return default
+    value = data[key]
+    if not isinstance(value, str) or not value.strip():
         raise ConfigError(f"Expected '{key}' in {location} to be a non-empty string.")
     return value
 

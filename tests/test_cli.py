@@ -290,6 +290,7 @@ def test_evaluate_command_displays_successful_evaluation_results(
         "task_count": 3,
         "attempts_per_task": 1,
         "pass_at_k": 1,
+        "prompt": {"variant": "baseline", "version": "v1"},
         "metrics": {
             "task_count": 3,
             "first_attempt_success_rate": 0.0,
@@ -299,6 +300,8 @@ def test_evaluate_command_displays_successful_evaluation_results(
             "pass_at_k": 1,
         },
     }
+    config = json.loads((run_path / "config.json").read_text(encoding="utf-8"))
+    assert config["prompt"] == {"variant": "baseline", "version": "v1"}
     assert [result["task"]["name"] for result in run["results"]] == [
         "classify",
         "example-task",
@@ -334,6 +337,18 @@ def test_run_command_rejects_k_greater_than_configured_attempts(tmp_path, monkey
     assert main(["run", "--k", "2"]) == 1
 
     assert "must be a positive integer" in capsys.readouterr().out
+
+
+def test_run_command_rejects_unknown_prompt_variant_even_for_echo_tasks(tmp_path, monkeypatch, capsys):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    config_path = tmp_path / "impressions.toml"
+    config_path.write_text(config_path.read_text(encoding="utf-8").replace('variant = "baseline"', 'variant = "unknown"'), encoding="utf-8")
+    monkeypatch.chdir(tmp_path)
+
+    assert main(["run"]) == 1
+
+    assert "Unknown prompt variant 'unknown'" in capsys.readouterr().out
 
 
 def test_run_command_exercises_model_grader_pipeline(tmp_path, monkeypatch, capsys):
