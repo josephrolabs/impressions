@@ -33,7 +33,7 @@ def test_llm_evaluator_renders_prompt_and_normalizes_model_response():
         ModelRequest(
             prompt=result.metadata["user_prompt"],
             system_prompt=result.metadata["system_prompt"],
-            metadata={"task_name": "add", "prompt_version": "test-v2"},
+                metadata={"task_name": "add", "prompt_version": "test-v2", "prompt_variant": "baseline"},
         )
     ]
     assert result.task is task
@@ -44,7 +44,8 @@ def test_llm_evaluator_renders_prompt_and_normalizes_model_response():
         "model": "test-model-v1",
         "input_tokens": 25,
         "output_tokens": 10,
-        "prompt_version": "test-v2",
+            "prompt_version": "test-v2",
+            "prompt_variant": "baseline",
         "system_prompt": result.metadata["system_prompt"],
         "user_prompt": result.metadata["user_prompt"],
         "model_response_metadata": {"provider_response_id": "response_123"},

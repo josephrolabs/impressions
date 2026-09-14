@@ -71,6 +71,23 @@ def test_prompt_builder_accepts_explicit_prompt_version():
     assert result.prompt_version == "v2"
 
 
+def test_prompt_builder_renders_versioned_baseline_and_engineered_variants():
+    baseline = PromptBuilder(variant="baseline").build(make_task())
+    engineered = PromptBuilder(variant="engineered").build(make_task())
+
+    assert baseline.prompt_variant == "baseline"
+    assert baseline.prompt_version == "v1"
+    assert engineered.prompt_variant == "engineered"
+    assert engineered.prompt_version == "engineered-v1"
+    assert baseline.user_prompt == engineered.user_prompt
+    assert baseline.system_prompt != engineered.system_prompt
+
+
+def test_prompt_builder_rejects_unknown_variant():
+    with pytest.raises(PromptBuilderError, match="Unknown prompt variant 'unknown'"):
+        PromptBuilder(variant="unknown")
+
+
 def test_prompt_builder_rejects_non_task_input():
     builder = PromptBuilder()
 

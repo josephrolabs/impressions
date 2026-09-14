@@ -156,6 +156,22 @@ impressions compare reports/2026-09-13_001 reports/2026-09-13_002
 
 The comparison reports candidate-minus-baseline metric deltas, task improvements/regressions, partial task-set overlap, and failure-type distribution differences.
 
+### Prompt-variant comparison
+
+Prompt strategies are versioned experimental inputs. Set a project configuration to `variant = "baseline"` (minimal legacy behavior) or `variant = "engineered"` (strict code and test-focused guidance) under `[prompt]`, run each configuration, then compare their saved run directories:
+
+```toml
+[prompt]
+variant = "engineered"
+```
+
+```bash
+impressions run
+impressions compare reports/<baseline-run> reports/<engineered-run>
+```
+
+Each run persists the resolved prompt variant and version, so the comparison can be interpreted reproducibly.
+
 ### MVP coding benchmark
 
 The curated benchmark lives in `benchmarks/mvp/tasks`. It contains nine deterministic Python tasks: three easy, four medium, and two hard. Categories cover function generation, bug/algorithm repair, refactoring, test-oriented validation, error handling, and a small inventory repair task. Each task has task-local pytest coverage and a canonical solution used by the repository integrity tests; canonical solutions are not supplied to the evaluator.
