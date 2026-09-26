@@ -1,3 +1,11 @@
+<p align="center">
+  <img src="assets/impressions-banner.png" alt="Impressions — AI Code Evaluation Harness" width="100%" />
+</p>
+
+<p align="center">
+  Deterministic, reproducible evaluation of AI-generated code.
+</p>
+
 # Impressions: AI Code Evaluation Harness
 
 ## Project Summary
