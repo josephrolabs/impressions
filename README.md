@@ -8,196 +8,145 @@
 
 # Impressions: AI Code Evaluation Harness
 
-## Project Summary
+Impressions measures the correctness and reliability of AI-generated code with deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated Docker execution, pytest-based grading, failure classification, pass@k reliability metrics, and versioned run outputs.
 
-Impressions is an evaluation harness for measuring the correctness and reliability of AI-generated code. The first version focuses on deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated execution, pytest-based grading, pass@k-style reliability metrics, and versioned run outputs.
-
-Future versions will explore tracing, dashboards, LLM-as-judge scoring and complex qualitative analysis.
-
-## Current Project Status
-
-Impressions is in pre-alpha. The repository now contains the working foundation for a Python package and CLI, with task discovery, validation, and a deterministic evaluation path. The broader AI-code-evaluation system described later in this README remains the long-term architecture.
-
-Implemented:
-
-- Python package with `impressions` CLI entry point.
-- Project initialization via `impressions init`.
-- Project configuration loading from `impressions.toml`.
-- Provider configuration and environment-based model credentials.
-- Task discovery from configured YAML task directories.
-- YAML task parsing and schema validation.
-- `EvaluationEngine` orchestration primitive.
-- `Evaluator` protocol and structured `EvaluationResult`.
-- Built-in `EchoEvaluator` for deterministic local pipeline verification.
-- `LLMEvaluator` that composes rendered prompts with provider-agnostic model clients.
-- Docker-backed Python execution with network isolation and resource limits.
-- Pytest-based grading for code tasks with task-relative test suites.
-- Deterministic failure classification for execution and pytest outcomes.
-- CLI commands for version, config inspection, task listing, task validation, and evaluation.
-- Run registry that persists evaluation artifacts under the configured reports path.
-- Unit tests covering CLI behavior, configuration, task parsing, task discovery, and evaluation orchestration.
-
-In progress:
-
-- Expanding evaluator backends beyond the deterministic echo evaluator.
-- Connecting the evaluation framework to model generation, execution, and scoring components.
-
-Planned:
-
-- Prompt rendering and prompt-version tracking.
-- Provider-agnostic model clients.
-- Sandboxed execution of generated code.
-- Pytest-based grading of generated solutions.
-- Failure classification and aggregate scoring.
-- Comparison reports and pass@k metrics.
-- Dashboard, CI integration, and qualitative evaluation extensions.
-
-## Design Principles
-
-Impressions is being built around a few practical engineering principles:
-
-- Deterministic-first evaluation: objective, reproducible checks are the foundation before subjective scoring is added.
-- Composable architecture: configuration, task loading, evaluation orchestration, evaluator backends, and reporting are separate concerns.
-- Provider-agnostic interfaces: model and evaluator integrations should be swappable behind stable local interfaces.
-- Incremental development: each milestone should leave behind a working CLI and tested package surface.
-- Test-first engineering: new behavior should be covered by focused unit tests before the system grows more complex.
-
-## Installation
-
-Clone the repository:
+## Quick start
 
 ```bash
 git clone https://github.com/josephrolabs/impressions.git
 cd impressions
-```
-
-Create and activate a virtual environment:
-
-```bash
-python -m venv .venv
-source .venv/bin/activate
-```
-
-Install the package in editable mode with development dependencies:
-
-```bash
+python -m venv .venv && source .venv/bin/activate
 pip install -e . --group dev
-```
-
-Run the test suite:
-
-```bash
 pytest
 ```
 
-## Quick Start
-
-Create a new Impressions project scaffold:
+Scaffold a project, point it at the benchmark, and run it:
 
 ```bash
-impressions init
+impressions init my-eval && cd my-eval
+# set paths.tasks to /path/to/impressions/benchmarks/mvp/tasks in impressions.toml
+export OPENAI_API_KEY=...   # or ANTHROPIC_API_KEY, GEMINI_API_KEY, META_API_KEY
+docker build -t impressions-python-pytest:3.12 /path/to/impressions/docker/pytest
+impressions run --k 3
+impressions report reports/<run-id>
 ```
 
-This creates:
+No API key? `impressions run` falls back to a deterministic echo client so you can verify the whole pipeline without spending anything.
+
+## Model providers
+
+| Provider | Config value | Key env var | Example model |
+|---|---|---|---|
+| OpenAI | `openai` | `OPENAI_API_KEY` | `gpt-5` |
+| Anthropic Claude | `anthropic` | `ANTHROPIC_API_KEY` | `claude-opus-4-6` |
+| Google Gemini | `gemini` | `GEMINI_API_KEY` | `gemini-2.5-pro` |
+| Meta Muse Spark | `meta` | `META_API_KEY` | `muse-spark-1.1` |
+
+```toml
+[model]
+provider = "anthropic"
+model = "claude-opus-4-6"
+timeout = 60
+
+[credentials]
+api_key_env = "ANTHROPIC_API_KEY"
+```
+
+Keys are read from the environment named by `api_key_env` — never from config files. When the key is unset, the run uses the deterministic echo fallback and says so. Each provider client captures token usage and provider metadata (response IDs, stop/finish reasons) into the run artifacts.
+
+## The MVP benchmark
+
+`benchmarks/mvp/tasks` holds 10 deterministic Python tasks (3 easy, 4 medium, 3 hard), each with a task-local pytest suite and a canonical reference solution used by the repo's integrity tests (never shown to the model).
+
+| Task | Difficulty | Category | What it tests |
+|---|---|---|---|
+| reverse-words | easy | function_generation | string manipulation |
+| slugify-title | easy | function_generation | string normalization |
+| clamp-value | easy | error_handling | bounds + input validation |
+| parse-records | medium | error_handling | parsing with malformed input |
+| merge-intervals | medium | function_generation | classic algorithm |
+| inventory-repair | medium | multi_file_repair | reuse a fixture module correctly |
+| validate-password | medium | test_writing | write tests for a supplied implementation |
+| lru-cache | hard | refactor | reimplement on a legacy fixture base class |
+| topological-sort | hard | function_generation | graph algorithm + cycle detection |
+| repair-checkout | hard | debugging | explore a 3-file package, diagnose 2 bugs, compose a correct fix |
+
+The suite is a compact, reproducible smoke/regression benchmark — not a public leaderboard.
+
+## Benchmark results
+
+Model comparison runs go here. Each cell is observed pass@k; run IDs link the numbers to their persisted artifacts.
+
+| Model | pass@1 | pass@3 | Run ID |
+|---|---|---|---|
+| _pending_ | – | – | – |
+
+Results are produced by `impressions run --k 3` against the MVP benchmark and rendered with `impressions report` / `impressions compare`. No fabricated numbers: every figure must trace to a run directory under `reports/`.
+
+## How it works
 
 ```text
-.
-├── impressions.toml
-├── tasks/
-│   └── example.yaml
-└── reports/
+Task YAML → Prompt Builder → Model Client → Docker Sandbox → pytest → Failure Classification → Scoring → Run Registry
 ```
 
-By default, `impressions init` initializes the current directory. You can also pass a target directory:
+1. **Prompt Builder** renders versioned prompts (`baseline` / `engineered` variants) and records the exact text per attempt.
+2. **Model Client** calls the configured provider and captures text, token usage, and metadata.
+3. **Docker Sandbox** executes the generated entrypoint with no network, a read-only root filesystem, dropped capabilities, memory/PID limits, and an unprivileged user. The base image is pinned by digest and pytest is pinned to 8.4.0 for reproducibility.
+4. **Pytest grading** runs the task's own test suite against the generated code inside the sandbox.
+5. **Failure classification** assigns each failure a deterministic category: `syntax_error`, `runtime_error`, `test_failure`, `timeout`, `format_error`, or `other`.
+6. **Scoring** computes first-attempt success rate, observed pass@k, and mean attempts to success.
+7. **Run registry** persists `run.json`, `config.json`, and `summary.json` under a timestamped run directory, recording the prompt variant/version, model configuration, per-attempt outputs, and aggregate metrics.
+
+## CLI reference
 
 ```bash
-impressions init path/to/project
+impressions init [path]          # scaffold a project
+impressions config show           # inspect loaded configuration
+impressions tasks list            # list discovered tasks
+impressions tasks validate        # validate task files
+impressions evaluate              # deterministic echo evaluation (no model calls)
+impressions run --k 3             # full model → sandbox → pytest workflow
+impressions report <run-dir>      # render a saved run
+impressions compare <run-a> <run-b>  # candidate-minus-baseline deltas
 ```
 
-Existing scaffold files are not overwritten unless you confirm the prompt or pass `--force`.
+`run` checks for the `impressions-python-pytest:3.12` image first and prints the exact `docker build` command when it is missing.
 
-Inspect the loaded project configuration:
+## Task format
 
-```bash
-impressions config show
+Tasks are versioned YAML files:
+
+```yaml
+version: 1
+name: merge-intervals
+description: Merge overlapping intervals.
+input:
+  prompt: |
+    Write a function merge(intervals) ...
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_merge_intervals.py
+  files:
+    - fixtures/helpers.py     # optional, mounted alongside the entrypoint
+  timeout_seconds: 30
+metadata:
+  difficulty: medium
+  category: function_generation
 ```
 
-List discovered and validated tasks:
+The generated code is written to `entrypoint`; `tests` and `files` are mounted read-only in the sandbox. Test paths must stay inside the task directory.
 
-```bash
-impressions tasks list
-```
-
-Validate all discovered task files:
-
-```bash
-impressions tasks validate
-```
-
-Run the current deterministic evaluation workflow:
-
-```bash
-impressions evaluate
-```
-
-Run the full configured model-to-pytest workflow for coding tasks:
-
-```bash
-impressions run --k 3
-```
-
-`run` persists prompt, model, attempt, grading, failure-classification, and aggregate scoring data under the configured reports directory.
-
-Render a saved run without calling a model provider or executing any task:
-
-```bash
-impressions report reports/2026-09-13_001
-```
-
-The terminal report shows the run identity, model, per-attempt status and pytest counts where available, failure classifications, and aggregate pass@k metrics.
-
-Compare two saved runs without re-running either evaluation:
-
-```bash
-impressions compare reports/2026-09-13_001 reports/2026-09-13_002
-```
-
-The comparison reports candidate-minus-baseline metric deltas, task improvements/regressions, partial task-set overlap, and failure-type distribution differences.
-
-### Prompt-variant comparison
-
-Prompt strategies are versioned experimental inputs. Set a project configuration to `variant = "baseline"` (minimal legacy behavior) or `variant = "engineered"` (strict code and test-focused guidance) under `[prompt]`, run each configuration, then compare their saved run directories:
+## Configuration
 
 ```toml
-[prompt]
-variant = "engineered"
-```
+version = 1
 
-```bash
-impressions run
-impressions compare reports/<baseline-run> reports/<engineered-run>
-```
+[paths]
+tasks = "tasks"
+reports = "reports"
 
-Each run persists the resolved prompt variant and version, so the comparison can be interpreted reproducibly.
-
-### MVP coding benchmark
-
-The curated benchmark lives in `benchmarks/mvp/tasks`. It contains nine deterministic Python tasks: three easy, four medium, and two hard. Categories cover function generation, bug/algorithm repair, refactoring, test-oriented validation, error handling, and a small inventory repair task. Each task has task-local pytest coverage and a canonical solution used by the repository integrity tests; canonical solutions are not supplied to the evaluator.
-
-To evaluate it, point a project configuration's `paths.tasks` at `benchmarks/mvp/tasks` and run:
-
-```bash
-impressions run
-```
-
-The suite is intentionally compact and Python-only. It is a reproducible MVP smoke/regression benchmark, not a representative public leaderboard.
-
-Today, `impressions evaluate` loads validated tasks and runs them through `EvaluationEngine` with the built-in `EchoEvaluator`. This verifies the local evaluation pipeline without calling an external model provider.
-Each evaluation also writes a timestamped run directory under the configured reports path, including `run.json`, `config.json`, and `summary.json`.
-
-The generated `impressions.toml` also declares the model to use when an LLM-backed evaluator is enabled. Keep credentials out of that file: `api_key_env` names the environment variable that supplies the key.
-
-```toml
 [model]
 provider = "openai"
 model = "gpt-5"
@@ -205,404 +154,77 @@ timeout = 30
 
 [credentials]
 api_key_env = "OPENAI_API_KEY"
+
+[evaluation]
+attempts = 3
+pass_at_k = 3
+
+[prompt]
+variant = "engineered"
 ```
 
-## Current Architecture
+## Design principles
 
-The implemented architecture is intentionally small:
+- **Deterministic-first:** objective, reproducible checks are the foundation; subjective scoring comes later.
+- **Correctness first, nuance later:** if a signal can't be measured deterministically, it waits.
+- **Composable:** config, task loading, prompting, model clients, execution, grading, scoring, and reporting are separate concerns behind stable interfaces.
+- **Reproducible:** pinned images, pinned dependencies, versioned prompts, and persisted run artifacts.
+- **Test-first:** new behavior ships with focused tests (193 and counting).
 
-```text
-Task YAML
-    |
-    v
-impressions.toml
-    |
-    v
-Task Discovery
-    |
-    v
-Task Validation
-    |
-    v
-EvaluationEngine
-    |
-    v
-Evaluator
-    |
-    v
-CLI Output
-```
-
-This foundation is designed to grow into the target architecture below. The current CLI proves that projects can be initialized, configured, discovered, validated, and evaluated through a stable package interface.
-
-## Repository Structure
+## Repository structure
 
 ```text
 .
 ├── impressions/
-│   ├── __init__.py
 │   ├── cli.py
 │   └── core/
-│       ├── __init__.py
-│       ├── config.py
-│       ├── evaluation.py
-│       └── tasks.py
-├── tests/
-│   ├── test_cli.py
-│   ├── test_config.py
-│   ├── test_evaluation.py
-│   └── test_tasks.py
-├── pyproject.toml
-└── README.md
+│       ├── config.py            # impressions.toml loading and validation
+│       ├── tasks.py             # YAML task discovery, parsing, validation
+│       ├── prompt_builder.py    # versioned prompt rendering
+│       ├── model_client.py      # ModelClient protocol, echo fallback
+│       ├── model_factory.py     # provider dispatch
+│       ├── openai_client.py     # OpenAI Responses API
+│       ├── anthropic_client.py  # Anthropic Messages API
+│       ├── gemini_client.py     # Gemini Developer API
+│       ├── meta_client.py       # Meta Model API (OpenAI-compatible)
+│       ├── docker_executor.py   # sandboxed execution via Docker CLI
+│       ├── pytest_grader.py     # pytest grading + output parsing
+│       ├── failure_classification.py
+│       ├── scoring.py           # pass@k, first-attempt, attempts-to-success
+│       ├── evaluation.py        # evaluator protocol, engine, echo evaluator
+│       ├── llm_evaluator.py     # model → grade pipeline
+│       ├── code_evaluator.py
+│       └── reporting.py         # run registry, report, compare
+├── benchmarks/mvp/
+│   ├── tasks/                   # 10 task YAMLs + tests + fixtures
+│   └── reference_solutions/     # canonical solutions (integrity tests only)
+├── docker/pytest/               # digest-pinned pytest execution image
+└── tests/
 ```
 
-Key modules:
+## Long-term direction
 
-- `impressions.cli`: command-line parser and command handlers.
-- `impressions.core.config`: `impressions.toml` loading and validation.
-- `impressions.core.tasks`: YAML task discovery, parsing, and validation.
-- `impressions.core.evaluation`: evaluator protocol, result object, `EvaluationEngine`, and `EchoEvaluator`.
-- `impressions.core.reporting`: run registry, persisted-artifact validation, and deterministic terminal report rendering.
-- `tests`: unit tests for current package behavior.
-
-## Task Format
-
-Current task files use schema version 1 and are stored as `.yaml` or `.yml` files in the configured tasks directory.
-
-```yaml
-version: 1
-name: example-task
-description: Summarize the supplied article.
-
-input:
-  prompt: |
-    Write a concise summary of the supplied article.
-
-expected:
-  type: text
-```
-
-Required fields:
-
-- `version`: task schema version. Currently `1`.
-- `name`: non-empty task name displayed by the CLI.
-- `description`: non-empty human-readable task description.
-- `input.prompt`: non-empty prompt text.
-- `expected.type`: non-empty expected output type.
-
-Code tasks can additionally declare an external, task-relative pytest file:
-
-```yaml
-execution:
-  entrypoint: solution.py
-  tests: tests/test_solution.py
-  timeout_seconds: 30
-```
-
-The test suite is mounted read-only in the sandbox. Configure the executor used for
-pytest grading with the curated `impressions-python-pytest:3.12` image defined in
-`docker/pytest/Dockerfile`; build and publish a pinned image before using it in an
-evaluation environment.
-
-Repeated evaluation is configured in `impressions.toml`:
-
-```toml
-[evaluation]
-attempts = 3
-pass_at_k = 3
-```
-
-Impressions records each attempt in order and calculates first-attempt success,
-observed pass@k, and mean attempts to success through its scoring API.
-
-## Background: A Study in Impressions
-
-AI systems are inherently non-deterministic. Their outputs often manifest as fluid, unstructured prose that resists traditional unit testing. Much like a jazz performance, an AI model may explore a unique melody every time it is invoked, making it difficult to capture performance with rigid, binary assessments.
-
-AI models do not merely "compute" - they express. To truly measure their performance, we need a framework that reconciles the cold precision of deterministic testing with the subjective nuance of human judgment.
-
-### Why "Impressions"?
-
-This project is named **Impressions** - a nod to the jazz standard by John Coltrane. Just as a jazz composition provides a structural framework for improvisation, this harness provides a structure for evaluation. In jazz, a theme is interpreted differently by every musician, and each "impression" reveals a unique dimension of the melody.
-
-In this framework, an **Impression** is the atomic unit of assessment - a polymorphic construct that defines how we measure AI behavior. An Impression serves as a unified interface for disparate grading methods:
-
-- **Deterministic:** A unit test or regex match for rigid code requirements.
-- **Model-Based:** An "LLM-as-a-judge" that analyzes tone, reasoning, or quality.
-- **Human-Centric:** An interface for expert-in-the-loop qualitative feedback.
-
-By abstracting diverse grading methodologies into a unified interface, Impressions allows developers to build layered evaluation pipelines. You are not merely running a test suite; you are gathering a collection of impressions to develop a holistic, multi-faceted understanding of your model's capabilities.
-
-## Target Architecture
-
-The following diagram represents the long-term architecture, not the complete current implementation:
+The implemented pipeline above is the working core. Longer-term directions being considered:
 
 ```text
-Problem Dataset
-    |
-    v
-Prompt Builder
-    |
-    v
-Model Layer
-    |
-    v
-Execution Sandbox
-    |
-    v
-Test Runner
-    |
-    v
-Scoring Engine
-    |
-    v
-Results Store
-    |
-    v
-Analysis and Reporting
+Problem Dataset → Prompt Builder → Model Layer → Execution Sandbox → Test Runner → Scoring Engine → Results Store → Analysis and Reporting
 ```
 
-## Target Component Design
+- Multi-model comparison runs and leaderboards over larger task suites.
+- LLM-as-judge scoring for readability and explanation quality (after deterministic signals).
+- Static analysis (Ruff, Bandit, Semgrep) as additional deterministic graders.
+- Cost and latency dashboards per model/task.
+- CI integration for scheduled eval runs and regression tracking.
+- Web dashboard and failure clustering.
 
-The components below describe the intended system as Impressions grows beyond the current package and CLI foundation.
+## Scoring philosophy
 
-### 1. Task Dataset
+**Tier 1 — Functional correctness:** does the code do what it should? Binary pytest outcomes are the primary ground truth.
 
-Tasks are defined as structured YAML files. Each task should include enough information to reproduce the prompt, execute the generated code, and grade the result.
+**Tier 2 — Failure mode classification:** when code fails, why? Parser errors, exit codes, pytest output, and timeouts map to the six failure categories.
 
-Recommended dataset for MVP:
+**Tier 3 — Behavioral reliability:** first-attempt success, attempts to success, observed pass@k, plus token usage and latency where providers report them.
 
-- 9 total tasks.
-- 3 easy tasks.
-- 4 medium tasks.
-- 2 hard tasks.
-- 3-5 test cases per task.
+## Background: why "Impressions"?
 
-Recommended categories:
-
-- Bug fix.
-- Function generation.
-- Refactor.
-- Test writing.
-- Error handling.
-- Small multi-file repair.
-
-Future coding-task YAML shape:
-
-```yaml
-id: bug_fix_001
-title: Fix duplicate detection
-difficulty: easy
-category: bug_fix
-timeout_seconds: 10
-entrypoint: solution.py
-prompt: |
-  Fix the function so it returns duplicate values in order of first repeated occurrence.
-starter_code: |
-  def find_duplicates(values):
-      return []
-tests: tests/test_solution.py
-```
-
-### 2. Prompt Builder
-
-The prompt builder turns task specs into reproducible model inputs.
-
-Responsibilities:
-
-- Apply a versioned system prompt.
-- Inject task instructions, starter code, and output constraints.
-- Record the exact rendered prompt for every attempt.
-- Support prompt variants for baseline comparisons.
-
-MVP prompt variants:
-
-- `baseline`: minimal coding assistant prompt.
-- `engineered`: stricter output format and test-focused instructions.
-
-### 3. Model Layer
-
-The model layer isolates provider-specific API details from the rest of the harness.
-
-Responsibilities:
-
-- Submit prompts to the configured provider.
-- Retry transient failures.
-- Capture response text, model metadata, token usage, latency, and errors.
-- Support repeated attempts per task for pass@k analysis.
-
-Suggested interface:
-
-```python
-class ModelClient:
-    def generate(self, prompt: str, config: ModelConfig) -> ModelResponse:
-        ...
-```
-
-### 4. Execution Sandbox
-
-Generated code must execute in a sandbox.
-
-Responsibilities:
-
-- Run generated code in an isolated Python environment.
-- Disable network access.
-- Enforce per-task timeouts.
-- Mount only temporary task files.
-- Capture stdout, stderr, exit code, and timeout status.
-
-Default timeout policy:
-
-- Easy tasks: 10 seconds.
-- Medium tasks: 30 seconds.
-- Hard tasks: 60 seconds.
-
-### 5. Test Runner
-
-The test runner grades generated code using pytest.
-
-Responsibilities:
-
-- Materialize the generated solution and task tests inside the sandbox.
-- Run pytest.
-- Parse pass/fail results.
-- Capture test-level output.
-- Return a normalized execution result.
-
-### 6. Scoring Engine
-
-The scoring engine prioritizes objective correctness.
-
-Primary metrics:
-
-- Test pass rate: `passing_tests / total_tests`.
-- Task success: all required tests passed.
-- First-attempt success rate.
-- Observed pass@k: whether at least one of `k` attempts succeeded.
-- Mean attempts to success.
-
-Note on pass@k:
-
-For the MVP, report an observed pass@k result based on the configured number of attempts. If the project later samples more than `k` attempts per task, implement the standard HumanEval estimator:
-
-```text
-pass@k = 1 - comb(n - c, k) / comb(n, k)
-```
-
-Where `n` is the number of generated samples and `c` is the number of correct samples.
-
-### 7. Failure Classification
-
-Each failed attempt should be assigned a simple failure type.
-
-Initial taxonomy:
-
-- `syntax_error`: generated code cannot parse or import.
-- `runtime_error`: code crashes during execution.
-- `test_failure`: code runs but fails assertions.
-- `timeout`: execution exceeds the task timeout.
-- `format_error`: response cannot be extracted into runnable code.
-- `other`: fallback category for unknown failures.
-
-### 8. Run Registry
-
-Every eval run should be saved as a versioned experiment.
-
-Each run should capture:
-
-- Run ID.
-- Timestamp.
-- Git commit SHA, if available.
-- Task set version.
-- Prompt version.
-- Model provider and model name.
-- Generation config.
-- Per-task attempts.
-- Generated code.
-- Execution logs.
-- Scores and aggregate metrics.
-
-Suggested output structure:
-
-```text
-results/
-  2026-06-26_001/
-    run.json
-    config.json
-    prompts/
-    outputs/
-    logs/
-```
-
-### 9. CLI Reporter
-
-The current CLI already supports initialization, config inspection, task listing, task validation, and deterministic evaluation. The target CLI will expand that surface into full model-backed runs and report comparison.
-
-Target commands:
-
-```bash
-impressions init
-impressions run --tasks tasks/ --model default --k 3
-impressions report results/2026-06-26_001
-impressions compare results/baseline results/engineered
-```
-
-Target output:
-
-- Task-level status.
-- Attempts per task.
-- Test pass counts.
-- Failure types.
-- Pass@1 and observed pass@k.
-- Aggregate summary.
-- Path to JSON results.
-
-## Scoring Philosophy
-
-The core principle is: **correctness first, nuance later**.
-
-The MVP should favor objective, reproducible scoring over subjective quality judgments. If a signal cannot be measured deterministically in v1, defer it.
-
-### Tier 1: Functional Correctness
-
-Question: does the code do what it is supposed to do?
-
-Method:
-
-- Run generated code against predefined pytest suites.
-- Record binary test outcomes.
-- Treat deterministic test success as the primary ground truth.
-
-### Tier 2: Failure Mode Classification
-
-Question: when the code fails, why does it fail?
-
-Method:
-
-- Classify failures using parser errors, exit codes, pytest output, exceptions, and timeout status.
-- Track failure distributions across tasks and runs.
-
-### Tier 3: Behavioral Quality
-
-Question: how reliably and efficiently does the model solve the task?
-
-Method:
-
-- Track first-attempt success.
-- Track attempts to success.
-- Track token usage and latency where provider metadata is available.
-- Optionally compare code variability across attempts.
-
-## Future Roadmap
-
-Version 2 candidates:
-
-- Multi-model comparison.
-- LLM-as-judge for readability and explanation quality.
-- Static analysis with Ruff, Bandit, or Semgrep.
-- Web dashboard.
-- Failure clustering.
-- Cost and latency dashboards.
-- Larger benchmark suites.
-- Task authoring UI.
-- CI integration for scheduled eval runs.
+AI systems are non-deterministic: like a jazz performance, a model explores a unique melody every invocation. This project is named for the John Coltrane standard — just as a jazz composition gives structure to improvisation, this harness gives structure to evaluation. Each run gathers a collection of *impressions* of a model's capabilities: deterministic checks first, qualitative judgment later.
