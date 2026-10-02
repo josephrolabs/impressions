@@ -15,8 +15,8 @@ BENCHMARK_ROOT = Path(__file__).parents[1] / "benchmarks" / "mvp"
 def test_mvp_benchmark_composition_and_metadata():
     tasks = [load_task(path) for path in sorted((BENCHMARK_ROOT / "tasks").glob("*.yaml"))]
 
-    assert len(tasks) == 9
-    assert Counter(task.metadata.difficulty for task in tasks) == {"easy": 3, "medium": 4, "hard": 2}
+    assert len(tasks) == 10
+    assert Counter(task.metadata.difficulty for task in tasks) == {"easy": 3, "medium": 4, "hard": 3}
     assert {task.metadata.category for task in tasks} >= {
         "function_generation", "bug_fix", "error_handling", "refactor", "test_writing", "multi_file_repair",
     }
@@ -61,3 +61,11 @@ def test_refactor_reference_explicitly_uses_the_supplied_legacy_fixture():
     reference = (BENCHMARK_ROOT / "reference_solutions" / "lru_cache.py").read_text(encoding="utf-8")
 
     assert "class LRUCache(LegacyCache)" in reference
+
+
+def test_repair_checkout_reference_composes_the_fixture_modules():
+    reference = (BENCHMARK_ROOT / "reference_solutions" / "repair_checkout.py").read_text(encoding="utf-8")
+
+    assert "from fixtures.shop.catalog import Catalog" in reference
+    assert "from fixtures.shop.discounts import DiscountPolicy" in reference
+    assert "Checkout" not in reference
