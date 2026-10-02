@@ -14,6 +14,7 @@ except ModuleNotFoundError:  # pragma: no cover - exercised only on Python 3.10
 
 CONFIG_FILE_NAME = "impressions.toml"
 SUPPORTED_CONFIG_VERSION = 1
+SUPPORTED_PROVIDERS = ("openai", "anthropic", "gemini", "meta")
 
 
 class ConfigError(Exception):
@@ -102,10 +103,10 @@ def load_project_config(root: str | Path = ".") -> ProjectConfig:
     reports = _required_path(paths, "reports", "[paths]", project_root)
     model = _required_table(data, "model", CONFIG_FILE_NAME)
     provider = _required_non_empty_string(model, "provider", "[model]")
-    if provider != "openai":
+    if provider not in SUPPORTED_PROVIDERS:
         raise ConfigError(
             f"Unsupported model provider in {config_path}: {provider!r}. "
-            "Supported providers: openai."
+            f"Supported providers: {', '.join(SUPPORTED_PROVIDERS)}."
         )
     model_name = _required_non_empty_string(model, "model", "[model]")
     timeout = _optional_positive_number(model, "timeout", "[model]")
