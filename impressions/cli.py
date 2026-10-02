@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import subprocess
 from dataclasses import replace
 from pathlib import Path
 
@@ -324,6 +325,34 @@ def compare_runs(args: argparse.Namespace) -> int:
     return 0
 
 
+def _ensure_pytest_image() -> bool:
+    """Check that the pinned pytest image exists locally before grading.
+
+    Returns True when the image is available. Otherwise prints the exact
+    build command and returns False.
+    """
+    try:
+        completed = subprocess.run(
+            ["docker", "image", "inspect", PYTEST_IMAGE],
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+    except OSError:
+        print(
+            "Docker executable was not found. Install Docker and ensure it is "
+            "available on PATH before running code evaluations."
+        )
+        return False
+    if completed.returncode != 0:
+        print(f"Pytest image {PYTEST_IMAGE!r} is not available locally.")
+        print("Build it from the repository root with:")
+        print()
+        print("  docker build -t impressions-python-pytest:3.12 docker/pytest")
+        return False
+    return True
+
+
 def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: bool) -> int:
     """Evaluate discovered and validated task definitions."""
     try:
@@ -338,6 +367,8 @@ def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: b
         tasks = load_tasks_from_config(config)
         prompt_builder = PromptBuilder(variant=config.prompt.variant)
         if any(task.execution is not None for task in tasks):
+            if not _ensure_pytest_image():
+                return 1
             evaluator = CodeTaskEvaluator(
                 llm_evaluator=LLMEvaluator(prompt_builder, create_model_client(config)),
                 grader=PytestCodeGrader(DockerPythonExecutor(image=PYTEST_IMAGE)),
