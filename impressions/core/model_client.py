@@ -37,3 +37,23 @@ class ModelResponse:
     input_tokens: int | None = None
     output_tokens: int | None = None
     metadata: Mapping[str, Any] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class EchoModelClient:
+    """Deterministic no-key fallback client.
+
+    Echoes the request prompt back as the response text so evaluation
+    pipelines can run end to end without provider credentials. Mirrors the
+    semantics of the ``EchoEvaluator`` used by the legacy evaluate path.
+    """
+
+    model: str = "echo"
+
+    def generate(self, request: "ModelRequest") -> "ModelResponse":
+        """Return the request prompt as the response text."""
+        return ModelResponse(
+            text=request.prompt,
+            model=self.model,
+            metadata={"provider": "echo", "fallback": True},
+        )
