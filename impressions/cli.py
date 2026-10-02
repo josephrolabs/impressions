@@ -12,18 +12,15 @@ from impressions.core.code_evaluator import CodeTaskEvaluator
 from impressions.core.docker_executor import DockerPythonExecutor, PYTEST_IMAGE
 from impressions.core.evaluation import (
     EchoEvaluator,
-    EvaluationEngine,
     EvaluationEngineError,
     EvaluationResult,
 )
 from impressions.core.llm_evaluator import LLMEvaluator
 from impressions.core.model_factory import create_model_client
 from impressions.core.prompt_builder import PromptBuilder, PromptBuilderError
-from impressions.core.pytest_grader import PytestCodeGrader
-from impressions.core.pytest_grader import GradingError
+from impressions.core.pytest_grader import GradingError, PytestCodeGrader
 from impressions.core.scoring import MultiAttemptEvaluator, calculate_reliability_metrics
 from impressions.core.reporting import (
-    RunMetadata,
     RunRegistry,
     RunRegistryError,
     RunSummary,

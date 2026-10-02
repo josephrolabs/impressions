@@ -1,5 +1,3 @@
-from pathlib import Path
-
 import pytest
 
 from impressions.core.execution import ExecutionResult
