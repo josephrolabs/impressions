@@ -374,6 +374,7 @@ def test_run_command_exercises_model_grader_pipeline(tmp_path, monkeypatch, caps
     monkeypatch.chdir(tmp_path)
     monkeypatch.setattr("impressions.cli.create_model_client", lambda config: FakeClient())
     monkeypatch.setattr("impressions.cli.DockerPythonExecutor", lambda **kwargs: SequenceExecutor())
+    monkeypatch.setattr("impressions.cli._ensure_pytest_image", lambda: True)
 
     assert main(["run"]) == 0
     output = capsys.readouterr().out
@@ -466,3 +467,67 @@ input:
 expected:
   type: text
 """
+
+
+def _write_code_task(root):
+    (root / "tasks" / "example.yaml").write_text(
+        "\n".join([
+            "version: 1", "name: add", "description: Add.", "input:",
+            "  prompt: Write add.", "expected:", "  type: code", "execution:",
+            "  entrypoint: solution.py", "  tests: tests/test_solution.py",
+            "  timeout_seconds: 30", "",
+        ]), encoding="utf-8"
+    )
+
+
+def test_run_command_fails_with_build_instructions_when_pytest_image_missing(
+    tmp_path, monkeypatch, capsys
+):
+    main(["init", str(tmp_path)])
+    capsys.readouterr()
+    _write_code_task(tmp_path)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.setattr("impressions.cli._ensure_pytest_image", lambda: False)
+
+    assert main(["run"]) == 1
+
+
+def test_ensure_pytest_image_reports_missing_image_with_build_command(
+    monkeypatch, capsys
+):
+    import impressions.cli as cli
+
+    class Completed:
+        returncode = 1
+
+    monkeypatch.setattr(cli.subprocess, "run", lambda *args, **kwargs: Completed())
+
+    assert cli._ensure_pytest_image() is False
+
+    output = capsys.readouterr().out
+    assert "impressions-python-pytest:3.12" in output
+    assert "docker build -t impressions-python-pytest:3.12 docker/pytest" in output
+
+
+def test_ensure_pytest_image_passes_when_image_present(monkeypatch):
+    import impressions.cli as cli
+
+    class Completed:
+        returncode = 0
+
+    monkeypatch.setattr(cli.subprocess, "run", lambda *args, **kwargs: Completed())
+
+    assert cli._ensure_pytest_image() is True
+
+
+def test_ensure_pytest_image_reports_missing_docker_executable(monkeypatch, capsys):
+    import impressions.cli as cli
+
+    def raise_not_found(*args, **kwargs):
+        raise OSError("not found")
+
+    monkeypatch.setattr(cli.subprocess, "run", raise_not_found)
+
+    assert cli._ensure_pytest_image() is False
+
+    assert "Docker executable was not found" in capsys.readouterr().out
