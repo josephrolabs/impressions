@@ -1,0 +1,29 @@
+version: 1
+name: repair-checkout
+description: Diagnose bugs in a multi-file shop checkout package and implement a correct order total.
+input:
+  prompt: |
+    The shop's checkout pipeline is over-discounting orders and crashing on bad input.
+
+    1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.
+    2. Identify the bugs in checkout.Checkout.total.
+    3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:
+       - items is a list of (sku, quantity) tuples
+       - validate every SKU with Catalog; raise ValueError for unknown SKUs
+       - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal
+       - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums
+       - round the final total to 2 decimals
+       - do NOT rely on the buggy checkout.Checkout class
+expected:
+  type: code
+execution:
+  entrypoint: solution.py
+  tests: tests/test_repair_checkout.py
+  files:
+    - fixtures/shop/catalog.py
+    - fixtures/shop/discounts.py
+    - fixtures/shop/checkout.py
+  timeout_seconds: 10
+metadata:
+  difficulty: hard
+  category: debugging
