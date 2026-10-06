@@ -113,6 +113,19 @@ def test_constructor_defaults_to_muse_spark_model(monkeypatch):
     assert client.base_url == META_API_BASE_URL
 
 
+def test_generate_records_configured_base_url_in_metadata():
+    client = MetaModelClient(
+        api_key="test-key",
+        model="muse-spark-1.1",
+        client=FakeMetaClient(response=successful_response()),
+        base_url="https://proxy.example.test/v1",
+    )
+
+    response = client.generate(ModelRequest(prompt="Say hello."))
+
+    assert response.metadata["base_url"] == "https://proxy.example.test/v1"
+
+
 def test_meta_model_client_api_exports_from_core_package():
     assert PublicMetaModelClient is MetaModelClient
 

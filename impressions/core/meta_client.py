@@ -72,7 +72,7 @@ class MetaModelClient:
             model=response.model,
             input_tokens=_get_usage_value(response, "prompt_tokens"),
             output_tokens=_get_usage_value(response, "completion_tokens"),
-            metadata=_response_metadata(response),
+            metadata=_response_metadata(response, base_url=self.base_url),
         )
 
 
@@ -87,8 +87,8 @@ def _get_usage_value(response: Any, key: str) -> int | None:
     return None
 
 
-def _response_metadata(response: Any) -> dict[str, Any]:
-    metadata: dict[str, Any] = {"base_url": META_API_BASE_URL}
+def _response_metadata(response: Any, *, base_url: str) -> dict[str, Any]:
+    metadata: dict[str, Any] = {"base_url": base_url}
 
     response_id = getattr(response, "id", None)
     if response_id is not None:
