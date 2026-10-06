@@ -328,8 +328,9 @@ def compare_runs(args: argparse.Namespace) -> int:
 def _ensure_pytest_image() -> bool:
     """Check that the pinned pytest image exists locally before grading.
 
-    Returns True when the image is available. Otherwise prints the exact
-    build command and returns False.
+    Returns True when the image is available. Otherwise prints why not —
+    Docker missing, the daemon unreachable, or the image not built (with
+    the exact build command) — and returns False.
     """
     try:
         completed = subprocess.run(
@@ -345,6 +346,21 @@ def _ensure_pytest_image() -> bool:
         )
         return False
     if completed.returncode != 0:
+        stderr = (getattr(completed, "stderr", "") or "").lower()
+        if any(
+            marker in stderr
+            for marker in (
+                "cannot connect",
+                "error during connect",
+                "docker daemon",
+                "connection refused",
+            )
+        ):
+            print(
+                "Docker is installed but the daemon is not reachable. "
+                "Start Docker (for example, Docker Desktop) and try again."
+            )
+            return False
         print(f"Pytest image {PYTEST_IMAGE!r} is not available locally.")
         print("Build it from the repository root with:")
         print()

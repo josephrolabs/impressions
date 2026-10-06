@@ -509,6 +509,25 @@ def test_ensure_pytest_image_reports_missing_image_with_build_command(
     assert "docker build -t impressions-python-pytest:3.12 docker/pytest" in output
 
 
+def test_ensure_pytest_image_reports_unavailable_daemon(monkeypatch, capsys):
+    import impressions.cli as cli
+
+    class Completed:
+        returncode = 1
+        stderr = (
+            "Cannot connect to the Docker daemon at "
+            "unix:///var/run/docker.sock. Is the docker daemon running?"
+        )
+
+    monkeypatch.setattr(cli.subprocess, "run", lambda *args, **kwargs: Completed())
+
+    assert cli._ensure_pytest_image() is False
+
+    output = capsys.readouterr().out
+    assert "daemon is not reachable" in output
+    assert "docker build" not in output
+
+
 def test_ensure_pytest_image_passes_when_image_present(monkeypatch):
     import impressions.cli as cli
 
