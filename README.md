@@ -24,7 +24,9 @@ Scaffold a project, point it at the benchmark, and run it:
 
 ```bash
 impressions init my-eval && cd my-eval
-# set paths.tasks to /path/to/impressions/benchmarks/mvp/tasks in impressions.toml
+# in impressions.toml: set paths.tasks to /path/to/impressions/benchmarks/mvp/tasks,
+# and set [evaluation] attempts = 3 and pass_at_k = 3 — init writes 1 for both,
+# and the CLI rejects a --k larger than the configured attempts
 export OPENAI_API_KEY=...   # or ANTHROPIC_API_KEY, GEMINI_API_KEY, META_API_KEY
 docker build -t impressions-python-pytest:3.12 /path/to/impressions/docker/pytest
 impressions run --k 3
