@@ -1,0 +1,140 @@
+name: Benchmark pilot
+
+# Manually triggered benchmark run: use the "Run workflow" button in the
+# Actions tab. The model API key comes from the repository secret for the
+# chosen provider (Settings > Secrets and variables > Actions) and is
+# passed to the harness as an environment variable. Keys are never read
+# from config files.
+on:
+  workflow_dispatch:
+    inputs:
+      provider:
+        description: Model provider
+        type: choice
+        options:
+          - gemini
+          - openai
+          - anthropic
+          - meta
+        default: gemini
+      model:
+        description: Model ID for the chosen provider
+        type: string
+        required: true
+        default: gemini-2.5-pro
+      attempts:
+        description: Attempts per task (also reported as pass@k)
+        type: string
+        required: true
+        default: "3"
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      META_API_KEY: ${{ secrets.META_API_KEY }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Impressions
+        run: pip install -e . --group dev
+
+      - name: Build the grading image
+        run: docker build -t impressions-python-pytest:3.12 docker/pytest
+
+      - name: Check the provider key is configured
+        env:
+          PROVIDER: ${{ inputs.provider }}
+        run: |
+          case "$PROVIDER" in
+            openai) KEY_VAR=OPENAI_API_KEY ;;
+            anthropic) KEY_VAR=ANTHROPIC_API_KEY ;;
+            gemini) KEY_VAR=GEMINI_API_KEY ;;
+            meta) KEY_VAR=META_API_KEY ;;
+          esac
+          if [ -z "${!KEY_VAR}" ]; then
+            echo "::error::Repository secret $KEY_VAR is not set. Add it under Settings > Secrets and variables > Actions, then re-run."
+            exit 1
+          fi
+          echo "Repository secret $KEY_VAR is present."
+
+      - name: Configure the benchmark project
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+          ATTEMPTS: ${{ inputs.attempts }}
+        run: |
+          impressions init bench
+          python3 - <<'PYEOF'
+          import os
+          import re
+
+          key_env = {
+              "openai": "OPENAI_API_KEY",
+              "anthropic": "ANTHROPIC_API_KEY",
+              "gemini": "GEMINI_API_KEY",
+              "meta": "META_API_KEY",
+          }[os.environ["PROVIDER"]]
+          attempts = os.environ["ATTEMPTS"]
+          path = "bench/impressions.toml"
+          text = open(path).read()
+          text = re.sub(
+              r'provider = "[^"]*"',
+              'provider = "{}"'.format(os.environ["PROVIDER"]),
+              text,
+          )
+          text = re.sub(
+              r'model = "[^"]*"',
+              'model = "{}"'.format(os.environ["MODEL"]),
+              text,
+          )
+          text = re.sub(
+              r'api_key_env = "[^"]*"',
+              'api_key_env = "{}"'.format(key_env),
+              text,
+          )
+          text = re.sub(r"attempts = \d+", "attempts = {}".format(attempts), text)
+          text = re.sub(r"pass_at_k = \d+", "pass_at_k = {}".format(attempts), text)
+          open(path, "w").write(text)
+          print(open(path).read())
+          PYEOF
+
+      - name: Run the benchmark
+        env:
+          ATTEMPTS: ${{ inputs.attempts }}
+        run: |
+          cd bench
+          impressions config show
+          impressions run --tasks "$GITHUB_WORKSPACE/benchmarks/mvp/tasks" --k "$ATTEMPTS"
+
+      - name: Print the run report
+        if: always()
+        run: |
+          cd bench
+          latest=$(ls -d reports/*/ 2>/dev/null | sort | tail -1)
+          if [ -n "$latest" ]; then
+            impressions report "$latest"
+          else
+            echo "No run artifacts were produced."
+          fi
+
+      - name: Upload run artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: benchmark-${{ inputs.provider }}-${{ inputs.model }}
+          path: bench/reports
+          if-no-files-found: warn
