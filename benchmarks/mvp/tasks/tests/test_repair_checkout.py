@@ -7,14 +7,19 @@ def test_no_coupon_totals_line_items():
     assert checkout_total([("book", 2), ("pen", 4)]) == round(2 * 12.99 + 4 * 1.50, 2)
 
 
-def test_save10_applies_once_to_subtotal_not_per_line():
-    # Buggy checkout applies SAVE10 per line: (12.99 * 0.9) + (1.50 * 0.9).
+def test_save10_takes_ten_percent_off_order_total():
+    # A percentage discount is distributive, so per-line and subtotal
+    # application of SAVE10 coincide; this test pins SAVE10's arithmetic.
+    # The per-line bug is discriminated by the FLAT5 tests below, where a
+    # flat amount (and its minimum) makes the two readings differ.
     assert checkout_total([("book", 1), ("pen", 1)], "SAVE10") == round((12.99 + 1.50) * 0.9, 2)
 
 
 def test_flat5_applies_once_not_per_line():
-    # Buggy checkout subtracts $5 per line: (12.99 - 5) + (24.00 - 5) = 26.99.
-    assert checkout_total([("book", 1), ("lamp", 1)], "FLAT5") == round((12.99 + 24.00) - 5, 2)
+    # Buggy checkout subtracts $5 from every line: (24.00 - 5) + (25.98 - 5) = 39.98.
+    # Both lines clear the $20 minimum, so the per-line reading fails on
+    # the amount alone, not on an exception.
+    assert checkout_total([("lamp", 1), ("book", 2)], "FLAT5") == round(24.00 + 2 * 12.99 - 5, 2)
 
 
 def test_flat5_minimum_subtotal_enforced():
