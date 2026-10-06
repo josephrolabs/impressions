@@ -217,7 +217,16 @@ api_key_env = "OPENAI_API_KEY"
         load_project_config(tmp_path)
 
 
-@pytest.mark.parametrize("provider", ["anthropic", ""])
+@pytest.mark.parametrize("provider", ["openai", "anthropic", "gemini", "meta"])
+def test_load_project_config_accepts_supported_providers(tmp_path, provider):
+    write_config(tmp_path, VALID_CONFIG.replace('provider = "openai"', f'provider = "{provider}"'))
+
+    config = load_project_config(tmp_path)
+
+    assert config.model.provider == provider
+
+
+@pytest.mark.parametrize("provider", ["cohere", ""])
 def test_load_project_config_rejects_unsupported_or_empty_provider(tmp_path, provider):
     write_config(tmp_path, VALID_CONFIG.replace('provider = "openai"', f'provider = "{provider}"'))
 

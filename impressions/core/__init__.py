@@ -28,8 +28,12 @@ from impressions.core.scoring import (
     calculate_reliability_metrics,
 )
 from impressions.core.model_factory import create_model_client
+from impressions.core.anthropic_client import AnthropicModelClient
+from impressions.core.gemini_client import GeminiModelClient
+from impressions.core.meta_client import MetaModelClient
 from impressions.core.llm_evaluator import LLMEvaluator
 from impressions.core.model_client import (
+    EchoModelClient,
     ModelClient,
     ModelGenerationError,
     ModelRequest,
@@ -76,6 +80,10 @@ from impressions.core.tasks import (
 
 __all__ = [
     "EchoEvaluator",
+    "EchoModelClient",
+    "AnthropicModelClient",
+    "GeminiModelClient",
+    "MetaModelClient",
     "ConfigError",
     "CodeExecutor",
     "CodeTaskEvaluator",

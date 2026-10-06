@@ -3,10 +3,12 @@ from dataclasses import FrozenInstanceError
 import pytest
 
 from impressions.core import ModelClient as PublicModelClient
+from impressions.core import EchoModelClient as PublicEchoModelClient
 from impressions.core import ModelGenerationError as PublicModelGenerationError
 from impressions.core import ModelRequest as PublicModelRequest
 from impressions.core import ModelResponse as PublicModelResponse
 from impressions.core.model_client import (
+    EchoModelClient,
     ModelClient,
     ModelGenerationError,
     ModelRequest,
@@ -78,7 +80,7 @@ def test_model_response_is_immutable():
 
 
 def test_model_client_protocol_accepts_structural_implementations():
-    client: ModelClient = EchoModelClient(model="test-model")
+    client: ModelClient = TokenCountingEchoClient(model="test-model")
     request = ModelRequest(prompt="Say hello.")
 
     response = client.generate(request)
@@ -100,12 +102,25 @@ def test_model_generation_error_wraps_provider_failures():
 
 def test_model_client_api_exports_from_core_package():
     assert PublicModelClient is ModelClient
+    assert PublicEchoModelClient is EchoModelClient
     assert PublicModelGenerationError is ModelGenerationError
     assert PublicModelRequest is ModelRequest
     assert PublicModelResponse is ModelResponse
 
 
-class EchoModelClient:
+def test_echo_model_client_returns_prompt_as_deterministic_response():
+    client: ModelClient = EchoModelClient()
+
+    response = client.generate(ModelRequest(prompt="Say hello."))
+
+    assert response.text == "Say hello."
+    assert response.model == "echo"
+    assert response.input_tokens is None
+    assert response.output_tokens is None
+    assert response.metadata == {"provider": "echo", "fallback": True}
+
+
+class TokenCountingEchoClient:
     def __init__(self, model: str) -> None:
         self.model = model
 

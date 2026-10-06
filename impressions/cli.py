@@ -10,6 +10,7 @@ from impressions import __version__
 from impressions.core.config import ConfigError, load_project_config
 from impressions.core.code_evaluator import CodeTaskEvaluator
 from impressions.core.docker_executor import DockerPythonExecutor, PYTEST_IMAGE
+from impressions.core.model_client import EchoModelClient
 from impressions.core.evaluation import (
     EchoEvaluator,
     EvaluationEngine,
@@ -50,11 +51,17 @@ tasks = "tasks"
 reports = "reports"
 
 [model]
+# Supported providers: "openai", "anthropic", "gemini", "meta".
+# "meta" targets Meta's OpenAI-compatible Model API (https://api.meta.ai/v1).
 provider = "openai"
 model = "gpt-5"
 timeout = 30
 
 [credentials]
+# Name of the environment variable holding the provider API key.
+# Conventional names: OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, META_API_KEY.
+# Keys are never read from this file. When the variable is unset or empty,
+# runs fall back to the deterministic echo evaluator instead of calling a model.
 api_key_env = "OPENAI_API_KEY"
 
 [evaluation]
@@ -338,8 +345,14 @@ def _run_workflow(args: argparse.Namespace, *, command: str, show_task_status: b
         tasks = load_tasks_from_config(config)
         prompt_builder = PromptBuilder(variant=config.prompt.variant)
         if any(task.execution is not None for task in tasks):
+            model_client = create_model_client(config)
+            if isinstance(model_client, EchoModelClient):
+                print(
+                    f"No API key found in ${config.credentials.api_key_env}; "
+                    "running with the deterministic echo fallback (no model calls)."
+                )
             evaluator = CodeTaskEvaluator(
-                llm_evaluator=LLMEvaluator(prompt_builder, create_model_client(config)),
+                llm_evaluator=LLMEvaluator(prompt_builder, model_client),
                 grader=PytestCodeGrader(DockerPythonExecutor(image=PYTEST_IMAGE)),
             )
             evaluator_name = "llm-pytest"
