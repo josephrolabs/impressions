@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import time
+from collections.abc import Callable
 from typing import Any
 
 from google import genai
@@ -12,6 +14,10 @@ from impressions.core.model_client import (
     ModelRequest,
     ModelResponse,
 )
+
+_MAX_GENERATION_ATTEMPTS = 6
+_INITIAL_BACKOFF_SECONDS = 5.0
+_MAX_BACKOFF_SECONDS = 60.0
 
 
 class GeminiModelClient:
@@ -24,8 +30,12 @@ class GeminiModelClient:
         timeout: float | None = None,
         *,
         client: Any | None = None,
+        sleep: Callable[[float], None] = time.sleep,
+        max_attempts: int = _MAX_GENERATION_ATTEMPTS,
     ) -> None:
         self.model = model
+        self._sleep = sleep
+        self._max_attempts = max(1, max_attempts)
         if client is not None:
             self._client = client
             return
@@ -45,22 +55,30 @@ class GeminiModelClient:
         if request.max_tokens is not None:
             config_kwargs["max_output_tokens"] = request.max_tokens
 
-        try:
-            response = self._client.models.generate_content(
-                model=self.model,
-                contents=request.prompt,
-                config=types.GenerateContentConfig(**config_kwargs),
-            )
-        except errors.APIError as exc:
-            raise ModelGenerationError(f"Gemini generation failed: {exc}") from exc
+        backoff = _INITIAL_BACKOFF_SECONDS
+        for attempt in range(self._max_attempts):
+            try:
+                response = self._client.models.generate_content(
+                    model=self.model,
+                    contents=request.prompt,
+                    config=types.GenerateContentConfig(**config_kwargs),
+                )
+            except errors.APIError as exc:
+                if attempt == self._max_attempts - 1 or not _is_retryable(exc):
+                    raise ModelGenerationError(
+                        f"Gemini generation failed: {exc}"
+                    ) from exc
+                self._sleep(backoff)
+                backoff = min(backoff * 2, _MAX_BACKOFF_SECONDS)
+                continue
 
-        return ModelResponse(
-            text=response.text or "",
-            model=self.model,
-            input_tokens=_get_usage_value(response, "prompt_token_count"),
-            output_tokens=_get_usage_value(response, "candidates_token_count"),
-            metadata=_response_metadata(response),
-        )
+            return ModelResponse(
+                text=response.text or "",
+                model=self.model,
+                input_tokens=_get_usage_value(response, "prompt_token_count"),
+                output_tokens=_get_usage_value(response, "candidates_token_count"),
+                metadata=_response_metadata(response),
+            )
 
 
 def _get_usage_value(response: Any, key: str) -> int | None:
@@ -82,3 +100,13 @@ def _response_metadata(response: Any) -> dict[str, Any]:
         metadata["provider_response_id"] = response_id
 
     return metadata
+
+
+def _is_retryable(exc: errors.APIError) -> bool:
+    """Rate-limit and transient server errors are worth retrying."""
+    code = getattr(exc, "code", None)
+    if isinstance(code, int):
+        return code == 429 or code >= 500
+
+    status = str(getattr(exc, "status", "") or "")
+    return status in {"RESOURCE_EXHAUSTED", "UNAVAILABLE", "INTERNAL"}
