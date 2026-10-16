@@ -6,6 +6,7 @@ import re
 from dataclasses import dataclass
 from pathlib import Path
 
+from impressions.core.code_extraction import extract_code
 from impressions.core.evaluation import EvaluationResult
 from impressions.core.execution import CodeExecutor, ExecutionError
 from impressions.core.failure_classification import classify_failure
@@ -36,8 +37,9 @@ class PytestCodeGrader:
             for relative_path in task.execution.files:
                 fixture_path = _task_relative_file_path(task, relative_path)
                 files[relative_path] = fixture_path.read_text(encoding="utf-8")
+            extracted_code = extract_code(code)
             execution = self.executor.execute(
-                code,
+                extracted_code,
                 timeout_seconds=task.execution.timeout_seconds,
                 source_filename=task.execution.entrypoint,
                 files=files,
@@ -52,6 +54,7 @@ class PytestCodeGrader:
         counts = (passed, failed, errors, skipped, xfailed)
         metadata = {
             "grader": "pytest",
+            "code_extraction_applied": extracted_code != code,
             "passed": execution.exit_code == 0 and not execution.timed_out,
             "passed_tests": passed,
             "failed_tests": failed,
