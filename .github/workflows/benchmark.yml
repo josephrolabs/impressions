@@ -41,6 +41,14 @@ jobs:
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       META_API_KEY: ${{ secrets.META_API_KEY }}
     steps:
+      - name: Compute the artifact name
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+        run: |
+          safe_model=$(printf '%s' "$MODEL" | sed 's/[^A-Za-z0-9._-]/-/g')
+          echo "ARTIFACT_NAME=benchmark-${PROVIDER}-${safe_model}" >> "$GITHUB_ENV"
+
       - name: Check out the repository
         uses: actions/checkout@v4
 
@@ -135,6 +143,6 @@ jobs:
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: benchmark-${{ inputs.provider }}-${{ inputs.model }}
+          name: ${{ env.ARTIFACT_NAME }}
           path: bench/reports
           if-no-files-found: warn
