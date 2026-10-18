@@ -29,7 +29,7 @@ on:
         default: "3"
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   benchmark:
@@ -120,6 +120,17 @@ jobs:
           print(open(path).read())
           PYEOF
 
+      - name: Seed prior run reports
+        run: |
+          if [ -d reports ]; then
+            mkdir -p bench/reports
+            cp -r reports/. bench/reports/
+            echo "Seeded prior runs into bench/reports:"
+            ls bench/reports
+          else
+            echo "No prior reports in the repository yet."
+          fi
+
       - name: Run the benchmark
         env:
           ATTEMPTS: ${{ inputs.attempts }}
@@ -146,3 +157,39 @@ jobs:
           name: ${{ env.ARTIFACT_NAME }}
           path: bench/reports
           if-no-files-found: warn
+
+      - name: Commit run reports
+        if: ${{ !cancelled() }}
+        env:
+          PROVIDER: ${{ inputs.provider }}
+          MODEL: ${{ inputs.model }}
+          TARGET_BRANCH: ${{ github.ref_name }}
+        run: |
+          mkdir -p reports
+          for run_dir in bench/reports/*/; do
+            if [ -f "${run_dir}summary.json" ]; then
+              cp -r "${run_dir}" reports/
+            fi
+          done
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add reports
+          if git diff --cached --quiet; then
+            echo "No new run reports to commit."
+            exit 0
+          fi
+          latest=$(ls -d reports/*/ | sort | tail -1)
+          run_id=$(basename "$latest")
+          tally=$(SUMMARY_PATH="${latest}summary.json" python3 -c 'import json, os; s = json.load(open(os.environ["SUMMARY_PATH"])); print("{} of {} attempts passed".format(s["succeeded"], s["tasks_evaluated"]))' 2>/dev/null || echo "results recorded")
+          git commit -m "Benchmark results: ${run_id} (${PROVIDER}/${MODEL}) - ${tally}"
+          for attempt in 1 2 3; do
+            git pull --rebase origin "$TARGET_BRANCH" || true
+            if git push origin "HEAD:${TARGET_BRANCH}"; then
+              echo "Pushed benchmark results to ${TARGET_BRANCH}."
+              exit 0
+            fi
+            echo "Push attempt ${attempt} failed; retrying..."
+            sleep 5
+          done
+          echo "::error::Failed to push benchmark results after 3 attempts."
+          exit 1
