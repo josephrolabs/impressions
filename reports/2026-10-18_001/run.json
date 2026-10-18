@@ -1,0 +1,1784 @@
+{
+  "created_at": "2026-10-18T20:34:37.964109+00:00",
+  "metadata": {
+    "attempts_per_task": 3,
+    "command": "run",
+    "evaluator": "llm-pytest",
+    "metrics": {
+      "attempts_per_task": 3,
+      "first_attempt_success_rate": 0.6,
+      "mean_attempts_to_success": 1.0,
+      "observed_pass_at_k": 0.6,
+      "pass_at_k": 3,
+      "task_count": 10
+    },
+    "pass_at_k": 3,
+    "prompt": {
+      "variant": "baseline",
+      "version": "v1"
+    },
+    "task_count": 10
+  },
+  "results": [
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 77,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "6yzVarulAfaFz7IPzZGD8Qs"
+          },
+          "output_tokens": 46,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: clamp-value\n\nDescription:\nImplement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.\n\nInput:\nImplement solve(value, lower, upper) in solution.py.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_clamp.py ...                                        [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-ijqvy02v'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(value, lower, upper):\n    if lower > upper:\n        raise ValueError(\"lower bound cannot exceed upper bound\")\n    return max(lower, min(value, upper))\n```",
+      "task": {
+        "description": "Implement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_clamp.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(value, lower, upper) in solution.py."
+        },
+        "metadata": {
+          "category": "error_handling",
+          "difficulty": "easy"
+        },
+        "name": "clamp-value",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/clamp.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 77,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "6yzVaoLNM5-sz7IPhMXi2AQ"
+          },
+          "output_tokens": 46,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: clamp-value\n\nDescription:\nImplement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.\n\nInput:\nImplement solve(value, lower, upper) in solution.py.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_clamp.py ...                                        [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-wfw0sojs'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(value, lower, upper):\n    if lower > upper:\n        raise ValueError(\"lower bound cannot exceed upper bound\")\n    return max(lower, min(value, upper))\n```",
+      "task": {
+        "description": "Implement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_clamp.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(value, lower, upper) in solution.py."
+        },
+        "metadata": {
+          "category": "error_handling",
+          "difficulty": "easy"
+        },
+        "name": "clamp-value",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/clamp.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 77,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "7CzVava3IYrUz7IP4peAyAQ"
+          },
+          "output_tokens": 46,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: clamp-value\n\nDescription:\nImplement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.\n\nInput:\nImplement solve(value, lower, upper) in solution.py.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_clamp.py ...                                        [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-40ypq4gl'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(value, lower, upper):\n    if lower > upper:\n        raise ValueError(\"lower bound cannot exceed upper bound\")\n    return max(lower, min(value, upper))\n```",
+      "task": {
+        "description": "Implement solve(value, lower, upper) that clamps value inclusively; raise ValueError when lower exceeds upper.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_clamp.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(value, lower, upper) in solution.py."
+        },
+        "metadata": {
+          "category": "error_handling",
+          "difficulty": "easy"
+        },
+        "name": "clamp-value",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/clamp.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 1,
+        "exit_code": 2,
+        "failed_tests": 0,
+        "failure_classification": {
+          "category": "syntax_error",
+          "reason": "Python could not parse or import the generated solution."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 93,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "7SzVap3IFZ3Uz7IPpNWk0QQ"
+          },
+          "output_tokens": 343,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: inventory-repair\n\nDescription:\nImplement solve(records) that applies inventory deltas atomically and rejects invalid updates.\n\nInput:\nRepair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 0 items / 1 error\n\n==================================== ERRORS ====================================\n__________________ ERROR collecting test_inventory_repair.py ___________________\nImportError while importing test module '/source/tests/test_inventory_repair.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/local/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/source/tests/test_inventory_repair.py:2: in <module>\n    from solution import solve\n/source/solution.py:2: in <module>\n    from fixtures.inventory import apply_deltas\nE   ImportError: cannot import name 'apply_deltas' from 'fixtures.inventory' (/source/fixtures/inventory.py)\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-z92rk7vo'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-9nl2mvik'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR ../source/tests/test_inventory_repair.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n========================= 2 warnings, 1 error in 0.06s =========================\n",
+        "timed_out": false,
+        "total_tests": 1,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import defaultdict\nfrom fixtures.inventory import apply_deltas\n\ndef solve(records):\n    \"\"\"\n    Applies inventory deltas atomically and rejects invalid updates.\n    \n    - Aggregates deltas by SKU.\n    - Rejects non-string SKUs.\n    - Rejects updates that result in negative final stock.\n    - Returns a sorted dictionary (or list of tuples depending on standard output, \n      here a dict or sorted mapping) of valid final stocks.\n    \"\"\"\n    # Group and sum deltas by SKU, validating SKU type\n    aggregated = defaultdict(int)\n    for record in records:\n        sku = record.get('sku')\n        delta = record.get('delta', 0)\n        \n        if not isinstance(sku, str):\n            continue  # Reject non-string SKU\n            \n        aggregated[sku] += delta\n        \n    # Filter out updates that result in negative final stock\n    # Assuming initial stock is 0 if not specified, or we validate the delta/final state.\n    # Typically, inventory-repair assumes starting from 0 or checking final accumulated value >= 0.\n    valid_inventory = {}\n    for sku, total_delta in aggregated.items():\n        if total_delta >= 0:\n            valid_inventory[sku] = total_delta\n            \n    # Return sorted mapping (Python dicts maintain insertion order in 3.7+, \n    # sorting by key ensures deterministic sorted output)\n    return dict(sorted(valid_inventory.items()))\n```",
+      "task": {
+        "description": "Implement solve(records) that applies inventory deltas atomically and rejects invalid updates.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/inventory.py"
+          ],
+          "tests": "tests/test_inventory_repair.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Repair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping."
+        },
+        "metadata": {
+          "category": "multi_file_repair",
+          "difficulty": "hard"
+        },
+        "name": "inventory-repair",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/inventory_repair.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 3,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 93,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "7yzVauP6At_rz7IPyqaCiAs"
+          },
+          "output_tokens": 351,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: inventory-repair\n\nDescription:\nImplement solve(records) that applies inventory deltas atomically and rejects invalid updates.\n\nInput:\nRepair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_inventory_repair.py FFF                             [100%]\n\n=================================== FAILURES ===================================\n________________________________ test_aggregate ________________________________\n\n>   def test_aggregate(): assert solve([('a',2),('a',3),('b',1)]) == {'a':5,'b':1}\n                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError: assert {} == {'a': 5, 'b': 1}\nE     \nE     Right contains 2 more items:\nE     {'a': 5, 'b': 1}\nE     Use -v to get more diff\n\n/source/tests/test_inventory_repair.py:3: AssertionError\n_________________________________ test_sorted __________________________________\n\n>   def test_sorted(): assert list(solve([('z',1),('a',1)])) == ['a','z']\n                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   AssertionError: assert [] == ['a', 'z']\nE     \nE     Right contains 2 more items, first extra item: 'a'\nE     Use -v to get more diff\n\n/source/tests/test_inventory_repair.py:4: AssertionError\n________________________________ test_negative _________________________________\n\n    def test_negative():\n>       with pytest.raises(ValueError): solve([('a',-1)])\n             ^^^^^^^^^^^^^^^^^^^^^^^^^\nE       Failed: DID NOT RAISE <class 'ValueError'>\n\n/source/tests/test_inventory_repair.py:6: Failed\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-vdpig7qq'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-5rd23i2_'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_inventory_repair.py::test_aggregate - AssertionEr...\nFAILED ../source/tests/test_inventory_repair.py::test_sorted - AssertionError...\nFAILED ../source/tests/test_inventory_repair.py::test_negative - Failed: DID ...\n======================== 3 failed, 2 warnings in 0.02s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import defaultdict\nfrom fixtures.inventory import apply_delta\n\n\ndef solve(records):\n    \"\"\"Applies inventory deltas atomically and rejects invalid updates.\n\n    Aggregates (sku, delta) per SKU, rejects non-string SKUs or updates that\n    would result in negative final stock, and returns a sorted stock mapping.\n    \"\"\"\n    # Aggregate deltas per SKU\n    aggregated = defaultdict(int)\n    for record in records:\n        if not isinstance(record, (list, tuple)) or len(record) != 2:\n            continue\n        sku, delta = record\n        if not isinstance(sku, str):\n            continue\n        # Assuming delta can be int or float, but usually numeric.\n        try:\n            aggregated[sku] += delta\n        except (TypeError, ValueError):\n            continue\n\n    # Final stock mapping\n    stock = {}\n    for sku, total_delta in aggregated.items():\n        # Apply delta starting from initial stock of 0 (or using apply_delta helper)\n        # The prompt mentions using the supplied fixtures/inventory.py helper.\n        # Let's check how apply_delta works or use it to calculate final stock.\n        try:\n            final_stock = apply_delta(0, total_delta)\n        except Exception:\n            # If apply_delta rejects it or raises an error, skip\n            continue\n\n        if final_stock < 0:\n            continue\n\n        stock[sku] = final_stock\n\n    # Return sorted stock mapping by SKU\n    return dict(sorted(stock.items()))\n```",
+      "task": {
+        "description": "Implement solve(records) that applies inventory deltas atomically and rejects invalid updates.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/inventory.py"
+          ],
+          "tests": "tests/test_inventory_repair.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Repair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping."
+        },
+        "metadata": {
+          "category": "multi_file_repair",
+          "difficulty": "hard"
+        },
+        "name": "inventory-repair",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/inventory_repair.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 1,
+        "exit_code": 2,
+        "failed_tests": 0,
+        "failure_classification": {
+          "category": "syntax_error",
+          "reason": "Python could not parse or import the generated solution."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 93,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "8SzVavtyherPsg_7y8fYCw"
+          },
+          "output_tokens": 378,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: inventory-repair\n\nDescription:\nImplement solve(records) that applies inventory deltas atomically and rejects invalid updates.\n\nInput:\nRepair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 0 items / 1 error\n\n==================================== ERRORS ====================================\n__________________ ERROR collecting test_inventory_repair.py ___________________\nImportError while importing test module '/source/tests/test_inventory_repair.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/local/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n/source/tests/test_inventory_repair.py:2: in <module>\n    from solution import solve\n/source/solution.py:2: in <module>\n    from fixtures.inventory import DEFAULT_STOCK\nE   ImportError: cannot import name 'DEFAULT_STOCK' from 'fixtures.inventory' (/source/fixtures/inventory.py)\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-p0iwd2u0'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-n6v0owq1'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nERROR ../source/tests/test_inventory_repair.py\n!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!\n========================= 2 warnings, 1 error in 0.07s =========================\n",
+        "timed_out": false,
+        "total_tests": 1,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import defaultdict\nfrom fixtures.inventory import DEFAULT_STOCK\n\n\ndef solve(records):\n    \"\"\"Applies inventory deltas atomically and rejects invalid updates.\n\n    Aggregates (sku, delta) from records. Rejects non-string SKUs and updates\n    that would result in negative final stock (starting from DEFAULT_STOCK).\n    Returns a sorted dictionary mapping SKU to final stock.\n    \"\"\"\n    # Aggregate deltas per SKU\n    deltas = defaultdict(int)\n    for record in records:\n        if not isinstance(record, (list, tuple)) or len(record) != 2:\n            continue\n        sku, delta = record\n        if not isinstance(sku, str):\n            continue\n        if not isinstance(delta, (int, float)):\n            try:\n                delta = int(delta)\n            except (ValueError, TypeError):\n                continue\n        deltas[sku] += delta\n\n    # Compute final stock and validate against constraints atomically\n    final_stock = {}\n    for sku, initial in DEFAULT_STOCK.items():\n        final_stock[sku] = initial + deltas[sku]\n\n    # Include any new SKUs introduced in deltas not in DEFAULT_STOCK\n    for sku, delta in deltas.items():\n        if sku not in final_stock:\n            final_stock[sku] = delta\n\n    # Check for negative final stock\n    for sku, stock in final_stock.items():\n        if stock < 0:\n            # Reject invalid update: return original DEFAULT_STOCK sorted by SKU\n            return dict(sorted(DEFAULT_STOCK.items()))\n\n    # Return sorted stock mapping\n    return dict(sorted(final_stock.items()))\n```",
+      "task": {
+        "description": "Implement solve(records) that applies inventory deltas atomically and rejects invalid updates.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/inventory.py"
+          ],
+          "tests": "tests/test_inventory_repair.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Repair solution.py using the supplied fixtures/inventory.py helper. Aggregate (sku, delta), reject non-string SKU or negative final stock, and return sorted stock mapping."
+        },
+        "metadata": {
+          "category": "multi_file_repair",
+          "difficulty": "hard"
+        },
+        "name": "inventory-repair",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/inventory_repair.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 99,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "8izVavyeKvHoz7IPxtef2As"
+          },
+          "output_tokens": 271,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: lru-cache\n\nDescription:\nRefactor a supplied legacy cache implementation into a capacity-bounded LRUCache.\n\nInput:\nRefactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_lru_cache.py ...                                    [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-otl_v_6m'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = {}\n        # Using a doubly linked list approach via a dictionary or Python 3.7+ ordered dict behavior.\n        # Since standard dict maintains insertion order in Python 3.7+, we can use it directly.\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        # Move to end to show it was recently used\n        self.cache[key] = self.cache.pop(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            # Remove existing so it gets updated and moved to the end\n            self.cache.pop(key)\n        elif len(self.cache) >= self.capacity:\n            # Evict the least recently used item (the first item in the dict)\n            oldest_key = next(iter(self.cache))\n            self.cache.pop(oldest_key)\n        \n        self.cache[key] = value\n```",
+      "task": {
+        "description": "Refactor a supplied legacy cache implementation into a capacity-bounded LRUCache.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/legacy_cache.py"
+          ],
+          "tests": "tests/test_lru_cache.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Refactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys."
+        },
+        "metadata": {
+          "category": "refactor",
+          "difficulty": "medium"
+        },
+        "name": "lru-cache",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/lru_cache.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 99,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "9CzVaqLTB-rUz7IPtd-zmQQ"
+          },
+          "output_tokens": 218,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: lru-cache\n\nDescription:\nRefactor a supplied legacy cache implementation into a capacity-bounded LRUCache.\n\nInput:\nRefactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_lru_cache.py ...                                    [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-110a_5fk'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        # Move the accessed key to the end to show it was recently used\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            # Update the value and move to the end\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        \n        # Check capacity and evict the least recently used item (first item)\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)\n```",
+      "task": {
+        "description": "Refactor a supplied legacy cache implementation into a capacity-bounded LRUCache.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/legacy_cache.py"
+          ],
+          "tests": "tests/test_lru_cache.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Refactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys."
+        },
+        "metadata": {
+          "category": "refactor",
+          "difficulty": "medium"
+        },
+        "name": "lru-cache",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/lru_cache.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 99,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "9SzVar2qDKjpz7IPl5OGyQs"
+          },
+          "output_tokens": 216,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: lru-cache\n\nDescription:\nRefactor a supplied legacy cache implementation into a capacity-bounded LRUCache.\n\nInput:\nRefactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_lru_cache.py ...                                    [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-0du2u3nl'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import OrderedDict\n\nclass LRUCache:\n    def __init__(self, capacity: int):\n        self.capacity = capacity\n        self.cache = OrderedDict()\n\n    def get(self, key: int) -> int:\n        if key not in self.cache:\n            return -1\n        # Move the accessed key to the end to show it was recently used\n        self.cache.move_to_end(key)\n        return self.cache[key]\n\n    def put(self, key: int, value: int) -> None:\n        if key in self.cache:\n            # Update existing key and move to end\n            self.cache.move_to_end(key)\n        self.cache[key] = value\n        \n        # If capacity is exceeded, remove the oldest item (first item)\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)\n```",
+      "task": {
+        "description": "Refactor a supplied legacy cache implementation into a capacity-bounded LRUCache.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/legacy_cache.py"
+          ],
+          "tests": "tests/test_lru_cache.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Refactor the supplied fixtures/legacy_cache.py into LRUCache in solution.py. Preserve get/put names, return -1 for missing keys, and evict least recently used keys."
+        },
+        "metadata": {
+          "category": "refactor",
+          "difficulty": "medium"
+        },
+        "name": "lru-cache",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/lru_cache.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 2,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 73,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "9izVaobpIdmEz7IPrr-mgQQ"
+          },
+          "output_tokens": 155,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: merge-intervals\n\nDescription:\nImplement solve(intervals) that sorts and merges overlapping or touching integer intervals.\n\nInput:\nImplement solve(intervals) in solution.py; do not mutate the input list.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 1,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_merge_intervals.py FF.                              [100%]\n\n=================================== FAILURES ===================================\n_________________________________ test_overlap _________________________________\n\n>   def test_overlap(): assert solve([(3,5),(1,4)]) == [(1,5)]\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert [[1, 5]] == [(1, 5)]\nE     \nE     At index 0 diff: [1, 5] != (1, 5)\nE     Use -v to get more diff\n\n/source/tests/test_merge_intervals.py:2: AssertionError\n________________________________ test_touching _________________________________\n\n>   def test_touching(): assert solve([(1,2),(2,3)]) == [(1,3)]\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert [[1, 3]] == [(1, 3)]\nE     \nE     At index 0 diff: [1, 3] != (1, 3)\nE     Use -v to get more diff\n\n/source/tests/test_merge_intervals.py:3: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-0g83mme0'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-tuau2isp'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_merge_intervals.py::test_overlap - assert [[1, 5]...\nFAILED ../source/tests/test_merge_intervals.py::test_touching - assert [[1, 3...\n=================== 2 failed, 1 passed, 2 warnings in 0.02s ====================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals by their starting value to avoid mutating the input\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    \n    merged = [sorted_intervals[0]]\n    \n    for current in sorted_intervals[1:]:\n        prev = merged[-1]\n        # If current overlaps or touches the previous interval, merge them\n        if current[0] <= prev[1]:\n            merged[-1] = [prev[0], max(prev[1], current[1])]\n        else:\n            merged.append(current)\n            \n    return merged\n```",
+      "task": {
+        "description": "Implement solve(intervals) that sorts and merges overlapping or touching integer intervals.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_merge_intervals.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(intervals) in solution.py; do not mutate the input list."
+        },
+        "metadata": {
+          "category": "bug_fix",
+          "difficulty": "medium"
+        },
+        "name": "merge-intervals",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/merge_intervals.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 2,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 73,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "9yzVatfBIavTz7IP-Lqm0Ao"
+          },
+          "output_tokens": 167,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: merge-intervals\n\nDescription:\nImplement solve(intervals) that sorts and merges overlapping or touching integer intervals.\n\nInput:\nImplement solve(intervals) in solution.py; do not mutate the input list.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 1,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_merge_intervals.py FF.                              [100%]\n\n=================================== FAILURES ===================================\n_________________________________ test_overlap _________________________________\n\n>   def test_overlap(): assert solve([(3,5),(1,4)]) == [(1,5)]\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert [[1, 5]] == [(1, 5)]\nE     \nE     At index 0 diff: [1, 5] != (1, 5)\nE     Use -v to get more diff\n\n/source/tests/test_merge_intervals.py:2: AssertionError\n________________________________ test_touching _________________________________\n\n>   def test_touching(): assert solve([(1,2),(2,3)]) == [(1,3)]\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert [[1, 3]] == [(1, 3)]\nE     \nE     At index 0 diff: [1, 3] != (1, 3)\nE     Use -v to get more diff\n\n/source/tests/test_merge_intervals.py:3: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-a5zp2u69'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-nkmqm9b9'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_merge_intervals.py::test_overlap - assert [[1, 5]...\nFAILED ../source/tests/test_merge_intervals.py::test_touching - assert [[1, 3...\n=================== 2 failed, 1 passed, 2 warnings in 0.02s ====================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals by their start values to avoid mutating the original list\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    \n    merged = [sorted_intervals[0]]\n    \n    for current in sorted_intervals[1:]:\n        prev = merged[-1]\n        # If current interval overlaps or touches the previous one\n        if current[0] <= prev[1]:\n            # Merge them by updating the end of the previous interval\n            merged[-1] = [prev[0], max(prev[1], current[1])]\n        else:\n            merged.append(current)\n            \n    return merged\n```",
+      "task": {
+        "description": "Implement solve(intervals) that sorts and merges overlapping or touching integer intervals.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_merge_intervals.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(intervals) in solution.py; do not mutate the input list."
+        },
+        "metadata": {
+          "category": "bug_fix",
+          "difficulty": "medium"
+        },
+        "name": "merge-intervals",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/merge_intervals.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 2,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 73,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "-CzVaq7RLaDqz7IPn6HvqAs"
+          },
+          "output_tokens": 156,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: merge-intervals\n\nDescription:\nImplement solve(intervals) that sorts and merges overlapping or touching integer intervals.\n\nInput:\nImplement solve(intervals) in solution.py; do not mutate the input list.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 1,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_merge_intervals.py FF.                              [100%]\n\n=================================== FAILURES ===================================\n_________________________________ test_overlap _________________________________\n\n>   def test_overlap(): assert solve([(3,5),(1,4)]) == [(1,5)]\n                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert [[1, 5]] == [(1, 5)]\nE     \nE     At index 0 diff: [1, 5] != (1, 5)\nE     Use -v to get more diff\n\n/source/tests/test_merge_intervals.py:2: AssertionError\n________________________________ test_touching _________________________________\n\n>   def test_touching(): assert solve([(1,2),(2,3)]) == [(1,3)]\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE   assert [[1, 3]] == [(1, 3)]\nE     \nE     At index 0 diff: [1, 3] != (1, 3)\nE     Use -v to get more diff\n\n/source/tests/test_merge_intervals.py:3: AssertionError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-ahrfjti_'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-jtzi6pn5'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_merge_intervals.py::test_overlap - assert [[1, 5]...\nFAILED ../source/tests/test_merge_intervals.py::test_touching - assert [[1, 3...\n=================== 2 failed, 1 passed, 2 warnings in 0.02s ====================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals by their start values to avoid mutating the input\n    sorted_intervals = sorted(intervals, key=lambda x: x[0])\n    \n    merged = [sorted_intervals[0]]\n    \n    for current in sorted_intervals[1:]:\n        prev = merged[-1]\n        # If current interval overlaps or touches the previous one, merge them\n        if current[0] <= prev[1]:\n            merged[-1] = [prev[0], max(prev[1], current[1])]\n        else:\n            merged.append(current)\n            \n    return merged\n```",
+      "task": {
+        "description": "Implement solve(intervals) that sorts and merges overlapping or touching integer intervals.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_merge_intervals.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(intervals) in solution.py; do not mutate the input list."
+        },
+        "metadata": {
+          "category": "bug_fix",
+          "difficulty": "medium"
+        },
+        "name": "merge-intervals",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/merge_intervals.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 79,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "-SzVavOPN5vpz7IPt42IqQw"
+          },
+          "output_tokens": 155,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: parse-records\n\nDescription:\nImplement solve(lines) that returns normalized name/email dictionaries and skips blank lines.\n\nInput:\nEach nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_parse_records.py ...                                [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-qo6qc6i3'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(lines):\n    records = []\n    for line in lines:\n        stripped = line.strip()\n        if not stripped:\n            continue\n        if '<' not in stripped or not stripped.endswith('>'):\n            raise ValueError(f\"Malformed line: {line}\")\n        \n        name_part, email_part = stripped.rsplit('<', 1)\n        name = name_part.strip()\n        email = email_part[:-1].strip()\n        \n        if not name or not email:\n            raise ValueError(f\"Malformed line: {line}\")\n            \n        records.append({'name': name, 'email': email})\n    return records\n```",
+      "task": {
+        "description": "Implement solve(lines) that returns normalized name/email dictionaries and skips blank lines.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_parse_records.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Each nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines."
+        },
+        "metadata": {
+          "category": "error_handling",
+          "difficulty": "medium"
+        },
+        "name": "parse-records",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/parse_records.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 79,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "-yzVapXHBOzQz7IPuLy-8As"
+          },
+          "output_tokens": 155,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: parse-records\n\nDescription:\nImplement solve(lines) that returns normalized name/email dictionaries and skips blank lines.\n\nInput:\nEach nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_parse_records.py ...                                [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-4770qdd3'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(lines):\n    records = []\n    for line in lines:\n        stripped = line.strip()\n        if not stripped:\n            continue\n        if '<' not in stripped or not stripped.endswith('>'):\n            raise ValueError(f\"Malformed line: {line}\")\n        \n        name_part, email_part = stripped.rsplit('<', 1)\n        name = name_part.strip()\n        email = email_part[:-1].strip()\n        \n        if not name or not email:\n            raise ValueError(f\"Malformed line: {line}\")\n            \n        records.append({'name': name, 'email': email})\n    return records\n```",
+      "task": {
+        "description": "Implement solve(lines) that returns normalized name/email dictionaries and skips blank lines.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_parse_records.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Each nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines."
+        },
+        "metadata": {
+          "category": "error_handling",
+          "difficulty": "medium"
+        },
+        "name": "parse-records",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/parse_records.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 79,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "_CzVapfKMN_rz7IP5MroyQQ"
+          },
+          "output_tokens": 155,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: parse-records\n\nDescription:\nImplement solve(lines) that returns normalized name/email dictionaries and skips blank lines.\n\nInput:\nEach nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_parse_records.py ...                                [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-cffde9q6'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(lines):\n    records = []\n    for line in lines:\n        stripped = line.strip()\n        if not stripped:\n            continue\n        if '<' not in stripped or not stripped.endswith('>'):\n            raise ValueError(f\"Malformed line: {line}\")\n        \n        name_part, email_part = stripped.rsplit('<', 1)\n        name = name_part.strip()\n        email = email_part[:-1].strip()\n        \n        if not name or not email:\n            raise ValueError(f\"Malformed line: {line}\")\n            \n        records.append({'name': name, 'email': email})\n    return records\n```",
+      "task": {
+        "description": "Implement solve(lines) that returns normalized name/email dictionaries and skips blank lines.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_parse_records.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Each nonblank line is NAME <EMAIL>. Implement solve(lines), raising ValueError for malformed lines."
+        },
+        "metadata": {
+          "category": "error_handling",
+          "difficulty": "medium"
+        },
+        "name": "parse-records",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/parse_records.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 8,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 245,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "_izVav7eIe_Uz7IPn9ut8Qs"
+          },
+          "output_tokens": 294,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: repair-checkout\n\nDescription:\nDiagnose bugs in a multi-file shop checkout package and implement a correct order total.\n\nInput:\nThe shop's checkout pipeline is over-discounting orders and crashing on bad input.\n\n1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.\n2. Identify the bugs in checkout.Checkout.total.\n3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:\n   - items is a list of (sku, quantity) tuples\n   - validate every SKU with Catalog; raise ValueError for unknown SKUs\n   - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n   - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n   - round the final total to 2 decimals\n   - do NOT rely on the buggy checkout.Checkout class\n\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 8 items\n\n../source/tests/test_repair_checkout.py FFFFFFFF                         [100%]\n\n=================================== FAILURES ===================================\n_______________________ test_no_coupon_totals_line_items _______________________\n\n    def test_no_coupon_totals_line_items():\n>       assert checkout_total([(\"book\", 2), (\"pen\", 4)]) == round(2 * 12.99 + 4 * 1.50, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:7: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 2), ('pen', 4)], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:24: TypeError\n________________ test_save10_takes_ten_percent_off_order_total _________________\n\n    def test_save10_takes_ten_percent_off_order_total():\n        # A percentage discount is distributive, so per-line and subtotal\n        # application of SAVE10 coincide; this test pins SAVE10's arithmetic.\n        # The per-line bug is discriminated by the FLAT5 tests below, where a\n        # flat amount (and its minimum) makes the two readings differ.\n>       assert checkout_total([(\"book\", 1), (\"pen\", 1)], \"SAVE10\") == round((12.99 + 1.50) * 0.9, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:15: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 1), ('pen', 1)], coupon = 'SAVE10'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:24: TypeError\n_____________________ test_flat5_applies_once_not_per_line _____________________\n\n    def test_flat5_applies_once_not_per_line():\n        # Buggy checkout subtracts $5 from every line: (24.00 - 5) + (25.98 - 5) = 39.98.\n        # Both lines clear the $20 minimum, so the per-line reading fails on\n        # the amount alone, not on an exception.\n>       assert checkout_total([(\"lamp\", 1), (\"book\", 2)], \"FLAT5\") == round(24.00 + 2 * 12.99 - 5, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:22: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('lamp', 1), ('book', 2)], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:24: TypeError\n_____________________ test_flat5_minimum_subtotal_enforced _____________________\n\n    def test_flat5_minimum_subtotal_enforced():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"pen\", 1)], \"FLAT5\")\n\n/source/tests/test_repair_checkout.py:27: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('pen', 1)], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:24: TypeError\n______________ test_unknown_sku_raises_value_error_not_key_error _______________\n\n    def test_unknown_sku_raises_value_error_not_key_error():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"nope\", 1)])\n\n/source/tests/test_repair_checkout.py:32: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('nope', 1)], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:24: TypeError\n____________________ test_unknown_coupon_raises_value_error ____________________\n\n    def test_unknown_coupon_raises_value_error():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"book\", 2)], \"BOGUS\")\n\n/source/tests/test_repair_checkout.py:37: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 2)], coupon = 'BOGUS'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:24: TypeError\n_________________________ test_empty_cart_totals_zero __________________________\n\n    def test_empty_cart_totals_zero():\n>       assert checkout_total([]) == 0.0\n               ^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:41: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n            price = Catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n_________________ test_empty_cart_with_coupon_still_validates __________________\n\n    def test_empty_cart_with_coupon_still_validates():\n        with pytest.raises(ValueError):\n>           checkout_total([], \"FLAT5\")\n\n/source/tests/test_repair_checkout.py:46: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items is a list of (sku, quantity) tuples.\n        - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n        - computes the order subtotal.\n        - applies DiscountPolicy.apply ONCE to the subtotal.\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n        - rounds the final total to 2 decimals.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n            price = Catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-78n6ro7e'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-tj50s7os'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_repair_checkout.py::test_no_coupon_totals_line_items\nFAILED ../source/tests/test_repair_checkout.py::test_save10_takes_ten_percent_off_order_total\nFAILED ../source/tests/test_repair_checkout.py::test_flat5_applies_once_not_per_line\nFAILED ../source/tests/test_repair_checkout.py::test_flat5_minimum_subtotal_enforced\nFAILED ../source/tests/test_repair_checkout.py::test_unknown_sku_raises_value_error_not_key_error\nFAILED ../source/tests/test_repair_checkout.py::test_unknown_coupon_raises_value_error\nFAILED ../source/tests/test_repair_checkout.py::test_empty_cart_totals_zero\nFAILED ../source/tests/test_repair_checkout.py::test_empty_cart_with_coupon_still_validates\n======================== 8 failed, 2 warnings in 0.04s =========================\n",
+        "timed_out": false,
+        "total_tests": 8,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom fixtures.shop.catalog import Catalog\nfrom fixtures.shop.discounts import DiscountPolicy\n\n\ndef checkout_total(items, coupon=None):\n    \"\"\"Computes the correct order total for a list of items and an optional coupon.\n\n    - items is a list of (sku, quantity) tuples.\n    - validates every SKU with Catalog; raises ValueError for unknown SKUs.\n    - computes the order subtotal.\n    - applies DiscountPolicy.apply ONCE to the subtotal.\n    - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums.\n    - rounds the final total to 2 decimals.\n    \"\"\"\n    subtotal = 0.0\n\n    for item in items:\n        if not isinstance(item, (list, tuple)) or len(item) != 2:\n            raise ValueError(\"Invalid item format\")\n        sku, quantity = item\n        if not isinstance(quantity, (int, float)) or quantity < 0:\n            raise ValueError(\"Invalid quantity\")\n\n        price = Catalog.get_price(sku)\n        if price is None:\n            raise ValueError(f\"Unknown SKU: {sku}\")\n\n        subtotal += price * quantity\n\n    final_total = DiscountPolicy.apply(subtotal, coupon)\n    return round(final_total, 2)\n```",
+      "task": {
+        "description": "Diagnose bugs in a multi-file shop checkout package and implement a correct order total.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/shop/catalog.py",
+            "fixtures/shop/discounts.py",
+            "fixtures/shop/checkout.py"
+          ],
+          "tests": "tests/test_repair_checkout.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "The shop's checkout pipeline is over-discounting orders and crashing on bad input.\n\n1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.\n2. Identify the bugs in checkout.Checkout.total.\n3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:\n   - items is a list of (sku, quantity) tuples\n   - validate every SKU with Catalog; raise ValueError for unknown SKUs\n   - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n   - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n   - round the final total to 2 decimals\n   - do NOT rely on the buggy checkout.Checkout class\n"
+        },
+        "metadata": {
+          "category": "debugging",
+          "difficulty": "hard"
+        },
+        "name": "repair-checkout",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/repair_checkout.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 8,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 245,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "TC3VapDKK-_sz7IPy5LNyAs"
+          },
+          "output_tokens": 284,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: repair-checkout\n\nDescription:\nDiagnose bugs in a multi-file shop checkout package and implement a correct order total.\n\nInput:\nThe shop's checkout pipeline is over-discounting orders and crashing on bad input.\n\n1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.\n2. Identify the bugs in checkout.Checkout.total.\n3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:\n   - items is a list of (sku, quantity) tuples\n   - validate every SKU with Catalog; raise ValueError for unknown SKUs\n   - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n   - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n   - round the final total to 2 decimals\n   - do NOT rely on the buggy checkout.Checkout class\n\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 8 items\n\n../source/tests/test_repair_checkout.py FFFFFFFF                         [100%]\n\n=================================== FAILURES ===================================\n_______________________ test_no_coupon_totals_line_items _______________________\n\n    def test_no_coupon_totals_line_items():\n>       assert checkout_total([(\"book\", 2), (\"pen\", 4)]) == round(2 * 12.99 + 4 * 1.50, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:7: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 2), ('pen', 4)], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:25: TypeError\n________________ test_save10_takes_ten_percent_off_order_total _________________\n\n    def test_save10_takes_ten_percent_off_order_total():\n        # A percentage discount is distributive, so per-line and subtotal\n        # application of SAVE10 coincide; this test pins SAVE10's arithmetic.\n        # The per-line bug is discriminated by the FLAT5 tests below, where a\n        # flat amount (and its minimum) makes the two readings differ.\n>       assert checkout_total([(\"book\", 1), (\"pen\", 1)], \"SAVE10\") == round((12.99 + 1.50) * 0.9, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:15: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 1), ('pen', 1)], coupon = 'SAVE10'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:25: TypeError\n_____________________ test_flat5_applies_once_not_per_line _____________________\n\n    def test_flat5_applies_once_not_per_line():\n        # Buggy checkout subtracts $5 from every line: (24.00 - 5) + (25.98 - 5) = 39.98.\n        # Both lines clear the $20 minimum, so the per-line reading fails on\n        # the amount alone, not on an exception.\n>       assert checkout_total([(\"lamp\", 1), (\"book\", 2)], \"FLAT5\") == round(24.00 + 2 * 12.99 - 5, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:22: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('lamp', 1), ('book', 2)], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:25: TypeError\n_____________________ test_flat5_minimum_subtotal_enforced _____________________\n\n    def test_flat5_minimum_subtotal_enforced():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"pen\", 1)], \"FLAT5\")\n\n/source/tests/test_repair_checkout.py:27: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('pen', 1)], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:25: TypeError\n______________ test_unknown_sku_raises_value_error_not_key_error _______________\n\n    def test_unknown_sku_raises_value_error_not_key_error():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"nope\", 1)])\n\n/source/tests/test_repair_checkout.py:32: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('nope', 1)], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:25: TypeError\n____________________ test_unknown_coupon_raises_value_error ____________________\n\n    def test_unknown_coupon_raises_value_error():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"book\", 2)], \"BOGUS\")\n\n/source/tests/test_repair_checkout.py:37: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 2)], coupon = 'BOGUS'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n>           price = Catalog.get_price(sku)\n                    ^^^^^^^^^^^^^^^^^^^^^^\nE           TypeError: Catalog.get_price() missing 1 required positional argument: 'sku'\n\n/source/solution.py:25: TypeError\n_________________________ test_empty_cart_totals_zero __________________________\n\n    def test_empty_cart_totals_zero():\n>       assert checkout_total([]) == 0.0\n               ^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:41: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n            price = Catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:31: TypeError\n_________________ test_empty_cart_with_coupon_still_validates __________________\n\n    def test_empty_cart_with_coupon_still_validates():\n        with pytest.raises(ValueError):\n>           checkout_total([], \"FLAT5\")\n\n/source/tests/test_repair_checkout.py:46: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n    \n        - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n        - Computes the order subtotal.\n        - Applies DiscountPolicy.apply ONCE to the subtotal.\n        - Coupon may be None; raises ValueError if invalid or unmet minimums.\n        - Rounds the final total to 2 decimal places.\n        \"\"\"\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n    \n            sku, quantity = item\n    \n            if not isinstance(quantity, (int, float)) or quantity < 0:\n                raise ValueError(\"Invalid quantity\")\n    \n            price = Catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:31: TypeError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-_3n9qz51'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-046ruq9o'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_repair_checkout.py::test_no_coupon_totals_line_items\nFAILED ../source/tests/test_repair_checkout.py::test_save10_takes_ten_percent_off_order_total\nFAILED ../source/tests/test_repair_checkout.py::test_flat5_applies_once_not_per_line\nFAILED ../source/tests/test_repair_checkout.py::test_flat5_minimum_subtotal_enforced\nFAILED ../source/tests/test_repair_checkout.py::test_unknown_sku_raises_value_error_not_key_error\nFAILED ../source/tests/test_repair_checkout.py::test_unknown_coupon_raises_value_error\nFAILED ../source/tests/test_repair_checkout.py::test_empty_cart_totals_zero\nFAILED ../source/tests/test_repair_checkout.py::test_empty_cart_with_coupon_still_validates\n======================== 8 failed, 2 warnings in 0.04s =========================\n",
+        "timed_out": false,
+        "total_tests": 8,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom fixtures.shop.catalog import Catalog\nfrom fixtures.shop.discounts import DiscountPolicy\n\n\ndef checkout_total(items, coupon=None):\n    \"\"\"Computes the correct order total for a list of (sku, quantity) items and an optional coupon.\n\n    - Validates every SKU using Catalog; raises ValueError for unknown SKUs.\n    - Computes the order subtotal.\n    - Applies DiscountPolicy.apply ONCE to the subtotal.\n    - Coupon may be None; raises ValueError if invalid or unmet minimums.\n    - Rounds the final total to 2 decimal places.\n    \"\"\"\n    subtotal = 0.0\n\n    for item in items:\n        if not isinstance(item, (list, tuple)) or len(item) != 2:\n            raise ValueError(\"Invalid item format\")\n\n        sku, quantity = item\n\n        if not isinstance(quantity, (int, float)) or quantity < 0:\n            raise ValueError(\"Invalid quantity\")\n\n        price = Catalog.get_price(sku)\n        if price is None:\n            raise ValueError(f\"Unknown SKU: {sku}\")\n\n        subtotal += price * quantity\n\n    final_total = DiscountPolicy.apply(subtotal, coupon)\n    return round(final_total, 2)\n```",
+      "task": {
+        "description": "Diagnose bugs in a multi-file shop checkout package and implement a correct order total.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/shop/catalog.py",
+            "fixtures/shop/discounts.py",
+            "fixtures/shop/checkout.py"
+          ],
+          "tests": "tests/test_repair_checkout.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "The shop's checkout pipeline is over-discounting orders and crashing on bad input.\n\n1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.\n2. Identify the bugs in checkout.Checkout.total.\n3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:\n   - items is a list of (sku, quantity) tuples\n   - validate every SKU with Catalog; raise ValueError for unknown SKUs\n   - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n   - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n   - round the final total to 2 decimals\n   - do NOT rely on the buggy checkout.Checkout class\n"
+        },
+        "metadata": {
+          "category": "debugging",
+          "difficulty": "hard"
+        },
+        "name": "repair-checkout",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/repair_checkout.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 8,
+        "failure_classification": {
+          "category": "test_failure",
+          "reason": "One or more pytest assertions failed."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 245,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Ti3Vat6sCuafz7IP3aXZyAQ"
+          },
+          "output_tokens": 289,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: repair-checkout\n\nDescription:\nDiagnose bugs in a multi-file shop checkout package and implement a correct order total.\n\nInput:\nThe shop's checkout pipeline is over-discounting orders and crashing on bad input.\n\n1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.\n2. Identify the bugs in checkout.Checkout.total.\n3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:\n   - items is a list of (sku, quantity) tuples\n   - validate every SKU with Catalog; raise ValueError for unknown SKUs\n   - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n   - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n   - round the final total to 2 decimals\n   - do NOT rely on the buggy checkout.Checkout class\n\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 8 items\n\n../source/tests/test_repair_checkout.py FFFFFFFF                         [100%]\n\n=================================== FAILURES ===================================\n_______________________ test_no_coupon_totals_line_items _______________________\n\n    def test_no_coupon_totals_line_items():\n>       assert checkout_total([(\"book\", 2), (\"pen\", 4)]) == round(2 * 12.99 + 4 * 1.50, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:7: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 2), ('pen', 4)], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n________________ test_save10_takes_ten_percent_off_order_total _________________\n\n    def test_save10_takes_ten_percent_off_order_total():\n        # A percentage discount is distributive, so per-line and subtotal\n        # application of SAVE10 coincide; this test pins SAVE10's arithmetic.\n        # The per-line bug is discriminated by the FLAT5 tests below, where a\n        # flat amount (and its minimum) makes the two readings differ.\n>       assert checkout_total([(\"book\", 1), (\"pen\", 1)], \"SAVE10\") == round((12.99 + 1.50) * 0.9, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:15: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 1), ('pen', 1)], coupon = 'SAVE10'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n_____________________ test_flat5_applies_once_not_per_line _____________________\n\n    def test_flat5_applies_once_not_per_line():\n        # Buggy checkout subtracts $5 from every line: (24.00 - 5) + (25.98 - 5) = 39.98.\n        # Both lines clear the $20 minimum, so the per-line reading fails on\n        # the amount alone, not on an exception.\n>       assert checkout_total([(\"lamp\", 1), (\"book\", 2)], \"FLAT5\") == round(24.00 + 2 * 12.99 - 5, 2)\n               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:22: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('lamp', 1), ('book', 2)], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n_____________________ test_flat5_minimum_subtotal_enforced _____________________\n\n    def test_flat5_minimum_subtotal_enforced():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"pen\", 1)], \"FLAT5\")\n\n/source/tests/test_repair_checkout.py:27: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('pen', 1)], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n______________ test_unknown_sku_raises_value_error_not_key_error _______________\n\n    def test_unknown_sku_raises_value_error_not_key_error():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"nope\", 1)])\n\n/source/tests/test_repair_checkout.py:32: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/source/solution.py:24: in checkout_total\n    price = catalog.get_price(sku)\n            ^^^^^^^^^^^^^^^^^^^^^^\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nself = <fixtures.shop.catalog.Catalog object at 0x7f09fae70f50>, sku = 'nope'\n\n    def get_price(self, sku):\n        \"\"\"Return the unit price for ``sku``.\n    \n        Raises:\n            KeyError: If ``sku`` is not in the catalog.\n        \"\"\"\n>       return _PRICES[sku]\n               ^^^^^^^^^^^^\nE       KeyError: 'nope'\n\n/source/fixtures/shop/catalog.py:20: KeyError\n____________________ test_unknown_coupon_raises_value_error ____________________\n\n    def test_unknown_coupon_raises_value_error():\n        with pytest.raises(ValueError):\n>           checkout_total([(\"book\", 2)], \"BOGUS\")\n\n/source/tests/test_repair_checkout.py:37: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [('book', 2)], coupon = 'BOGUS'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n_________________________ test_empty_cart_totals_zero __________________________\n\n    def test_empty_cart_totals_zero():\n>       assert checkout_total([]) == 0.0\n               ^^^^^^^^^^^^^^^^^^\n\n/source/tests/test_repair_checkout.py:41: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [], coupon = None\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n_________________ test_empty_cart_with_coupon_still_validates __________________\n\n    def test_empty_cart_with_coupon_still_validates():\n        with pytest.raises(ValueError):\n>           checkout_total([], \"FLAT5\")\n\n/source/tests/test_repair_checkout.py:46: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\nitems = [], coupon = 'FLAT5'\n\n    def checkout_total(items, coupon=None):\n        \"\"\"Computes the correct order total for a list of items and an optional coupon.\n    \n        - items: list of (sku, quantity) tuples\n        - validate every SKU with Catalog; raise ValueError for unknown SKUs\n        - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n        - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n        - round the final total to 2 decimals\n        \"\"\"\n        catalog = Catalog()\n        subtotal = 0.0\n    \n        for item in items:\n            if not isinstance(item, (list, tuple)) or len(item) != 2:\n                raise ValueError(\"Invalid item format\")\n            sku, quantity = item\n            if quantity <= 0:\n                raise ValueError(\"Quantity must be positive\")\n    \n            price = catalog.get_price(sku)\n            if price is None:\n                raise ValueError(f\"Unknown SKU: {sku}\")\n    \n            subtotal += price * quantity\n    \n>       final_total = DiscountPolicy.apply(subtotal, coupon)\n                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nE       TypeError: DiscountPolicy.apply() missing 1 required positional argument: 'coupon'\n\n/source/solution.py:30: TypeError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-8c0d6tly'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-29iqncyw'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_repair_checkout.py::test_no_coupon_totals_line_items\nFAILED ../source/tests/test_repair_checkout.py::test_save10_takes_ten_percent_off_order_total\nFAILED ../source/tests/test_repair_checkout.py::test_flat5_applies_once_not_per_line\nFAILED ../source/tests/test_repair_checkout.py::test_flat5_minimum_subtotal_enforced\nFAILED ../source/tests/test_repair_checkout.py::test_unknown_sku_raises_value_error_not_key_error\nFAILED ../source/tests/test_repair_checkout.py::test_unknown_coupon_raises_value_error\nFAILED ../source/tests/test_repair_checkout.py::test_empty_cart_totals_zero\nFAILED ../source/tests/test_repair_checkout.py::test_empty_cart_with_coupon_still_validates\n======================== 8 failed, 2 warnings in 0.04s =========================\n",
+        "timed_out": false,
+        "total_tests": 8,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom fixtures.shop.catalog import Catalog\nfrom fixtures.shop.discounts import DiscountPolicy\n\n\ndef checkout_total(items, coupon=None):\n    \"\"\"Computes the correct order total for a list of items and an optional coupon.\n\n    - items: list of (sku, quantity) tuples\n    - validate every SKU with Catalog; raise ValueError for unknown SKUs\n    - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n    - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n    - round the final total to 2 decimals\n    \"\"\"\n    catalog = Catalog()\n    subtotal = 0.0\n\n    for item in items:\n        if not isinstance(item, (list, tuple)) or len(item) != 2:\n            raise ValueError(\"Invalid item format\")\n        sku, quantity = item\n        if quantity <= 0:\n            raise ValueError(\"Quantity must be positive\")\n        \n        price = catalog.get_price(sku)\n        if price is None:\n            raise ValueError(f\"Unknown SKU: {sku}\")\n        \n        subtotal += price * quantity\n\n    final_total = DiscountPolicy.apply(subtotal, coupon)\n    return round(float(final_total), 2)\n```",
+      "task": {
+        "description": "Diagnose bugs in a multi-file shop checkout package and implement a correct order total.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [
+            "fixtures/shop/catalog.py",
+            "fixtures/shop/discounts.py",
+            "fixtures/shop/checkout.py"
+          ],
+          "tests": "tests/test_repair_checkout.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "The shop's checkout pipeline is over-discounting orders and crashing on bad input.\n\n1. Read fixtures/shop/catalog.py, fixtures/shop/discounts.py, and fixtures/shop/checkout.py to understand each module's contract.\n2. Identify the bugs in checkout.Checkout.total.\n3. Write solution.py with checkout_total(items, coupon=None) that returns the correct order total:\n   - items is a list of (sku, quantity) tuples\n   - validate every SKU with Catalog; raise ValueError for unknown SKUs\n   - compute the order subtotal, then apply DiscountPolicy.apply ONCE to the subtotal\n   - coupon may be None; the policy raises ValueError for unknown coupons or unmet minimums\n   - round the final total to 2 decimals\n   - do NOT rely on the buggy checkout.Checkout class\n"
+        },
+        "metadata": {
+          "category": "debugging",
+          "difficulty": "hard"
+        },
+        "name": "repair-checkout",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/repair_checkout.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 77,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Ty3VavrZIefrz7IPgKGCwAQ"
+          },
+          "output_tokens": 24,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: reverse-words\n\nDescription:\nImplement solve(text) that reverses whitespace-separated words and joins them with one space.\n\nInput:\nImplement solve(text) in solution.py. Normalize whitespace, then reverse the words.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_reverse_words.py ...                                [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-llbnp44z'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(text):\n    return ' '.join(text.split()[::-1])\n```",
+      "task": {
+        "description": "Implement solve(text) that reverses whitespace-separated words and joins them with one space.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_reverse_words.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(text) in solution.py. Normalize whitespace, then reverse the words."
+        },
+        "metadata": {
+          "category": "function_generation",
+          "difficulty": "easy"
+        },
+        "name": "reverse-words",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/reverse_words.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 77,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "UC3VavzqENeez7IPjcWJwQQ"
+          },
+          "output_tokens": 24,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: reverse-words\n\nDescription:\nImplement solve(text) that reverses whitespace-separated words and joins them with one space.\n\nInput:\nImplement solve(text) in solution.py. Normalize whitespace, then reverse the words.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_reverse_words.py ...                                [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-qwr_lebj'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(text):\n    return ' '.join(text.split()[::-1])\n```",
+      "task": {
+        "description": "Implement solve(text) that reverses whitespace-separated words and joins them with one space.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_reverse_words.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(text) in solution.py. Normalize whitespace, then reverse the words."
+        },
+        "metadata": {
+          "category": "function_generation",
+          "difficulty": "easy"
+        },
+        "name": "reverse-words",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/reverse_words.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 77,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "UC3VarbrOo7Xz7IP4vapiQQ"
+          },
+          "output_tokens": 24,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: reverse-words\n\nDescription:\nImplement solve(text) that reverses whitespace-separated words and joins them with one space.\n\nInput:\nImplement solve(text) in solution.py. Normalize whitespace, then reverse the words.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_reverse_words.py ...                                [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-2zwzey3m'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\ndef solve(text):\n    return ' '.join(text.split()[::-1])\n```",
+      "task": {
+        "description": "Implement solve(text) that reverses whitespace-separated words and joins them with one space.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_reverse_words.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(text) in solution.py. Normalize whitespace, then reverse the words."
+        },
+        "metadata": {
+          "category": "function_generation",
+          "difficulty": "easy"
+        },
+        "name": "reverse-words",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/reverse_words.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 82,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "US3VauiHMIqJz7IPpf3XwQs"
+          },
+          "output_tokens": 88,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: slugify-title\n\nDescription:\nImplement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.\n\nInput:\nImplement solve(title) in solution.py without external dependencies.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_slugify.py ...                                      [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-xxt_vmx_'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nimport re\n\ndef solve(title: str) -> str:\n    # Convert to lowercase\n    text = title.lower()\n    # Replace any sequence of non-alphanumeric characters with a single hyphen\n    text = re.sub(r'[^a-z0-9]+', '-', text)\n    # Strip leading and trailing hyphens\n    return text.strip('-')\n```",
+      "task": {
+        "description": "Implement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_slugify.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(title) in solution.py without external dependencies."
+        },
+        "metadata": {
+          "category": "function_generation",
+          "difficulty": "easy"
+        },
+        "name": "slugify-title",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/slugify.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 82,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Ui3Vao6DJKfOz7IPmqHYmAs"
+          },
+          "output_tokens": 88,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: slugify-title\n\nDescription:\nImplement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.\n\nInput:\nImplement solve(title) in solution.py without external dependencies.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_slugify.py ...                                      [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-3kp9cfn4'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nimport re\n\ndef solve(title: str) -> str:\n    # Convert to lowercase\n    text = title.lower()\n    # Replace any sequence of non-alphanumeric characters with a single hyphen\n    text = re.sub(r'[^a-z0-9]+', '-', text)\n    # Strip leading and trailing hyphens\n    return text.strip('-')\n```",
+      "task": {
+        "description": "Implement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_slugify.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(title) in solution.py without external dependencies."
+        },
+        "metadata": {
+          "category": "function_generation",
+          "difficulty": "easy"
+        },
+        "name": "slugify-title",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/slugify.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 82,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Uy3VasGsG5vpz7IPt42IqQw"
+          },
+          "output_tokens": 84,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: slugify-title\n\nDescription:\nImplement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.\n\nInput:\nImplement solve(title) in solution.py without external dependencies.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_slugify.py ...                                      [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-o10honeb'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nimport re\n\ndef solve(title: str) -> str:\n    # Convert to lowercase\n    text = title.lower()\n    # Replace non-alphanumeric characters with hyphens\n    text = re.sub(r'[^a-z0-9]+', '-', text)\n    # Strip leading and trailing hyphens\n    return text.strip('-')\n```",
+      "task": {
+        "description": "Implement solve(title) that lowercases text, converts non-alphanumerics to single hyphens, and strips hyphens.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_slugify.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Implement solve(title) in solution.py without external dependencies."
+        },
+        "metadata": {
+          "category": "function_generation",
+          "difficulty": "easy"
+        },
+        "name": "slugify-title",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/slugify.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 71,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "VC3VasjdJL7Qz7IPjorJ0AQ"
+          },
+          "output_tokens": 455,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: topological-sort\n\nDescription:\nImplement solve(nodes, edges) with a deterministic topological ordering and cycle detection.\n\nInput:\nReturn alphabetically tie-broken topological order; raise ValueError for a cycle.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_topological_sort.py ...                             [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-zrvtm5ip'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import defaultdict, deque\n\ndef solve(nodes, edges):\n    \"\"\"\n    Performs a deterministic topological sort on nodes and edges.\n    Ties are broken alphabetically.\n    Raises ValueError if a cycle is detected.\n    \"\"\"\n    # Initialize adjacency list and in-degree count\n    adj = defaultdict(list)\n    in_degree = {node: 0 for node in nodes}\n    \n    # Ensure all nodes mentioned in edges are in our structures\n    node_set = set(nodes)\n    for u, v in edges:\n        node_set.add(u)\n        node_set.add(v)\n        adj[u].append(v)\n        \n    for node in node_set:\n        if node not in in_degree:\n            in_degree[node] = 0\n\n    # Calculate in-degrees\n    for u in adj:\n        # To handle potential duplicate edges deterministically, we can use a set per adjacency list\n        adj[u] = sorted(list(set(adj[u])))\n        for v in adj[u]:\n            in_degree[v] += 1\n\n    # Use a priority queue (or sorted list/min-heap) for deterministic tie-breaking (alphabetical)\n    # Since nodes might be strings or numbers that support comparison, we use a list maintained as a heap\n    import heapq\n    heap = [node for node, deg in in_degree.items() if deg == 0]\n    heapq.heapify(heap)\n\n    result = []\n    while heap:\n        u = heapq.heappop(heap)\n        result.append(u)\n        \n        for v in adj[u]:\n            in_degree[v] -= 1\n            if in_degree[v] == 0:\n                heapq.heappush(heap, v)\n\n    # Check for cycles\n    if len(result) != len(in_degree):\n        raise ValueError(\"Cycle detected in the dependency graph.\")\n\n    return result\n```",
+      "task": {
+        "description": "Implement solve(nodes, edges) with a deterministic topological ordering and cycle detection.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_topological_sort.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Return alphabetically tie-broken topological order; raise ValueError for a cycle."
+        },
+        "metadata": {
+          "category": "algorithm_repair",
+          "difficulty": "hard"
+        },
+        "name": "topological-sort",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/topological_sort.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 71,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Vi3Vav_AHZCFz7IPnpXh2AQ"
+          },
+          "output_tokens": 431,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: topological-sort\n\nDescription:\nImplement solve(nodes, edges) with a deterministic topological ordering and cycle detection.\n\nInput:\nReturn alphabetically tie-broken topological order; raise ValueError for a cycle.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_topological_sort.py ...                             [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-e82zjh24'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import defaultdict, deque\n\n\ndef solve(nodes, edges):\n    \"\"\"Performs a deterministic topological sort on nodes and edges.\n\n    Returns the sorted nodes alphabetically in case of ties.\n    Raises ValueError if a cycle is detected.\n    \"\"\"\n    # Initialize adjacency list and in-degree count for all nodes\n    adj = defaultdict(list)\n    in_degree = {node: 0 for node in nodes}\n\n    # Build the graph\n    # Ensure all nodes mentioned in edges are accounted for\n    node_set = set(nodes)\n    for u, v in edges:\n        adj[u].append(v)\n        in_degree[v] = in_degree.get(v, 0) + 1\n        node_set.add(u)\n        node_set.add(v)\n\n    # Re-initialize in_degree to include any nodes found only in edges\n    for node in node_set:\n        if node not in in_degree:\n            in_degree[node] = 0\n\n    # Use a min-heap (or sorted list simulation with a deque) for deterministic tie-breaking\n    # Since we need alphabetical order, we can use a list that we keep sorted,\n    # or the heapq module.\n    import heapq\n\n    available = [node for node, deg in in_degree.items() if deg == 0]\n    heapq.heapify(available)\n\n    result = []\n\n    while available:\n        u = heapq.heappop(available)\n        result.append(u)\n\n        for v in adj[u]:\n            in_degree[v] -= 1\n            if in_degree[v] == 0:\n                heapq.heappush(available, v)\n\n    # Check for cycles\n    if len(result) != len(in_degree):\n        raise ValueError(\"Cycle detected in the dependency graph.\")\n\n    return result\n```",
+      "task": {
+        "description": "Implement solve(nodes, edges) with a deterministic topological ordering and cycle detection.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_topological_sort.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Return alphabetically tie-broken topological order; raise ValueError for a cycle."
+        },
+        "metadata": {
+          "category": "algorithm_repair",
+          "difficulty": "hard"
+        },
+        "name": "topological-sort",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/topological_sort.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 0,
+        "failed_tests": 0,
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 71,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "WC3Vas6rG82fz7IPraG8wAQ"
+          },
+          "output_tokens": 559,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: topological-sort\n\nDescription:\nImplement solve(nodes, edges) with a deterministic topological ordering and cycle detection.\n\nInput:\nReturn alphabetically tie-broken topological order; raise ValueError for a cycle.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": true,
+        "passed_tests": 3,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 3 items\n\n../source/tests/test_topological_sort.py ...                             [100%]\n\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-pkad_jmd'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n========================= 3 passed, 1 warning in 0.01s =========================\n",
+        "timed_out": false,
+        "total_tests": 3,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nfrom collections import defaultdict, deque\n\ndef solve(nodes, edges):\n    \"\"\"\n    Returns a deterministic (alphabetically tie-broken) topological ordering \n    of nodes given a list of nodes and directed edges. \n    Raises ValueError if a cycle is detected.\n    \"\"\"\n    # Initialize adjacency list and in-degree count for all nodes\n    adj = defaultdict(list)\n    in_degree = {node: 0 for node in nodes}\n    \n    # Build the graph\n    # Ensure all nodes mentioned in edges are accounted for, even if not in `nodes` explicitly\n    node_set = set(nodes)\n    for u, v in edges:\n        adj[u].append(v)\n        in_degree[v] += 1\n        if u not in node_set:\n            node_set.add(u)\n            in_degree.setdefault(u, 0)\n        if v not in node_set:\n            node_set.add(v)\n            in_degree.setdefault(v, 0)\n\n    # Use a min-heap or sorted list/deque for deterministic tie-breaking (alphabetical order)\n    # Since we need to pick the smallest available node lexicographically, a sorted list or heapq works.\n    zero_in_degree = [node for node, deg in in_degree.items() if deg == 0]\n    zero_in_degree.sort()\n    \n    queue = deque(zero_in_degree)\n    result = []\n    \n    while queue:\n        # To maintain strict alphabetical tie-breaking at every step, \n        # we can sort the queue or use a heap. \n        # Actually, standard Kahn's with sorting newly zero-in-degree nodes works.\n        node = queue.popleft()\n        result.append(node)\n        \n        # Sort neighbors to ensure deterministic processing order\n        for neighbor in sorted(adj[node]):\n            in_degree[neighbor] -= 1\n            if in_degree[neighbor] == 0:\n                queue.append(neighbor)\n        \n        # Re-sort the queue to always pick the smallest lexicographical available node\n        # Alternatively, convert queue to a list, sort, and convert back to deque.\n        temp_list = sorted(list(queue))\n        queue = deque(temp_list)\n        \n    if len(result) != len(in_degree):\n        raise ValueError(\"Cycle detected in the graph.\")\n        \n    return result\n```",
+      "task": {
+        "description": "Implement solve(nodes, edges) with a deterministic topological ordering and cycle detection.",
+        "execution": {
+          "entrypoint": "solution.py",
+          "files": [],
+          "tests": "tests/test_topological_sort.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Return alphabetically tie-broken topological order; raise ValueError for a cycle."
+        },
+        "metadata": {
+          "category": "algorithm_repair",
+          "difficulty": "hard"
+        },
+        "name": "topological-sort",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/topological_sort.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 1,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 1,
+        "failure_classification": {
+          "category": "syntax_error",
+          "reason": "Python could not parse or import the generated solution."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 85,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Wi3VaurcH9bVz7IPlKaKuAQ"
+          },
+          "output_tokens": 203,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: validate-password\n\nDescription:\nWrite pytest tests for a supplied password-policy implementation.\n\nInput:\nWrite tests/generated_tests.py that tests fixtures/password.py. Cover valid passwords and missing length, upper, lower, digit, and symbol requirements.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 1 item\n\n../source/tests/test_validate_password.py F                              [100%]\n\n=================================== FAILURES ===================================\n____________ test_generated_tests_cover_valid_and_invalid_passwords ____________\n\n    def test_generated_tests_cover_valid_and_invalid_passwords():\n>       module = _module()\n                 ^^^^^^^^^\n\n/source/tests/test_validate_password.py:14: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/source/tests/test_validate_password.py:9: in _module\n    spec.loader.exec_module(module)\n<frozen importlib._bootstrap_external>:999: in exec_module\n    ???\n<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    import pytest\n>   from fixtures.password import validate_password\nE   ImportError: cannot import name 'validate_password' from 'fixtures.password' (/source/fixtures/password.py)\n\n/source/tests/generated_tests.py:2: ImportError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-a45t_37m'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-9hvvy6gs'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_validate_password.py::test_generated_tests_cover_valid_and_invalid_passwords\n======================== 1 failed, 2 warnings in 0.02s =========================\n",
+        "timed_out": false,
+        "total_tests": 1,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nimport pytest\nfrom fixtures.password import validate_password\n\n\ndef test_valid_password():\n    # A password that meets all requirements: length >= 8, uppercase, lowercase, digit, symbol\n    assert validate_password(\"Valid1@Pass\") is True\n\n\ndef test_password_too_short():\n    # Less than 8 characters\n    assert validate_password(\"Val1@P\") is False\n\n\ndef test_missing_uppercase():\n    # No uppercase letters\n    assert validate_password(\"valid1@pass\") is False\n\n\ndef test_missing_lowercase():\n    # No lowercase letters\n    assert validate_password(\"VALID1@PASS\") is False\n\n\ndef test_missing_digit():\n    # No numbers\n    assert validate_password(\"Valid@Pass\") is False\n\n\ndef test_missing_symbol():\n    # No special characters / symbols\n    assert validate_password(\"Valid1Pass\") is False\n```",
+      "task": {
+        "description": "Write pytest tests for a supplied password-policy implementation.",
+        "execution": {
+          "entrypoint": "tests/generated_tests.py",
+          "files": [
+            "fixtures/password.py"
+          ],
+          "tests": "tests/test_validate_password.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Write tests/generated_tests.py that tests fixtures/password.py. Cover valid passwords and missing length, upper, lower, digit, and symbol requirements."
+        },
+        "metadata": {
+          "category": "test_writing",
+          "difficulty": "medium"
+        },
+        "name": "validate-password",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/validate_password.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 2,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 1,
+        "failure_classification": {
+          "category": "syntax_error",
+          "reason": "Python could not parse or import the generated solution."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 85,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "Wy3Vao7bJYXQz7IPz9D24As"
+          },
+          "output_tokens": 211,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: validate-password\n\nDescription:\nWrite pytest tests for a supplied password-policy implementation.\n\nInput:\nWrite tests/generated_tests.py that tests fixtures/password.py. Cover valid passwords and missing length, upper, lower, digit, and symbol requirements.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 1 item\n\n../source/tests/test_validate_password.py F                              [100%]\n\n=================================== FAILURES ===================================\n____________ test_generated_tests_cover_valid_and_invalid_passwords ____________\n\n    def test_generated_tests_cover_valid_and_invalid_passwords():\n>       module = _module()\n                 ^^^^^^^^^\n\n/source/tests/test_validate_password.py:14: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/source/tests/test_validate_password.py:9: in _module\n    spec.loader.exec_module(module)\n<frozen importlib._bootstrap_external>:999: in exec_module\n    ???\n<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    import pytest\n>   from fixtures.password import validate_password\nE   ImportError: cannot import name 'validate_password' from 'fixtures.password' (/source/fixtures/password.py)\n\n/source/tests/generated_tests.py:2: ImportError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-2txowib8'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-5jgmj34a'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_validate_password.py::test_generated_tests_cover_valid_and_invalid_passwords\n======================== 1 failed, 2 warnings in 0.02s =========================\n",
+        "timed_out": false,
+        "total_tests": 1,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nimport pytest\nfrom fixtures.password import validate_password\n\n\ndef test_valid_password():\n    # Meets all criteria: length >= 8, uppercase, lowercase, digit, symbol\n    assert validate_password(\"Str0ng@Pass\") is True\n\n\ndef test_missing_length():\n    # Too short (< 8 characters)\n    assert validate_password(\"Str0@P\") is False\n\n\ndef test_missing_uppercase():\n    # Lacks an uppercase letter\n    assert validate_password(\"str0ng@pass\") is False\n\n\ndef test_missing_lowercase():\n    # Lacks a lowercase letter\n    assert validate_password(\"STR0NG@PASS\") is False\n\n\ndef test_missing_digit():\n    # Lacks a digit\n    assert validate_password(\"Strong@Pass\") is False\n\n\ndef test_missing_symbol():\n    # Lacks a special symbol/character\n    assert validate_password(\"Strong0Pass\") is False\n```",
+      "task": {
+        "description": "Write pytest tests for a supplied password-policy implementation.",
+        "execution": {
+          "entrypoint": "tests/generated_tests.py",
+          "files": [
+            "fixtures/password.py"
+          ],
+          "tests": "tests/test_validate_password.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Write tests/generated_tests.py that tests fixtures/password.py. Cover valid passwords and missing length, upper, lower, digit, and symbol requirements."
+        },
+        "metadata": {
+          "category": "test_writing",
+          "difficulty": "medium"
+        },
+        "name": "validate-password",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/validate_password.yaml",
+        "version": 1
+      }
+    },
+    {
+      "metadata": {
+        "attempt": 3,
+        "code_extraction_applied": true,
+        "error_tests": 0,
+        "exit_code": 1,
+        "failed_tests": 1,
+        "failure_classification": {
+          "category": "syntax_error",
+          "reason": "Python could not parse or import the generated solution."
+        },
+        "generation": {
+          "evaluator": "llm",
+          "expected_type": "code",
+          "input_tokens": 85,
+          "model": "gemini-3.5-flash-lite",
+          "model_response_metadata": {
+            "provider_response_id": "XC3Var-9MZHQz7IP4r3PuQQ"
+          },
+          "output_tokens": 203,
+          "prompt_variant": "baseline",
+          "prompt_version": "v1",
+          "system_prompt": "You are a helpful coding assistant. Follow the task instructions exactly and return only the requested output.",
+          "user_prompt": "Task: validate-password\n\nDescription:\nWrite pytest tests for a supplied password-policy implementation.\n\nInput:\nWrite tests/generated_tests.py that tests fixtures/password.py. Cover valid passwords and missing length, upper, lower, digit, and symbol requirements.\n\nExpected output type:\ncode"
+        },
+        "grader": "pytest",
+        "output_limit_exceeded": false,
+        "passed": false,
+        "passed_tests": 0,
+        "skipped_tests": 0,
+        "stderr": "",
+        "stdout": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.0, pluggy-1.7.0\nrootdir: /source/tests\ncollected 1 item\n\n../source/tests/test_validate_password.py F                              [100%]\n\n=================================== FAILURES ===================================\n____________ test_generated_tests_cover_valid_and_invalid_passwords ____________\n\n    def test_generated_tests_cover_valid_and_invalid_passwords():\n>       module = _module()\n                 ^^^^^^^^^\n\n/source/tests/test_validate_password.py:14: \n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n/source/tests/test_validate_password.py:9: in _module\n    spec.loader.exec_module(module)\n<frozen importlib._bootstrap_external>:999: in exec_module\n    ???\n<frozen importlib._bootstrap>:488: in _call_with_frames_removed\n    ???\n_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n\n    import pytest\n>   from fixtures.password import validate_password\nE   ImportError: cannot import name 'validate_password' from 'fixtures.password' (/source/fixtures/password.py)\n\n/source/tests/generated_tests.py:2: ImportError\n=============================== warnings summary ===============================\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-fsjjf_ll'\n    config.cache.set(\"cache/nodeids\", sorted(self.cached_nodeids))\n\n../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429\n  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /source/tests/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/source/tests/pytest-cache-files-bc9g5svi'\n    config.cache.set(\"cache/lastfailed\", self.lastfailed)\n\n-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html\n=========================== short test summary info ============================\nFAILED ../source/tests/test_validate_password.py::test_generated_tests_cover_valid_and_invalid_passwords\n======================== 1 failed, 2 warnings in 0.02s =========================\n",
+        "timed_out": false,
+        "total_tests": 1,
+        "xfailed_tests": 0
+      },
+      "output": "```python\nimport pytest\nfrom fixtures.password import validate_password\n\n\ndef test_valid_password():\n    # Meets all criteria: length >= 8, upper, lower, digit, symbol\n    assert validate_password(\"Valid1@Pass\") is True\n\n\ndef test_missing_length():\n    # Too short (< 8 characters)\n    assert validate_password(\"Ab1!\") is False\n\n\ndef test_missing_uppercase():\n    # No uppercase letters\n    assert validate_password(\"alllowercase1@\") is False\n\n\ndef test_missing_lowercase():\n    # No lowercase letters\n    assert validate_password(\"ALLUPPERCASE1@\") is False\n\n\ndef test_missing_digit():\n    # No numbers\n    assert validate_password(\"NoDigitsHere@\") is False\n\n\ndef test_missing_symbol():\n    # No special characters/symbols\n    assert validate_password(\"NoSymbols123\") is False\n```",
+      "task": {
+        "description": "Write pytest tests for a supplied password-policy implementation.",
+        "execution": {
+          "entrypoint": "tests/generated_tests.py",
+          "files": [
+            "fixtures/password.py"
+          ],
+          "tests": "tests/test_validate_password.py",
+          "timeout_seconds": 10
+        },
+        "expected": {
+          "type": "code"
+        },
+        "input": {
+          "prompt": "Write tests/generated_tests.py that tests fixtures/password.py. Cover valid passwords and missing length, upper, lower, digit, and symbol requirements."
+        },
+        "metadata": {
+          "category": "test_writing",
+          "difficulty": "medium"
+        },
+        "name": "validate-password",
+        "path": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks/validate_password.yaml",
+        "version": 1
+      }
+    }
+  ],
+  "run_id": "2026-10-18_001",
+  "schema_version": 1
+}

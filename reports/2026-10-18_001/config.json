@@ -1,0 +1,21 @@
+{
+  "evaluation": {
+    "attempts": 3,
+    "pass_at_k": 3
+  },
+  "file_path": "impressions.toml",
+  "model": {
+    "model": "gemini-3.5-flash-lite",
+    "provider": "gemini",
+    "timeout": 30.0
+  },
+  "paths": {
+    "reports": "reports",
+    "tasks": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks"
+  },
+  "prompt": {
+    "variant": "baseline",
+    "version": "v1"
+  },
+  "version": 1
+}
