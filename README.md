@@ -22,7 +22,7 @@
 
 Impressions measures the correctness and reliability of AI-generated code with deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated Docker execution, pytest-based grading, failure classification, pass@k reliability metrics, and versioned run outputs.
 
-## ▶ Run it — a working system, not a write-up
+## ▶ Run it — a working system
 
 Impressions runs end-to-end today. Pick a path:
 
