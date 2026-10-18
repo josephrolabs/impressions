@@ -6,11 +6,43 @@
   Deterministic, reproducible evaluation of AI-generated code.
 </p>
 
+<p align="center">
+  <a href="https://github.com/josephrolabs/impressions/actions/workflows/benchmark.yml"><img src="https://github.com/josephrolabs/impressions/actions/workflows/benchmark.yml/badge.svg" alt="Benchmark pilot status" /></a>
+</p>
+
+<p align="center">
+  <a href="https://github.com/josephrolabs/impressions/actions/workflows/benchmark.yml"><img src="https://img.shields.io/badge/%E2%96%B6_Run_the_benchmark-in_GitHub_Actions-2ea44f?style=for-the-badge&logo=githubactions&logoColor=white" alt="Run the benchmark in GitHub Actions" /></a>
+</p>
+
+<p align="center">
+  <strong>Try it yourself:</strong> fork the repo, add a free Gemini key as a repository secret, click <strong>Run workflow</strong> — then compare your numbers with the persisted study run. Do they align?
+</p>
+
 # Impressions: AI Code Evaluation Harness
 
 Impressions measures the correctness and reliability of AI-generated code with deterministic, reproducible signals: structured coding tasks, model-generated solutions, isolated Docker execution, pytest-based grading, failure classification, pass@k reliability metrics, and versioned run outputs.
 
-## Quick start
+## ▶ Run it — a working system, not a write-up
+
+Impressions runs end-to-end today. Pick a path:
+
+### Path A — GitHub Actions (recommended)
+
+Run the full benchmark in CI — nothing to install locally, no Docker to manage.
+
+1. **Fork** this repository. Visitors run the workflow on their own fork, with their own key — only collaborators can dispatch workflows on this repo.
+2. Get an API key — a Gemini key from Google AI Studio is free on the free tier.
+3. In your fork, go to **Settings → Secrets and variables → Actions → New repository secret** and add the key for your provider: `GEMINI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `META_API_KEY`. Keys are read only from secrets / the environment — never from config files.
+4. Click the **Run the benchmark** button above, or go to **Actions → Benchmark pilot → Run workflow**. Choose a provider, model, and attempts — for example `gemini` / `gemini-3.5-flash-lite` / `3`.
+5. When the run finishes (about 5 minutes for the 10-task pilot), download the run artifact, read the printed report in the job log, and find the run committed back under `reports/<run-id>/` (`run.json`, `config.json`, `summary.json`).
+
+Every reported number traces to a persisted run directory — there are no hand-entered results.
+
+**Check our numbers:** run `gemini` / `gemini-3.5-flash-lite` / `3` and compare with the persisted study run [`reports/2026-10-16_001/`](reports/2026-10-16_001/) — 17 of 30 attempts passed, pass@1 0.50, pass@3 0.60. Small variations can occur (for example a sandbox timeout on one attempt), and a run that differs is a finding worth reporting, not a failure.
+
+### Path B — Run it locally
+
+Requires Python 3.12 and Docker.
 
 ```bash
 git clone https://github.com/josephrolabs/impressions.git
@@ -27,13 +59,17 @@ impressions init my-eval && cd my-eval
 # in impressions.toml: set paths.tasks to /path/to/impressions/benchmarks/mvp/tasks,
 # and set [evaluation] attempts = 3 and pass_at_k = 3 — init writes 1 for both,
 # and the CLI rejects a --k larger than the configured attempts
-export OPENAI_API_KEY=...   # or ANTHROPIC_API_KEY, GEMINI_API_KEY, META_API_KEY
+export GEMINI_API_KEY=<your-key>
 docker build -t impressions-python-pytest:3.12 /path/to/impressions/docker/pytest
 impressions run --k 3
 impressions report reports/<run-id>
 ```
 
-No API key? `impressions run` falls back to a deterministic echo client so you can verify the whole pipeline without spending anything.
+The same harness also runs inside your own CI job — Path A is that pattern, ready-made.
+
+### Path 0 — No key, no cost
+
+No API key? `impressions run` falls back to a deterministic echo client so you can verify the whole pipeline — tasks, sandbox, pytest grading, and reporting — without spending anything.
 
 ## Model providers
 
@@ -41,7 +77,7 @@ No API key? `impressions run` falls back to a deterministic echo client so you c
 |---|---|---|---|
 | OpenAI | `openai` | `OPENAI_API_KEY` | `gpt-5` |
 | Anthropic Claude | `anthropic` | `ANTHROPIC_API_KEY` | `claude-opus-4-6` |
-| Google Gemini | `gemini` | `GEMINI_API_KEY` | `gemini-2.5-pro` |
+| Google Gemini | `gemini` | `GEMINI_API_KEY` | `gemini-3.5-flash-lite` |
 | Meta Muse Spark | `meta` | `META_API_KEY` | `muse-spark-1.1` |
 
 ```toml
@@ -78,6 +114,8 @@ The suite is a compact, reproducible smoke/regression benchmark — not a public
 ## Benchmark results
 
 Model comparison runs go here. Each cell is observed pass@k; run IDs link the numbers to their persisted artifacts.
+
+Latest persisted run: [`reports/2026-10-16_001/`](reports/2026-10-16_001/) — `gemini-3.5-flash-lite`, 17/30 attempts passed, pass@1 0.50, pass@3 0.60. The comparison table below is filled once the second study model has run.
 
 | Model | pass@1 | pass@3 | Run ID |
 |---|---|---|---|
