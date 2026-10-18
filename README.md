@@ -32,8 +32,8 @@ Run the full benchmark in CI — nothing to install locally, no Docker to manage
 
 1. **Fork** this repository. Visitors run the workflow on their own fork, with their own key — only collaborators can dispatch workflows on this repo.
 2. Get an API key — a Gemini key from Google AI Studio is free on the free tier.
-3. In your fork, go to **Settings → Secrets and variables → Actions → New repository secret** and add the key for your provider: `GEMINI_API_KEY`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, or `META_API_KEY`. Keys are read only from secrets / the environment — never from config files.
-4. Click the **Run the benchmark** button above, or go to **Actions → Benchmark pilot → Run workflow**. Choose a provider, model, and attempts — for example `gemini` / `gemini-3.5-flash-lite` / `3`.
+3. In your fork, go to **Settings → Secrets and variables → Actions → New repository secret** and add your Gemini key as `GEMINI_API_KEY`. Keys are read only from secrets / the environment — never from config files.
+4. Click the **Run the benchmark** button above, or go to **Actions → Benchmark pilot → Run workflow**. Use provider `gemini`, and choose a model and attempts — for example `gemini-3.5-flash-lite` / `3`.
 5. When the run finishes (about 5 minutes for the 10-task pilot), download the run artifact, read the printed report in the job log, and find the run committed back under `reports/<run-id>/` (`run.json`, `config.json`, `summary.json`).
 
 Every reported number traces to a persisted run directory — there are no hand-entered results.
@@ -71,26 +71,25 @@ The same harness also runs inside your own CI job — Path A is that pattern, re
 
 No API key? `impressions run` falls back to a deterministic echo client so you can verify the whole pipeline — tasks, sandbox, pytest grading, and reporting — without spending anything.
 
-## Model providers
+## Model provider
+
+The tested and supported provider for this project is **Google Gemini**, using the `GEMINI_API_KEY`. That is the only provider whose API key flow has been tested end-to-end with this harness, so it is the only one documented here.
 
 | Provider | Config value | Key env var | Example model |
 |---|---|---|---|
-| OpenAI | `openai` | `OPENAI_API_KEY` | `gpt-5` |
-| Anthropic Claude | `anthropic` | `ANTHROPIC_API_KEY` | `claude-opus-4-6` |
 | Google Gemini | `gemini` | `GEMINI_API_KEY` | `gemini-3.5-flash-lite` |
-| Meta Muse Spark | `meta` | `META_API_KEY` | `muse-spark-1.1` |
 
 ```toml
 [model]
-provider = "anthropic"
-model = "claude-opus-4-6"
+provider = "gemini"
+model = "gemini-3.5-flash-lite"
 timeout = 60
 
 [credentials]
-api_key_env = "ANTHROPIC_API_KEY"
+api_key_env = "GEMINI_API_KEY"
 ```
 
-Keys are read from the environment named by `api_key_env` — never from config files. When the key is unset, the run uses the deterministic echo fallback and says so. Each provider client captures token usage and provider metadata (response IDs, stop/finish reasons) into the run artifacts.
+Keys are read from the environment named by `api_key_env` — never from config files. When the key is unset, the run uses the deterministic echo fallback and says so. The Gemini client captures token usage and provider metadata (response IDs, stop/finish reasons) into the run artifacts.
 
 ## The MVP benchmark
 
@@ -130,7 +129,7 @@ Task YAML → Prompt Builder → Model Client → Docker Sandbox → pytest → 
 ```
 
 1. **Prompt Builder** renders versioned prompts (`baseline` / `engineered` variants) and records the exact text per attempt.
-2. **Model Client** calls the configured provider and captures text, token usage, and metadata.
+2. **Model Client** calls the Gemini model and captures text, token usage, and metadata.
 3. **Docker Sandbox** executes the generated entrypoint with no network, a read-only root filesystem, dropped capabilities, memory/PID limits, and an unprivileged user. The base image is pinned by digest and pytest is pinned to 8.4.0 for reproducibility.
 4. **Pytest grading** runs the task's own test suite against the generated code inside the sandbox.
 5. **Failure classification** assigns each failure a deterministic category: `syntax_error`, `runtime_error`, `test_failure`, `timeout`, `format_error`, or `other`.
@@ -188,12 +187,12 @@ tasks = "tasks"
 reports = "reports"
 
 [model]
-provider = "openai"
-model = "gpt-5"
+provider = "gemini"
+model = "gemini-3.5-flash-lite"
 timeout = 30
 
 [credentials]
-api_key_env = "OPENAI_API_KEY"
+api_key_env = "GEMINI_API_KEY"
 
 [evaluation]
 attempts = 3
