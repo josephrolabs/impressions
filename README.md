@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <strong>Try it yourself:</strong> fork the repo, add a free Gemini key as a repository secret, click <strong>Run workflow</strong> — then compare your numbers with the persisted study run. Do they align?
+  <strong>Try it yourself:<x keys as repository secretsx, click <strong>Run workflow</strong> — then compare your numbers with the persisted study run. Do they align?
 </p>
 
 # Impressions: AI Code Evaluation Harness
