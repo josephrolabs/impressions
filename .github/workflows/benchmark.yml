@@ -21,7 +21,7 @@ on:
         description: Model ID for the chosen provider
         type: string
         required: true
-        default: gemini-2.5-pro
+        default: gemini-3.5-flash-lite
       attempts:
         description: Attempts per task (also reported as pass@k)
         type: string
@@ -116,6 +116,7 @@ jobs:
           )
           text = re.sub(r"attempts = \d+", "attempts = {}".format(attempts), text)
           text = re.sub(r"pass_at_k = \d+", "pass_at_k = {}".format(attempts), text)
+          text = re.sub(r"timeout = \d+", "timeout = 120", text)
           open(path, "w").write(text)
           print(open(path).read())
           PYEOF
