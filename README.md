@@ -38,7 +38,7 @@ Run the full benchmark in CI — nothing to install locally, no Docker to manage
 
 Every reported number traces to a persisted run directory — there are no hand-entered results.
 
-**Check our numbers:** run `gemini` / `gemini-3.5-flash-lite` / `3` and compare with the persisted study run [`reports/2026-10-16_001/`](reports/2026-10-16_001/) — 17 of 30 attempts passed, pass@1 0.50, pass@3 0.60. Small variations can occur (for example a sandbox timeout on one attempt), and a run that differs is a finding worth reporting, not a failure.
+**Check our numbers:** run `gemini` / `gemini-3.5-flash-lite` / `3` and compare with the persisted study run [`reports/2026-10-16_001/`](reports/2026-10-16_001/) — 17 of 30 attempts passed, pass@1 0.50, pass@3 0.60. Or run `groq` / `openai/gpt-oss-120b` / `3` and compare with [`reports/2026-10-19_001/`](reports/2026-10-19_001/) — 15 of 30 attempts passed, pass@1 0.50, pass@3 0.50. Small variations can occur (for example a sandbox timeout on one attempt), and a run that differs is a finding worth reporting, not a failure.
 
 ### Path B — Run it locally
 
@@ -73,11 +73,12 @@ No API key? `impressions run` falls back to a deterministic echo client so you c
 
 ## Model provider
 
-The tested and supported provider for this project is **Google Gemini**, using the `GEMINI_API_KEY`. That is the only provider whose API key flow has been tested end-to-end with this harness, so it is the only one documented here.
+Two providers have been tested end-to-end with this harness and are documented here: **Google Gemini** and **Groq**. Other providers exist in the codebase but are untested, so they are not presented as supported.
 
 | Provider | Config value | Key env var | Example model |
 |---|---|---|---|
 | Google Gemini | `gemini` | `GEMINI_API_KEY` | `gemini-3.5-flash-lite` |
+| Groq | `groq` | `GROQ_API_KEY` | `openai/gpt-oss-120b` |
 
 ```toml
 [model]
@@ -89,7 +90,17 @@ timeout = 60
 api_key_env = "GEMINI_API_KEY"
 ```
 
-Keys are read from the environment named by `api_key_env` — never from config files. When the key is unset, the run uses the deterministic echo fallback and says so. The Gemini client captures token usage and provider metadata (response IDs, stop/finish reasons) into the run artifacts.
+```toml
+[model]
+provider = "groq"
+model = "openai/gpt-oss-120b"
+timeout = 120
+
+[credentials]
+api_key_env = "GROQ_API_KEY"
+```
+
+Keys are read from the environment named by `api_key_env` — never from config files. When the key is unset, the run uses the deterministic echo fallback and says so. Both clients capture token usage and provider metadata (response IDs, finish reasons) into the run artifacts, and both retry rate-limit and transient server errors with exponential backoff.
 
 ## The MVP benchmark
 
@@ -114,11 +125,14 @@ The suite is a compact, reproducible smoke/regression benchmark — not a public
 
 Model comparison runs go here. Each cell is observed pass@k; run IDs link the numbers to their persisted artifacts.
 
-Latest persisted run: [`reports/2026-10-16_001/`](reports/2026-10-16_001/) — `gemini-3.5-flash-lite`, 17/30 attempts passed, pass@1 0.50, pass@3 0.60. The comparison table below is filled once the second study model has run.
+The v1 study (October 2026) ran two models under identical conditions — 10 tasks × 3 attempts, temperature 0.0, baseline prompt v1, $0 free tiers. The second slot was originally Gemini 3.8 Flash; its free tier allows only 20 requests per day, fewer than the 30 a full suite needs, so the slot was amended to gpt-oss-120b via Groq before any Flash results existed.
 
-| Model | pass@1 | pass@3 | Run ID |
-|---|---|---|---|
-| _pending_ | – | – | – |
+| Model | Attempts passed | pass@1 | pass@3 | Tasks solved | Run |
+|---|---|---|---|---|---|
+| `gemini-3.5-flash-lite` (Gemini) | 17/30 | 0.50 | 0.60 | 6/10 | [`reports/2026-10-16_001/`](reports/2026-10-16_001/) |
+| `openai/gpt-oss-120b` (Groq) | 15/30 | 0.50 | 0.50 | 5/10 | [`reports/2026-10-19_001/`](reports/2026-10-19_001/) |
+
+A repeat Flash-Lite run under the same conditions scored 18/30 (pass@1 0.60, pass@3 0.60; [`reports/2026-10-18_001/`](reports/2026-10-18_001/)) — the single differing attempt was a sandbox timeout in the first run, a useful measure of run-to-run variance at temperature 0.
 
 Results are produced by `impressions run --k 3` against the MVP benchmark and rendered with `impressions report` / `impressions compare`. No fabricated numbers: every figure must trace to a run directory under `reports/`.
 
