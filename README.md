@@ -226,6 +226,7 @@ variant = "engineered"
 │       ├── anthropic_client.py  # Anthropic Messages API
 │       ├── gemini_client.py     # Gemini Developer API
 │       ├── meta_client.py       # Meta Model API (OpenAI-compatible)
+│       ├── groq_client.py       # Groq API (OpenAI-compatible)
 │       ├── docker_executor.py   # sandboxed execution via Docker CLI
 │       ├── pytest_grader.py     # pytest grading + output parsing
 │       ├── failure_classification.py

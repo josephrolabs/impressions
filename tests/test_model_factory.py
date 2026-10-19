@@ -48,9 +48,10 @@ def patch_provider_sdk_clients(monkeypatch):
     monkeypatch.setattr(model_factory, "AnthropicModelClient", FakeProviderClient)
     monkeypatch.setattr(model_factory, "GeminiModelClient", FakeProviderClient)
     monkeypatch.setattr(model_factory, "MetaModelClient", FakeProviderClient)
+    monkeypatch.setattr(model_factory, "GroqModelClient", FakeProviderClient)
 
 
-@pytest.mark.parametrize("provider", ["openai", "anthropic", "gemini", "meta"])
+@pytest.mark.parametrize("provider", ["openai", "anthropic", "gemini", "meta", "groq"])
 def test_create_model_client_dispatches_configured_provider(tmp_path, provider):
     client = create_model_client(
         configured_project(tmp_path, provider=provider), {"TEST_API_KEY": "test-key"}
@@ -68,7 +69,7 @@ def test_create_model_client_returns_echo_fallback_without_api_key(tmp_path):
     assert isinstance(client, EchoModelClient)
 
 
-@pytest.mark.parametrize("provider", ["openai", "anthropic", "gemini", "meta"])
+@pytest.mark.parametrize("provider", ["openai", "anthropic", "gemini", "meta", "groq"])
 def test_create_model_client_returns_echo_fallback_for_blank_api_key(
     tmp_path, provider
 ):

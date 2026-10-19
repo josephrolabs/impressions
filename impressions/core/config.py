@@ -14,7 +14,7 @@ except ModuleNotFoundError:  # pragma: no cover - exercised only on Python 3.10
 
 CONFIG_FILE_NAME = "impressions.toml"
 SUPPORTED_CONFIG_VERSION = 1
-SUPPORTED_PROVIDERS = ("openai", "anthropic", "gemini", "meta")
+SUPPORTED_PROVIDERS = ("openai", "anthropic", "gemini", "meta", "groq")
 
 
 class ConfigError(Exception):
