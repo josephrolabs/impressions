@@ -1,0 +1,21 @@
+{
+  "evaluation": {
+    "attempts": 3,
+    "pass_at_k": 3
+  },
+  "file_path": "impressions.toml",
+  "model": {
+    "model": "openai/gpt-oss-120b",
+    "provider": "groq",
+    "timeout": 120.0
+  },
+  "paths": {
+    "reports": "reports",
+    "tasks": "/home/runner/work/impressions/impressions/benchmarks/mvp/tasks"
+  },
+  "prompt": {
+    "variant": "baseline",
+    "version": "v1"
+  },
+  "version": 1
+}
