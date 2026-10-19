@@ -15,7 +15,7 @@
 </p>
 
 <p align="center">
-  <strong>Try it yourself:<x keys as repository secretsx, click <strong>Run workflow</strong> — then compare your numbers with the persisted study run. Do they align?
+  <strong>Try it yourself:</strong> fork the repo, add a free Gemini or Groq key as a repository secret, click <strong>Run workflow</strong> — then compare your numbers with the persisted study runs. Do they align?
 </p>
 
 # Impressions: AI Code Evaluation Harness
@@ -31,9 +31,9 @@ Impressions runs end-to-end today. Pick a path:
 Run the full benchmark in CI — nothing to install locally, no Docker to manage.
 
 1. **Fork** this repository. Visitors run the workflow on their own fork, with their own key — only collaborators can dispatch workflows on this repo.
-2. Get an API key — a Gemini key from Google AI Studio is free on the free tier.
-3. In your fork, go to **Settings → Secrets and variables → Actions → New repository secret** and add your Gemini key as `GEMINI_API_KEY`. Keys are read only from secrets / the environment — never from config files.
-4. Click the **Run the benchmark** button above, or go to **Actions → Benchmark pilot → Run workflow**. Use provider `gemini`, and choose a model and attempts — for example `gemini-3.5-flash-lite` / `3`.
+2. Get an API key — a Gemini key from Google AI Studio or a Groq key from the Groq console; both are free on their free tiers.
+3. In your fork, go to **Settings → Secrets and variables → Actions → New repository secret** and add your key — `GEMINI_API_KEY` for Gemini, `GROQ_API_KEY` for Groq. Keys are read only from secrets / the environment — never from config files.
+4. Click the **Run the benchmark** button above, or go to **Actions → Benchmark pilot → Run workflow**. Use provider `gemini` or `groq`, and choose a model and attempts — for example `gemini-3.5-flash-lite` / `3` or `openai/gpt-oss-120b` / `3`.
 5. When the run finishes (about 5 minutes for the 10-task pilot), download the run artifact, read the printed report in the job log, and find the run committed back under `reports/<run-id>/` (`run.json`, `config.json`, `summary.json`).
 
 Every reported number traces to a persisted run directory — there are no hand-entered results.
