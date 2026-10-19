@@ -31,6 +31,7 @@ from impressions.core.model_factory import create_model_client
 from impressions.core.anthropic_client import AnthropicModelClient
 from impressions.core.gemini_client import GeminiModelClient
 from impressions.core.meta_client import MetaModelClient
+from impressions.core.groq_client import GroqModelClient
 from impressions.core.llm_evaluator import LLMEvaluator
 from impressions.core.model_client import (
     EchoModelClient,
@@ -84,6 +85,7 @@ __all__ = [
     "AnthropicModelClient",
     "GeminiModelClient",
     "MetaModelClient",
+    "GroqModelClient",
     "ConfigError",
     "CodeExecutor",
     "CodeTaskEvaluator",

@@ -49,15 +49,16 @@ tasks = "tasks"
 reports = "reports"
 
 [model]
-# Supported providers: "openai", "anthropic", "gemini", "meta".
+# Supported providers: "openai", "anthropic", "gemini", "meta", "groq".
 # "meta" targets Meta's OpenAI-compatible Model API (https://api.meta.ai/v1).
+# "groq" targets Groq's OpenAI-compatible API (https://api.groq.com/openai/v1).
 provider = "openai"
 model = "gpt-5"
 timeout = 30
 
 [credentials]
 # Name of the environment variable holding the provider API key.
-# Conventional names: OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, META_API_KEY.
+# Conventional names: OPENAI_API_KEY, ANTHROPIC_API_KEY, GEMINI_API_KEY, META_API_KEY, GROQ_API_KEY.
 # Keys are never read from this file. When the variable is unset or empty,
 # runs fall back to the deterministic echo evaluator instead of calling a model.
 api_key_env = "OPENAI_API_KEY"

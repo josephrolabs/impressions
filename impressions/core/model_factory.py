@@ -8,6 +8,7 @@ from collections.abc import Mapping
 from impressions.core.anthropic_client import AnthropicModelClient
 from impressions.core.config import SUPPORTED_PROVIDERS, ConfigError, ProjectConfig
 from impressions.core.gemini_client import GeminiModelClient
+from impressions.core.groq_client import GroqModelClient
 from impressions.core.meta_client import MetaModelClient
 from impressions.core.model_client import EchoModelClient, ModelClient
 from impressions.core.openai_client import OpenAIModelClient
@@ -48,6 +49,12 @@ def create_model_client(
         )
     if provider == "meta":
         return MetaModelClient(
+            api_key=api_key,
+            model=config.model.model,
+            timeout=config.model.timeout,
+        )
+    if provider == "groq":
+        return GroqModelClient(
             api_key=api_key,
             model=config.model.model,
             timeout=config.model.timeout,
