@@ -123,7 +123,7 @@ The suite is a compact, reproducible smoke/regression benchmark — not a public
 
 ## Benchmark results
 
-Model comparison runs go here. Each cell is observed pass@k; run IDs link the numbers to their persisted artifacts.
+Each cell is observed pass@k from a real, persisted run; run IDs link the numbers to their artifacts.
 
 The v1 study (October 2026) ran two models under identical conditions — 10 tasks × 3 attempts, temperature 0.0, baseline prompt v1, $0 free tiers. The second slot was originally Gemini 3.8 Flash; its free tier allows only 20 requests per day, fewer than the 30 a full suite needs, so the slot was amended to gpt-oss-120b via Groq before any Flash results existed.
 
@@ -143,7 +143,7 @@ Task YAML → Prompt Builder → Model Client → Docker Sandbox → pytest → 
 ```
 
 1. **Prompt Builder** renders versioned prompts (`baseline` / `engineered` variants) and records the exact text per attempt.
-2. **Model Client** calls the Gemini model and captures text, token usage, and metadata.
+2. **Model Client** calls the configured provider's model (Gemini or Groq) and captures text, token usage, and metadata.
 3. **Docker Sandbox** executes the generated entrypoint with no network, a read-only root filesystem, dropped capabilities, memory/PID limits, and an unprivileged user. The base image is pinned by digest and pytest is pinned to 8.4.0 for reproducibility.
 4. **Pytest grading** runs the task's own test suite against the generated code inside the sandbox.
 5. **Failure classification** assigns each failure a deterministic category: `syntax_error`, `runtime_error`, `test_failure`, `timeout`, `format_error`, or `other`.
@@ -222,7 +222,7 @@ variant = "engineered"
 - **Correctness first, nuance later:** if a signal can't be measured deterministically, it waits.
 - **Composable:** config, task loading, prompting, model clients, execution, grading, scoring, and reporting are separate concerns behind stable interfaces.
 - **Reproducible:** pinned images, pinned dependencies, versioned prompts, and persisted run artifacts.
-- **Test-first:** new behavior ships with focused tests (193 and counting).
+- **Test-first:** new behavior ships with focused tests (218 and counting).
 
 ## Repository structure
 
@@ -241,6 +241,7 @@ variant = "engineered"
 │       ├── gemini_client.py     # Gemini Developer API
 │       ├── meta_client.py       # Meta Model API (OpenAI-compatible)
 │       ├── groq_client.py       # Groq API (OpenAI-compatible)
+│       ├── execution.py         # isolated-execution interface + results
 │       ├── docker_executor.py   # sandboxed execution via Docker CLI
 │       ├── pytest_grader.py     # pytest grading + output parsing
 │       ├── failure_classification.py
@@ -248,6 +249,7 @@ variant = "engineered"
 │       ├── evaluation.py        # evaluator protocol, engine, echo evaluator
 │       ├── llm_evaluator.py     # model → grade pipeline
 │       ├── code_evaluator.py
+│       ├── code_extraction.py   # fenced-code extraction from model output
 │       └── reporting.py         # run registry, report, compare
 ├── benchmarks/mvp/
 │   ├── tasks/                   # 10 task YAMLs + tests + fixtures
